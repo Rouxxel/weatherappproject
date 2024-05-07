@@ -8,6 +8,9 @@ The app will provide weather information and forecast services to its users, it 
 of external packages like http for APIs, geolocator for GPS location and real time connection
 to provide the aforementioned services.
 
+Also the usage of widgets trees to manage the nested widgets and events triggered by gestures
+or certain events.
+
 This project was developed by:
 -Sebastian Russo
 -Javier Peres
