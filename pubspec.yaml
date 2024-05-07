@@ -36,6 +36,20 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
 
+  #packages from https://pub.dev/packages
+  geolocator: ^11.0.0               #For generic location functions (GPS) cross-platform API
+  #Need "--no-sound-null-safety" in Run->Edit Configuration->Additional run args->Apply
+  #Android: Add permissions in AndriodManifes.xml file in children of <manifest> tag, then restart the App.
+  #iOS: Add string and key to Info.pilst file in order to access to device
+
+  url_launcher: ^6.2.6              #to launch URLs
+  http: ^1.2.1                      #to consume HTTP resources
+  audioplayers: ^6.0.0              #to play audios and sound effects
+  flutter_native_splash: ^2.4.0     #to style the splash screen when launching the app (possibly)
+  google_fonts: ^6.2.1              #to directly use googlefonts instead of download-import
+  firebase_performance: ^0.9.4+5    #Performance improvement and monitoring
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

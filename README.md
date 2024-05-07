@@ -17,4 +17,4 @@ This project was developed by:
 -Guillermo Trigo
 -Lex Rencken
 -Sefer Serhat Ozagi
--Emmanuel Nnyamah
+-Emmanuel Nnyamah
