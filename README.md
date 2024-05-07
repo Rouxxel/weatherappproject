@@ -9,7 +9,7 @@ of external packages like http for APIs, geolocator for GPS location and real ti
 to provide the aforementioned services.
 
 Also the usage of widgets trees to manage the nested widgets and events triggered by gestures
-or certain events.
+or certain events, the main purpose is to learn as much about app development.
 
 This project was developed by:
 -Sebastian Russo
