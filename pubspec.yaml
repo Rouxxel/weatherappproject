@@ -36,7 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
 
-  #packages from https://pub.dev/packages
+  #packages from https://pub.dev/packages ==
   geolocator: ^11.0.0               #For generic location functions (GPS) cross-platform API
   #Need "--no-sound-null-safety" in Run->Edit Configuration->Additional run args->Apply
   #Android: Add permissions in AndriodManifes.xml file in children of <manifest> tag, then restart the App.
