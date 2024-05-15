@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weatherappproject/landingpage.dart';
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
@@ -9,6 +10,18 @@ import 'package:google_fonts/google_fonts.dart';
 //global variables
 /////////////////////////////////////////////////////////////////////////////
 //functions-method
+
+// Function to navigate to the landing page after 6 seconds
+void autonavigationtimer(BuildContext context) {
+  //Use Future<t> method with .delayed(Duration(time unit:int)) to execute code
+  // after 6 seconds
+  Future.delayed(Duration(seconds: 6), () {
+    //Use navigator to go to the landing page
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => landingpage()),
+    );
+  });
+}
 
 //functions-methods
 /////////////////////////////////////////////////////////////////////////////
@@ -19,6 +32,9 @@ class loadingpage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Timer to automatically navigate to the landing page
+    autonavigationtimer(context);
+
     return MaterialApp(
       home: Scaffold(
         //Background main color
