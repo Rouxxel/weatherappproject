@@ -55,7 +55,7 @@ class loadingpage extends StatelessWidget {
             //Content of the page
             SafeArea(
               child: Column(
-                //Alignment
+                //Alignment within the Column
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
 
@@ -78,6 +78,7 @@ class loadingpage extends StatelessWidget {
                           textStyle: TextStyle(
                             fontSize: 45,
                             fontWeight: FontWeight.normal,
+                            fontStyle: FontStyle.normal,
                             color: Colors.white,
                           ),
                         ),
@@ -94,6 +95,7 @@ class loadingpage extends StatelessWidget {
                           textStyle: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.normal,
+                            fontStyle: FontStyle.normal,
                             color: Color.fromRGBO(77, 204, 189, 1.0),
                           ),
                         ),
