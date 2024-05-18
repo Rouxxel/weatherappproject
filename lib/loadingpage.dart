@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+//Other pages import
 import 'package:weatherappproject/landingpage.dart';
 
 //imports

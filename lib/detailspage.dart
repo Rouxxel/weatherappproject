@@ -1,14 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:geolocator/geolocator.dart'; //For GPS function
 import 'package:url_launcher/url_launcher.dart' as url; //For URL launch
 import 'package:http/http.dart' as http; //For http resources
 import 'dart:convert' as conv; //For JSON parsing
+//TODO:determine if all of these imports are truly necessary for this page
 
 //Other pages import
+import 'package:weatherappproject/landingpage.dart';
 import 'package:weatherappproject/searchpage.dart';
-import 'package:weatherappproject/detailspage.dart';
-
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
@@ -21,19 +23,16 @@ import 'package:weatherappproject/detailspage.dart';
 //functions-methods
 /////////////////////////////////////////////////////////////////////////////
 //screen itself
-class landingpage extends StatelessWidget {
-  const landingpage({super.key});
+
+class details extends StatelessWidget {
+  const details({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Get the screen width and height MAY NOT BE USED
-    //final screenWidth = MediaQuery.of(context).size.width;
-    //final screenHeight = MediaQuery.of(context).size.height;
-
     return MaterialApp(
       home: Scaffold(
         //Background main color
-        backgroundColor: Color.fromRGBO(35, 22, 81, 0.85), //decide color
+        backgroundColor: Color.fromRGBO(35, 22, 81, 0.85),
 
         //Appbar only with the name of the app
         appBar: AppBar(
@@ -62,11 +61,12 @@ class landingpage extends StatelessWidget {
 
         //Main content of the page
         body: Column(
-          children: [
-            Container(
-              child: Text("body with only a text"),
-            ),
-          ],
+          //Alignment of the column
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+
+          //Children of the column
+          children: [],
         ),
 
         //
@@ -94,16 +94,11 @@ class landingpage extends StatelessWidget {
                   alignment: Alignment.center,
                   iconSize: 40,
                   //TODO: DECIDE ICON COLORS
-                  color:
-                      Color.fromRGBO(140, 127, 186, 0.5),
-                  icon: Icon(Icons.info_outline),
+                  color: Color.fromRGBO(140, 127, 186, 1.0),
+                  icon:
+                  Icon(Icons.info),
                   onPressed: () {
-                    //Use navigator to go to the landing page
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => details(),
-                      ),
-                    );
+                    //No functionality here because this is the page
                   },
                 ),
               ),
@@ -118,11 +113,15 @@ class landingpage extends StatelessWidget {
                   alignment: Alignment.center,
                   iconSize: 40,
                   //TODO: DECIDE ICON COLORS
-                  color:
-                      Color.fromRGBO(140, 127, 186, 1.0),
-                  icon: Icon(Icons.home),
+                  color: Color.fromRGBO(140, 127, 186, 0.5),
+                  icon: Icon(Icons.home_outlined),
                   onPressed: () {
-                    //No functionality here because this is the page
+                    //Use navigator to go to the landing page
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => landingpage(),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -137,11 +136,10 @@ class landingpage extends StatelessWidget {
                   alignment: Alignment.center,
                   iconSize: 40,
                   //TODO: DECIDE ICON COLORS
-                  color:
-                      Color.fromRGBO(140, 127, 186, 0.5),
+                  color: Color.fromRGBO(140, 127, 186, 0.5),
                   icon: Icon(Icons.search_outlined),
                   onPressed: () {
-                    //Use navigator to go to the search page
+                    //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => searchpage(),
