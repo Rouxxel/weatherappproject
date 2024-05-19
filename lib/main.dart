@@ -11,7 +11,7 @@ import 'package:weatherappproject/detailspage.dart';
 void main() {
   runApp(
     MaterialApp(
-      home: details(),
+      home: loadingpage(),
     ),
   );
 }

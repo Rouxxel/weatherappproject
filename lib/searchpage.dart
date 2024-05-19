@@ -60,134 +60,134 @@ class searchpage extends StatelessWidget {
         //
 
         //Main content of the page
-        body: Column(
-          //Alignment of the column
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        //Pad column to maintain consistency
+        body: Padding(
+          //Pad horizontal part of of inner column
+          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
 
-          //Children of the column
-          children: [
-            //Ghost container for centering purposes
-            Container(
-              width: double.infinity,
-            ),
+          //Central column
+          child: Column(
+            //Alignment of the column
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
 
-            //TODO: See if its better to use gridview or list view
-            //TODO: Use Padding() with containers to establish limits
+            //Children of the column
+            children: [
+              //Container for User input
+              Container(
+                height: 58,
+                width: double.infinity,
 
-            //Pad all containers to maintain consistency
-            Padding(
-              //Pad horizontal part of of inner column
-              padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
-
-              //Containers being padded with inner column
-              //TODO: check if Expanded can help with overflow problem
-              child: Column(
-                //Alignment within the inner column
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-
-                //Children of inner column
-                children: [
-                  //User input Text field and search button
-                  Container(
-                    color: Colors.red,
-                    height: 58,
-                    width: double.infinity,
-
-                    //Center input Test field and search button
-                    child: Center(
-                      //Use row to organize them horizontally
-                      child: Row(
-                        children: [
-                          //Expand to ensure Text Field occupies all the
-                          // available space
-                          Expanded(
-                            //input Text field
-                            child: TextField(
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.grey,
-                                hintText: "Please enter city name",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(12.0),
-                                  ),
-                                ),
+                //Center input Text field and search button
+                child: Center(
+                  //Use row to organize them horizontally
+                  child: Row(
+                    children: [
+                      //Expand to ensure Text Field occupies all the
+                      //available space
+                      Expanded(
+                        //input Text field
+                        child: TextField(
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Color.fromRGBO(77, 204, 189, 0.4),
+                            hintText: "Search city by name...",
+                            hintStyle: GoogleFonts.ptSerif(
+                              textStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                                fontStyle: FontStyle.normal,
+                                color: Colors.white,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
                               ),
                             ),
                           ),
 
-                          //Container to create frame
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.black),
-                            ),
+                          //Align text to always be in center-left
+                          textAlignVertical: TextAlignVertical.center,
+                        ),
+                      ),
 
-                            height: 58,
-                            width: 58,
+                      //Container to create frame for Search icon button
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(77, 204, 189, 0.4),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.black),
+                        ),
 
-                            //search Icon button
-                            child: IconButton(
-                              icon: Icon(Icons.search),
-                              onPressed: () {
-                                //TODO: insert functionality to update global variable and go to main page
-                              },
-                            ),
-                          )
-                        ],
+                        height: 58,
+                        width: 58,
+
+                        //search Icon button
+                        child: Center(
+                          child: IconButton(
+                            icon: Icon(Icons.search),
+                            alignment: Alignment.center,
+                            iconSize: 40,
+                            color: Colors.white,
+                            onPressed: () {
+                              //TODO: insert functionality to search based on city name and go to main page
+                            },
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+
+              //Size box for spacing
+              SizedBox(
+                height: 5,
+              ),
+
+              //"Suggestions" text
+              Container(
+                height: 40,
+                width: double.infinity,
+                child: Padding(
+                  //Move text a little offset to the right
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Align(
+                    //Bound text to always be center left
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Suggestions:",
+                      style: GoogleFonts.ptSerif(
+                        textStyle: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                          fontStyle: FontStyle.normal,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
-
-                  //Size box for spacing
-                  SizedBox(
-                    height: 5,
-                  ),
-
-                  //Suggestion cities
-                  //"Suggestions" text
-                  Container(
-                    color: Colors.blue,
-                    height: 25,
-                    width: double.infinity,
-                    child: Text("Suggestions:"),
-                  ),
-
-                  //Size box for spacing
-                  SizedBox(
-                    height: 5,
-                  ),
-
-                  //TODO: solve gridview
-
-                  /*Cities
-                  Container(
-                    color: Colors.amber,
-                    height: 58,
-                    width: double.infinity,
-                  ),
-                  Container(
-                    color: Colors.amber,
-                    height: 58,
-                    width: double.infinity,
-                  ),
-                  Container(
-                    color: Colors.amber,
-                    height: 58,
-                    width: double.infinity,
-                  ),
-                  Container(
-                    color: Colors.amber,
-                    height: 58,
-                    width: double.infinity,
-                  ),*/
-                ],
+                ),
               ),
-            ),
-          ],
+
+              //Size box for spacing
+              SizedBox(
+                height: 5,
+              ),
+
+              //TODO: find a way to solve renderer overflowing problem to enable a listview or gridview
+              Container(
+                color: Colors.white,
+                width: double.infinity,
+                height: 500,
+                child: Center(
+                  child: Text(
+                      "Here is supposed to be an scrollable listview, but the overflow problem difficults things"),
+                ),
+              ),
+            ],
+          ),
         ),
 
         //
@@ -216,8 +216,7 @@ class searchpage extends StatelessWidget {
                   iconSize: 40,
                   //TODO: DECIDE ICON COLORS
                   color: Color.fromRGBO(140, 127, 186, 0.5),
-                  icon:
-                      Icon(Icons.info_outline),
+                  icon: Icon(Icons.info_outline),
                   onPressed: () {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
@@ -276,25 +275,3 @@ class searchpage extends StatelessWidget {
     );
   }
 }
-
-/*Button bar with search and return buttons MAY NOT BE USED
-//TODO: decide where to but the buttonbar
-ButtonBar(
-mainAxisSize: MainAxisSize.min,
-children: [
-ElevatedButton.icon(
-icon: Icon(Icons.search),
-label: Text("Seach"),
-onPressed: () {
-//TODO: insert functionality to update global variable and go back to main page
-},
-),
-ElevatedButton.icon(
-icon: Icon(Icons.cancel_outlined),
-label: Text("Return"),
-onPressed: () {
-//TODO: insert functionality to go back to main page only
-},
-)
-],
-),*/

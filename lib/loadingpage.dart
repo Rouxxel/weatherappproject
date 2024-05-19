@@ -93,7 +93,7 @@ class loadingpage extends StatelessWidget {
                     child: Center(
                       child: Text(
                         "Loading...",
-                        style: GoogleFonts.quantico(
+                        style: GoogleFonts.ptSerif(
                           textStyle: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.normal,
