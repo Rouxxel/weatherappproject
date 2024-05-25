@@ -75,6 +75,7 @@ class searchpage extends StatelessWidget {
             children: [
               //Container for User input
               Container(
+                //color: Colors.brown,
                 height: 58,
                 width: double.infinity,
 
@@ -92,7 +93,7 @@ class searchpage extends StatelessWidget {
                             filled: true,
                             fillColor: Color.fromRGBO(77, 204, 189, 0.4),
                             hintText: "Search city by name...",
-                            hintStyle: GoogleFonts.ptSerif(
+                            hintStyle: GoogleFonts.quantico(
                               textStyle: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.normal,
@@ -117,7 +118,6 @@ class searchpage extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Color.fromRGBO(77, 204, 189, 0.4),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black),
                         ),
 
                         height: 58,
@@ -141,24 +141,20 @@ class searchpage extends StatelessWidget {
                 ),
               ),
 
-              //Size box for spacing
-              SizedBox(
-                height: 5,
-              ),
-
               //"Suggestions" text
               Container(
+                //color: Colors.black,
                 height: 40,
                 width: double.infinity,
                 child: Padding(
                   //Move text a little offset to the right
-                  padding: const EdgeInsets.only(left: 20),
+                  padding: EdgeInsets.only(left: 20),
                   child: Align(
                     //Bound text to always be center left
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Suggestions:",
-                      style: GoogleFonts.ptSerif(
+                      style: GoogleFonts.quantico(
                         textStyle: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.normal,
@@ -171,19 +167,315 @@ class searchpage extends StatelessWidget {
                 ),
               ),
 
-              //Size box for spacing
-              SizedBox(
-                height: 5,
-              ),
+              //Container for list view of suggestions
+              Expanded(
+                child: Container(
+                  //Round up container's edges
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Color.fromRGBO(214, 255, 246, 0.15),
+                  ),
 
-              //TODO: find a way to solve renderer overflowing problem to enable a listview or gridview
-              Container(
-                color: Colors.white,
-                width: double.infinity,
-                height: 500,
-                child: Center(
-                  child: Text(
-                      "Here is supposed to be an scrollable listview, but the overflow problem difficults things"),
+                  child: Padding(
+                    //Pad all sides evenly
+                    padding: EdgeInsets.all(20),
+
+                    //Use list view to create a scrollable options
+                    child: ListView(
+                      children: [
+                        //Suggestion 1
+                        Container(
+                          //Round up container's edges
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black, //TODO: replace color with image
+                          ),
+                          height: 100,
+                          width: double.infinity,
+
+                          //Align Column of children to center left of container
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+
+                            //Pad children of the Column
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 20),
+
+                              //Use column to organize texts
+                              child: Column(
+                                //Ensure content aligns to the left
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                                //Children that shows options
+                                children: [
+                                  Text(
+                                    "19\u00B0",
+                                    style: GoogleFonts.sansita(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    "Hamburg, Germany",
+                                    style: GoogleFonts.quantico(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //Sized box for spacing
+                        SizedBox(
+                          height: 25,
+                        ),
+
+                        //Suggestion 2
+                        Container(
+                          //Round up container's edges
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black, //TODO: replace color with image
+                          ),
+                          height: 100,
+                          width: double.infinity,
+
+                          //Align text to center left of container
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+
+                            //Pad children of the Column
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 20),
+
+                              //Use column to organize texts
+                              child: Column(
+                                //Ensure content aligns to the left
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                                children: [
+                                  Text(
+                                    "23\u00B0",
+                                    style: GoogleFonts.sansita(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    "Paris, France",
+                                    style: GoogleFonts.quantico(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //Sized box for spacing
+                        SizedBox(
+                          height: 25,
+                        ),
+
+                        //Suggestion 3
+                        Container(
+                          //Round up container's edges
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black, //TODO: replace color with image
+                          ),
+                          height: 100,
+                          width: double.infinity,
+
+                          //Align text to center left of container
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+
+                            //Pad children of the Column
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 20),
+
+                              //Use column to organize texts
+                              child: Column(
+                                //Ensure content aligns to the left
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                                children: [
+                                  Text(
+                                    "9\u00B0",
+                                    style: GoogleFonts.sansita(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    "Shenzhen, China",
+                                    style: GoogleFonts.quantico(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //Sized box for spacing
+                        SizedBox(
+                          height: 25,
+                        ),
+
+                        //Suggestion 4
+                        Container(
+                          //Round up container's edges
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black, //TODO: replace color with image
+                          ),
+                          height: 100,
+                          width: double.infinity,
+
+                          //Align text to center left of container
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+
+                            //Pad children of the Column
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 20),
+
+                              //Use column to organize texts
+                              child: Column(
+                                //Ensure content aligns to the left
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                                children: [
+                                  Text(
+                                    "13\u00B0",
+                                    style: GoogleFonts.sansita(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    "Tokyo, Japan",
+                                    style: GoogleFonts.quantico(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //Sized box for spacing
+                        SizedBox(
+                          height: 25,
+                        ),
+
+                        //Suggestion 5
+                        Container(
+                          //Round up container's edges
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black, //TODO: replace color with image
+                          ),
+                          height: 100,
+                          width: double.infinity,
+
+                          //Align text to center left of container
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+
+                            //Pad children of the Column
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 20),
+
+                              //Use column to organize texts
+                              child: Column(
+                                //Ensure content aligns to the left
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+
+                                children: [
+                                  Text(
+                                    "10\u00B0",
+                                    style: GoogleFonts.sansita(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    "London, England",
+                                    style: GoogleFonts.quantico(
+                                      textStyle: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -195,7 +487,7 @@ class searchpage extends StatelessWidget {
         //Bottom navigation bar
         bottomNavigationBar: BottomAppBar(
           //Main color
-          color: Color.fromRGBO(35, 22, 81, 1.0),
+          color: const Color.fromRGBO(35, 22, 81, 1.0),
 
           //Use a container to manipulate the size of the row
           child: Row(
@@ -214,14 +506,13 @@ class searchpage extends StatelessWidget {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  //TODO: DECIDE ICON COLORS
-                  color: Color.fromRGBO(140, 127, 186, 0.5),
-                  icon: Icon(Icons.info_outline),
+                  color: const Color.fromRGBO(140, 127, 186, 0.5),
+                  icon: const Icon(Icons.info_outline),
                   onPressed: () {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => details(),
+                        builder: (context) => detailspage(),
                       ),
                     );
                   },
@@ -237,9 +528,8 @@ class searchpage extends StatelessWidget {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  //TODO: DECIDE ICON COLORS
-                  color: Color.fromRGBO(140, 127, 186, 0.5),
-                  icon: Icon(Icons.home_outlined),
+                  color: const Color.fromRGBO(140, 127, 186, 0.5),
+                  icon: const Icon(Icons.home_outlined),
                   onPressed: () {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
@@ -260,9 +550,8 @@ class searchpage extends StatelessWidget {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  //TODO: DECIDE ICON COLORS
-                  color: Color.fromRGBO(140, 127, 186, 1.0),
-                  icon: Icon(Icons.search),
+                  color: const Color.fromRGBO(140, 127, 186, 1.0),
+                  icon: const Icon(Icons.search),
                   onPressed: () {
                     //No functionality here because this is the page
                   },

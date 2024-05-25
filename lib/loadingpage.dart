@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+//
 //Other pages import
 import 'package:weatherappproject/landingpage.dart';
 
@@ -93,7 +94,7 @@ class loadingpage extends StatelessWidget {
                     child: Center(
                       child: Text(
                         "Loading...",
-                        style: GoogleFonts.ptSerif(
+                        style: GoogleFonts.quantico(
                           textStyle: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.normal,

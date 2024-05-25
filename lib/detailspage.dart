@@ -24,8 +24,8 @@ import 'package:weatherappproject/searchpage.dart';
 /////////////////////////////////////////////////////////////////////////////
 //screen itself
 
-class details extends StatelessWidget {
-  const details({super.key});
+class detailspage extends StatelessWidget {
+  const detailspage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +60,25 @@ class details extends StatelessWidget {
         //
 
         //Main content of the page
-        body: Column(
-          //Alignment of the column
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        //Pad column to maintain consistency
+        body: Padding(
+          //Pad everything in the body
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
 
-          //Children of the column
-          children: [],
+          //Align everything in the body to the Top center
+          child: Align(
+            alignment: Alignment.topCenter,
+
+            child: ListView(
+              //Only if it is necessary to go back to column
+              /*//Alignment of the column
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,*/
+
+              //Children of the listview
+              children: [],
+            ),
+          ),
         ),
 
         //
