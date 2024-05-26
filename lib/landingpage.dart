@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:geolocator/geolocator.dart'; //For GPS function
+import 'package:icons_flutter/icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart' as url; //For URL launch
 import 'package:http/http.dart' as http; //For http resources
 import 'dart:convert' as conv; //For JSON parsing
@@ -22,9 +23,14 @@ import 'package:weatherappproject/detailspage.dart';
 //functions-methods
 /////////////////////////////////////////////////////////////////////////////
 //screen itself
-class landingpage extends StatelessWidget {
+class landingpage extends StatefulWidget {
   const landingpage({super.key});
 
+  @override
+  State<landingpage> createState() => _landingpageState();
+}
+
+class _landingpageState extends State<landingpage> {
   @override
   Widget build(BuildContext context) {
     // Get the screen width and height MAY NOT BE USED
@@ -215,7 +221,7 @@ class landingpage extends StatelessWidget {
                         //Children
                         children: [
                           Icon(
-                            Icons.umbrella,
+                            FontAwesome.umbrella,
                             size: 45,
                             color: Colors.white,
                           ),
@@ -384,14 +390,15 @@ class landingpage extends StatelessWidget {
                                   style: GoogleFonts.quantico(
                                     textStyle: TextStyle(
                                       fontSize: 20,
-                                      fontWeight: FontWeight.normal,
+                                      fontWeight: FontWeight.bold,
                                       fontStyle: FontStyle.normal,
                                       color: Colors.white,
                                     ),
                                   ),
                                 ),
 
-                                onPressed: () {
+                                onPressed: () async{
+
                                   //TODO: insert functionaly to change to hourly format
                                 },
                               ),
@@ -410,7 +417,7 @@ class landingpage extends StatelessWidget {
                                   style: GoogleFonts.quantico(
                                     textStyle: TextStyle(
                                       fontSize: 20,
-                                      fontWeight: FontWeight.normal,
+                                      fontWeight: FontWeight.bold,
                                       fontStyle: FontStyle.normal,
                                       color: Color.fromRGBO(35, 22, 81, 1.0),
                                       //TODO: insert function to update color
@@ -484,7 +491,7 @@ class landingpage extends StatelessWidget {
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
-                                                  fontWeight: FontWeight.normal,
+                                                  fontWeight: FontWeight.bold,
                                                   fontStyle: FontStyle.normal,
                                                   color: Color.fromRGBO(
                                                       35, 22, 81, 1.0),
@@ -494,7 +501,7 @@ class landingpage extends StatelessWidget {
                                           ),
                                         ),
                                         Icon(
-                                          Icons.cloud_sharp, //Maybe use icon package
+                                          WeatherIcons.wi_cloud, //Maybe use icon package
                                           //TODO: insert function to get appropiate weather condition icon
                                           size: 35,
                                           color: Colors.white,
@@ -559,7 +566,7 @@ class landingpage extends StatelessWidget {
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
-                                                  fontWeight: FontWeight.normal,
+                                                  fontWeight: FontWeight.bold,
                                                   fontStyle: FontStyle.normal,
                                                   color: Color.fromRGBO(
                                                       35, 22, 81, 1.0),
@@ -569,7 +576,7 @@ class landingpage extends StatelessWidget {
                                           ),
                                         ),
                                         Icon(
-                                          Icons.cloud_sharp, //Maybe use icon package
+                                          WeatherIcons.wi_day_rain, //Maybe use icon package
                                           //TODO: insert function to get appropiate weather condition icon
                                           size: 35,
                                           color: Colors.white,
@@ -634,7 +641,7 @@ class landingpage extends StatelessWidget {
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
-                                                  fontWeight: FontWeight.normal,
+                                                  fontWeight: FontWeight.bold,
                                                   fontStyle: FontStyle.normal,
                                                   color: Color.fromRGBO(
                                                       35, 22, 81, 1.0),
@@ -644,7 +651,7 @@ class landingpage extends StatelessWidget {
                                           ),
                                         ),
                                         Icon(
-                                          Icons.cloud_sharp, //Maybe use icon package
+                                          WeatherIcons.wi_day_snow, //Maybe use icon package
                                           //TODO: insert function to get appropiate weather condition icon
                                           size: 35,
                                           color: Colors.white,

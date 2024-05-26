@@ -24,9 +24,14 @@ import 'package:weatherappproject/detailspage.dart';
 /////////////////////////////////////////////////////////////////////////////
 //screen itself
 
-class searchpage extends StatelessWidget {
+class searchpage extends StatefulWidget {
   const searchpage({super.key});
 
+  @override
+  State<searchpage> createState() => _searchpageState();
+}
+
+class _searchpageState extends State<searchpage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -63,7 +68,7 @@ class searchpage extends StatelessWidget {
         //Pad column to maintain consistency
         body: Padding(
           //Pad horizontal part of of inner column
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+          padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 16.0),
 
           //Central column
           child: Column(
@@ -141,7 +146,13 @@ class searchpage extends StatelessWidget {
                 ),
               ),
 
-              //"Suggestions" text
+              //Use size box for spacing
+              SizedBox(
+                height: 15,
+              ),
+
+              //TODO: decide if to remove or solve overflow problem when phone is tilted and keyboard enabled
+              /*//"Suggestions" text
               Container(
                 //color: Colors.black,
                 height: 40,
@@ -165,7 +176,7 @@ class searchpage extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
+              ),*/
 
               //Container for list view of suggestions
               Expanded(

@@ -47,7 +47,7 @@ dependencies:
   audioplayers: ^6.0.0              #to play audios and sound effects
   flutter_native_splash: ^2.4.0     #to style the splash screen when launching the app (possibly)
   google_fonts: ^6.2.1              #to directly use googlefonts instead of download-import
-
+  icons_flutter: ^0.0.4             #to obtaine a greater variety of icons
 
 dev_dependencies:
   flutter_test:
