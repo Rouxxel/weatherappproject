@@ -11,6 +11,7 @@ import 'dart:convert' as conv; //For JSON parsing
 //Other pages import
 import 'package:weatherappproject/searchpage.dart';
 import 'package:weatherappproject/detailspage.dart';
+import 'package:weatherappproject/functionality.dart';
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
@@ -33,9 +34,14 @@ class landingpage extends StatefulWidget {
 class _landingpageState extends State<landingpage> {
   @override
   Widget build(BuildContext context) {
-    // Get the screen width and height MAY NOT BE USED
-    //final screenWidth = MediaQuery.of(context).size.width;
-    //final screenHeight = MediaQuery.of(context).size.height;
+
+    //Get permission right away
+    getgpspermission(context);
+
+    /*List<double> listlatlon=await getgpslocation(context);
+
+    Map<String, dynamic> currweathlist= await getCURRENTweatherdata(
+        context: context,latlon: listing);*///
 
     return MaterialApp(
       home: Scaffold(
@@ -397,8 +403,7 @@ class _landingpageState extends State<landingpage> {
                                   ),
                                 ),
 
-                                onPressed: () async{
-
+                                onPressed: () {
                                   //TODO: insert functionaly to change to hourly format
                                 },
                               ),
@@ -513,7 +518,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "12\u00B0 - 22\u00B0", //TODO: insert function to get temp here,
+                                              "23\u00B0 - 22\u00B0", //TODO: insert function to get temp here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
