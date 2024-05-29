@@ -11,11 +11,22 @@ import 'dart:convert' as conv; //For JSON parsing
 //Other pages import
 import 'package:weatherappproject/searchpage.dart';
 import 'package:weatherappproject/detailspage.dart';
-import 'package:weatherappproject/functionality.dart';
+import 'package:weatherappproject/functionality.dart'; //Import necessary functionality
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
 //global variables
+
+//Top most container in listview
+String devicecitycountry = "city, country";
+String datetime="Day x, Month x:xx ym";
+int centraltempnum = 0;
+String subtxtwcondition = "Double tap here";
+
+//Middle container in listview
+double precipitation = 0.0;
+int humidity = 0;
+double windspeed = 0.0;
 
 //global variables
 /////////////////////////////////////////////////////////////////////////////
@@ -34,15 +45,6 @@ class landingpage extends StatefulWidget {
 class _landingpageState extends State<landingpage> {
   @override
   Widget build(BuildContext context) {
-
-    //Get permission right away
-    getgpspermission(context);
-
-    /*List<double> listlatlon=await getgpslocation(context);
-
-    Map<String, dynamic> currweathlist= await getCURRENTweatherdata(
-        context: context,latlon: listing);*///
-
     return MaterialApp(
       home: Scaffold(
         //Background main color
@@ -85,112 +87,147 @@ class _landingpageState extends State<landingpage> {
 
             //Use listview to avoid Render overflow
             child: ListView(
-              //Only if it is necessary to go back to column
-              /*//Alignment of the column
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,*/
 
               //Children of the listview
               children: [
                 //Top container (middle height)
-                Container(
-                  //color: Colors.brown,
-                  height: 240,
-                  child: Padding(
-                    //Pad only left and right inside container
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 75),
+                GestureDetector(
+                  onDoubleTap: ()async{
+                    //Declare and obtain list with latitude and longitude
+                    List<double> latlon = await getgpslocation(context);
 
-                    //Inner column (in case of needing a background, use container)
-                    child: Column(
-                      //Alignment of the inner column
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    //Declare and obtain list with all weather information
+                    Map<String, dynamic> weatherinfo= await
+                      getCURRENTweatherdata(context: context,latlon: latlon);
 
-                      //Children
-                      children: [
-                        //Top text with location icon
-                        Row(
-                          //Alignment of inner row (maybe put inside a container
-                          //with width: 260, height: 30,)
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                    //Declare and obtain string of city and country
+                    String devicelocation = await getcitycountry(context, latlon);
 
-                          //Children
-                          children: [
-                            Icon(
-                              Icons.location_on, //Maybe my_location of package
-                              size: 30,
-                              color: Colors.white,
-                            ),
-                            Text(
-                              "Berlin, Germany", //TODO: insert here function to get city and country
-                              style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.normal,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                    //Declare and obtain string of date and time
+                    Map<String,dynamic>dateinfo= await
+                      getdatetimedata(context);
 
-                        //Subtext of top text (maybe punt in a container with
-                        //width: 260, height: 18,)
-                        Center(
-                          child: Text(
-                            "Monday 1, January 7:00 am", //TODO: insert here function to get date and time
-                            style: GoogleFonts.quantico(
-                              textStyle: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                                fontStyle: FontStyle.normal,
+                    //TODO: implement function to get date and time in format
+
+                    setState(() { //DO NOT USE ASYNC IN SET STATE
+
+                      //Update relevant variables
+                      //Device location
+                      devicecitycountry = devicelocation;
+
+                      //Date and time
+                      datetime = "${dateinfo["weekdaystr"]} ${dateinfo["daynum"]}, "
+                          "${dateinfo["monthstr"]} ${dateinfo['hour']}:"
+                          "${dateinfo["minutes"]}";
+
+                      //Weather information
+                      centraltempnum=weatherinfo["Ctemp"].toInt();
+                      subtxtwcondition=weatherinfo["weathercond"];
+                      precipitation=weatherinfo["precipiMM"];
+                      humidity=weatherinfo["humid"];
+                      windspeed=weatherinfo["KPHwind"];
+                    });
+                  },
+
+                  child: Container(
+                    //color: Colors.brown,
+                    height: 240,
+                    child: Padding(
+                      //Pad only left and right inside container
+                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 75),
+
+                      //Inner column (in case of needing a background, use container)
+                      child: Column(
+                        //Alignment of the inner column
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+
+                        //Children
+                        children: [
+                          //Top text with location icon
+                          Row(
+                            //Alignment of inner row (maybe put inside a container
+                            //with width: 260, height: 30,)
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+
+                            //Children
+                            children: [
+                              Icon(
+                                Icons.location_on, //Maybe my_location of package
+                                size: 30,
                                 color: Colors.white,
                               ),
-                            ),
-                          ),
-                        ),
-
-                        // Big temperature text (Do not remove expanded or container)
-                        Expanded(
-                          child: Container(
-                            //color: Colors.greenAccent,
-                            width: 260,
-                            height: 140,
-                            child: Center(
-                              child: Text(
-                                "23\u00B0",
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.sansita(
+                              Text(
+                                "$devicecitycountry", //TODO: insert here function to get city and country
+                                style: GoogleFonts.quantico(
                                   textStyle: TextStyle(
-                                    fontSize: 120,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FontStyle.normal,
                                     color: Colors.white,
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ),
 
-                        //Subtext of Big temperature text (maybe out in a
-                        //container with width: 260,height: 26,)
-                        Center(
-                          child: Text(
-                            "Cloudy", //TODO: insert here function to get weather condition
-                            style: GoogleFonts.quantico(
-                              textStyle: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.normal,
-                                fontStyle: FontStyle.normal,
-                                color: Colors.white,
+                          //Subtext of top text (maybe punt in a container with
+                          //width: 260, height: 18,)
+                          Center(
+                            child: Text(
+                              datetime, //TODO: insert here function to get date and time
+                              style: GoogleFonts.quantico(
+                                textStyle: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.normal,
+                                  fontStyle: FontStyle.normal,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+
+                          // Big temperature text (Do not remove expanded or container)
+                          Expanded(
+                            child: Container(
+                              //color: Colors.greenAccent,
+                              width: 260,
+                              height: 140,
+                              child: Center(
+                                child: Text(
+                                  "$centraltempnum\u00B0C",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.sansita(
+                                    textStyle: TextStyle(
+                                      fontSize: 120,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //Subtext of Big temperature text (maybe out in a
+                          //container with width: 260,height: 26,)
+                          Center(
+                            child: Text(
+                              capitalize(subtxtwcondition), //TODO: insert here function to get weather condition
+                              style: GoogleFonts.quantico(
+                                textStyle: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.normal,
+                                  fontStyle: FontStyle.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -232,7 +269,7 @@ class _landingpageState extends State<landingpage> {
                             color: Colors.white,
                           ),
                           Text(
-                            "30%", //TODO: insert function to get precipitation
+                            "${precipitation.round()}mm", //TODO: insert function to get precipitation
                             style: GoogleFonts.sansita(
                               textStyle: TextStyle(
                                 fontSize: 23,
@@ -246,7 +283,7 @@ class _landingpageState extends State<landingpage> {
                             "Precipitation",
                             style: GoogleFonts.quantico(
                               textStyle: TextStyle(
-                                fontSize: 16,
+                                fontSize: 17,
                                 fontWeight: FontWeight.normal,
                                 fontStyle: FontStyle.normal,
                                 color: Colors.white,
@@ -271,7 +308,7 @@ class _landingpageState extends State<landingpage> {
                             color: Colors.white,
                           ),
                           Text(
-                            "20%",
+                            "$humidity%",
                             style: GoogleFonts.sansita(
                               textStyle: TextStyle(
                                 fontSize: 23,
@@ -285,7 +322,7 @@ class _landingpageState extends State<landingpage> {
                             "Humidity", //TODO: insert function to get humidity
                             style: GoogleFonts.quantico(
                               textStyle: TextStyle(
-                                fontSize: 16,
+                                fontSize: 17,
                                 fontWeight: FontWeight.normal,
                                 fontStyle: FontStyle.normal,
                                 color: Colors.white,
@@ -310,7 +347,7 @@ class _landingpageState extends State<landingpage> {
                             color: Colors.white,
                           ),
                           Text(
-                            "15 KMH", //TODO: insert function to get wind speed
+                            "${windspeed.round()} KMH", //TODO: insert function to get wind speed
                             style: GoogleFonts.sansita(
                               textStyle: TextStyle(
                                 fontSize: 23,
@@ -324,7 +361,7 @@ class _landingpageState extends State<landingpage> {
                             "Wind speed",
                             style: GoogleFonts.quantico(
                               textStyle: TextStyle(
-                                fontSize: 16,
+                                fontSize: 17,
                                 fontWeight: FontWeight.normal,
                                 fontStyle: FontStyle.normal,
                                 color: Colors.white,
@@ -387,7 +424,7 @@ class _landingpageState extends State<landingpage> {
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: Size(150, 45),
                                   backgroundColor:
-                                  Color.fromRGBO(35, 22, 81, 1.0),
+                                      Color.fromRGBO(35, 22, 81, 1.0),
                                   //TODO: insert function to update color
                                 ),
 
@@ -395,14 +432,13 @@ class _landingpageState extends State<landingpage> {
                                   "Hourly",
                                   style: GoogleFonts.quantico(
                                     textStyle: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 23,
                                       fontWeight: FontWeight.bold,
                                       fontStyle: FontStyle.normal,
                                       color: Colors.white,
                                     ),
                                   ),
                                 ),
-
                                 onPressed: () {
                                   //TODO: insert functionaly to change to hourly format
                                 },
@@ -414,14 +450,14 @@ class _landingpageState extends State<landingpage> {
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: Size(150, 45),
                                   backgroundColor:
-                                  Color.fromRGBO(77, 204, 189, 1.0),
+                                      Color.fromRGBO(77, 204, 189, 1.0),
                                 ),
 
                                 child: Text(
                                   "Daily",
                                   style: GoogleFonts.quantico(
                                     textStyle: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 23,
                                       fontWeight: FontWeight.bold,
                                       fontStyle: FontStyle.normal,
                                       color: Color.fromRGBO(35, 22, 81, 1.0),
@@ -479,9 +515,9 @@ class _landingpageState extends State<landingpage> {
                                     child: Row(
                                       //Alignment in inner row
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
 
                                       //3 widget children
                                       children: [
@@ -554,9 +590,9 @@ class _landingpageState extends State<landingpage> {
                                     child: Row(
                                       //Alignment in inner row
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
 
                                       //3 widget children
                                       children: [
@@ -581,7 +617,8 @@ class _landingpageState extends State<landingpage> {
                                           ),
                                         ),
                                         Icon(
-                                          WeatherIcons.wi_day_rain, //Maybe use icon package
+                                          WeatherIcons
+                                              .wi_day_rain, //Maybe use icon package
                                           //TODO: insert function to get appropiate weather condition icon
                                           size: 35,
                                           color: Colors.white,
@@ -629,9 +666,9 @@ class _landingpageState extends State<landingpage> {
                                     child: Row(
                                       //Alignment in inner row
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
 
                                       //3 widget children
                                       children: [
@@ -656,7 +693,8 @@ class _landingpageState extends State<landingpage> {
                                           ),
                                         ),
                                         Icon(
-                                          WeatherIcons.wi_day_snow, //Maybe use icon package
+                                          WeatherIcons
+                                              .wi_day_snow, //Maybe use icon package
                                           //TODO: insert function to get appropiate weather condition icon
                                           size: 35,
                                           color: Colors.white,
