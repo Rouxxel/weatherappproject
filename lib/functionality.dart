@@ -104,7 +104,6 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
     // Use latitude and longitude to build the URL
     url =
     'https://api.openweathermap.org/data/2.5/weather?lat=${latlon[0]}&lon=${latlon[1]}&exclude=minutely,alerts&appid=$OWeatherapikey';
-
   } else {
     // If neither is provided, throw an error
     throw ArgumentError(
@@ -124,7 +123,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       // Parse response if response is successful
       Map<String, dynamic> APIdata = conv.jsonDecode(response.body);
 
-      // Extract and store weather data
+      // Extract and store CURRENT weather data
       //Temperature
       double Ktemperature = APIdata['main']['temp'];
       double Ftemperature = (Ktemperature - 273.15) * 9 / 5 + 32;
@@ -168,8 +167,8 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       double uvindex =
       APIdata.containsKey('uvi') ? APIdata['uvi'].toDouble() : 0.0;
 
-      // Add extracted data to the map
-      currentweatherdata = {
+      // Add extracted data to the CURRENT section of the map
+      currentweatherdata["current"] = {
         'Ktemp': Ktemperature,
         'Ftemp': Ftemperature,
         'Ctemp': Ctemperature,
@@ -190,28 +189,28 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       };
 
       //TODO: delete all prints once finished with the function
-      print("Kelvin K: ${currentweatherdata["Ktemp"]}");
-      print("Fahrenheit F: ${currentweatherdata["Ftemp"]}");
-      print("Celsius C: ${currentweatherdata["Ctemp"]}");
+      print("Kelvin K: ${currentweatherdata["current"]["Ktemp"]}");
+      print("Fahrenheit F: ${currentweatherdata["current"]["Ftemp"]}");
+      print("Celsius C: ${currentweatherdata["current"]["Ctemp"]}");
 
-      print("Feels K: ${currentweatherdata["Ktempfeel"]}");
-      print("Feels F: ${currentweatherdata["Ftempfeel"]}");
-      print("Feels C: ${currentweatherdata["Ctempfeel"]}");
+      print("Feels K: ${currentweatherdata["current"]["Ktempfeel"]}");
+      print("Feels F: ${currentweatherdata["current"]["Ftempfeel"]}");
+      print("Feels C: ${currentweatherdata["current"]["Ctempfeel"]}");
 
-      print("Weather condition: ${currentweatherdata["weathercond"]}");
-      print("Pressure in hPa: ${currentweatherdata["pressHPA"]}");
-      print("Pressure in mb: ${currentweatherdata["pressMB"]}");
-      print("Clouds in %: ${currentweatherdata["clouds"]}");
+      print("Weather condition: ${currentweatherdata["current"]["weathercond"]}");
+      print("Pressure in hPa: ${currentweatherdata["current"]["pressHPA"]}");
+      print("Pressure in mb: ${currentweatherdata["current"]["pressMB"]}");
+      print("Clouds in %: ${currentweatherdata["current"]["clouds"]}");
 
-      print("MPH: ${currentweatherdata["MPHwind"]}");
-      print("KPH: ${currentweatherdata["KPHwind"]}");
-      print("Wind direction in degree: ${currentweatherdata["winddir"]}");
+      print("MPH: ${currentweatherdata["current"]["MPHwind"]}");
+      print("KPH: ${currentweatherdata["current"]["KPHwind"]}");
+      print("Wind direction in degree: ${currentweatherdata["current"]["winddir"]}");
 
-      print("Humidity in %: ${currentweatherdata["humid"]}");
-      print("Precipitation in MM: ${currentweatherdata["precipiMM"]}");
-      print("Precipitation in IN: ${currentweatherdata["precipiIN"]}");
+      print("Humidity in %: ${currentweatherdata["current"]["humid"]}");
+      print("Precipitation in MM: ${currentweatherdata["current"]["precipiMM"]}");
+      print("Precipitation in IN: ${currentweatherdata["current"]["precipiIN"]}");
 
-      print("UV index: ${currentweatherdata["uvi"]}");
+      print("UV index: ${currentweatherdata["current"]["uvi"]}");
 
     } else {
       // Display API error dialog
@@ -229,7 +228,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
   return currentweatherdata;
 }
 
-//Obtain city and country
+//Obtain city and country TODO: add get data based on city name
 Future<String> getcitycountry(BuildContext context, List<double> latlon) async {
   // Build the URL for the reverse geocoding API call
   String url =
@@ -286,15 +285,15 @@ Map<String,dynamic> getdatetimedata(BuildContext context){
   DateTime datenowextracteddata = DateTime.now();
 
   // Define weekdays and months
-  List<String> weekdays = ['','Sunday', 'Monday', 'Tuesday', 'Wednesday',
-    'Thursday', 'Friday', 'Saturday'];
+  List<String> weekdays = ['','Monday', 'Tuesday', 'Wednesday',
+    'Thursday', 'Friday', 'Saturday','Sunday'];
   List<String> months = ['','January', 'February', 'March', 'April', 'May',
     'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   //Extract data components
   int daynum = datenowextracteddata.day;
-  String weekdaystr = weekdays[datenowextracteddata.weekday + 1];
-  int monthnum = datenowextracteddata.month;
+  String weekdaystr = weekdays[datenowextracteddata.weekday]; //From 1 to 7
+  int monthnum = datenowextracteddata.month; //From 1 to 12
   String monthstr= months[monthnum];
   int hour = datenowextracteddata.hour;
   int minutes = datenowextracteddata.minute;
@@ -319,6 +318,16 @@ Map<String,dynamic> getdatetimedata(BuildContext context){
     'minutes':minutes,
     'year':year,
   };
+
+  //Add the next six days' weekday names
+  for (int i = 1; i <= 6; i++) {
+    int futureweekday = (datenowextracteddata.weekday + i) % 7; //Go from the next day onwards
+
+    futureweekday = futureweekday == 0 ? 7 : futureweekday; //Adjust for Sunday
+
+    datetime['weekdaystr${i + 1}'] = weekdays[futureweekday];//Insert future week day
+    //Format: 'weekday2':weekdays[futureweekday],
+  }
 
   return datetime;
 }

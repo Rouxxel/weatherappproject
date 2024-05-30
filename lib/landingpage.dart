@@ -28,6 +28,14 @@ double precipitation = 0.0;
 int humidity = 0;
 double windspeed = 0.0;
 
+//Bottom container in List view
+//Daily
+String today="day";
+String day2="day";
+String day3="day";
+
+//Hourly
+
 //global variables
 /////////////////////////////////////////////////////////////////////////////
 //functions-method
@@ -121,11 +129,16 @@ class _landingpageState extends State<landingpage> {
                           "${dateinfo["minutes"]}";
 
                       //Weather information
-                      centraltempnum=weatherinfo["Ctemp"].toInt();
-                      subtxtwcondition=weatherinfo["weathercond"];
-                      precipitation=weatherinfo["precipiMM"];
-                      humidity=weatherinfo["humid"];
-                      windspeed=weatherinfo["KPHwind"];
+                      centraltempnum=weatherinfo["current"]["Ctemp"].toInt();
+                      subtxtwcondition=weatherinfo["current"]["weathercond"];
+                      precipitation=weatherinfo["current"]["precipiMM"];
+                      humidity=weatherinfo["current"]["humid"];
+                      windspeed=weatherinfo["current"]["KPHwind"];
+
+                      //Daily information
+                      today=dateinfo["weekdaystr"];
+                      day2=dateinfo["weekdaystr2"];
+                      day3=dateinfo["weekdaystr3"];
                     });
                   },
 
@@ -528,7 +541,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "Today",
+                                              "$today",
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -603,7 +616,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "Mon", //TODO: insert function to get next day here
+                                              "$day2", //TODO: insert function to get next day here
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -679,7 +692,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "Tues", //TODO: insert function to get next-next day here
+                                              "$day3", //TODO: insert function to get next-next day here
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
