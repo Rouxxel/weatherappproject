@@ -18,10 +18,10 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 //global variables
 
 //Top most container in listview
-String devicecitycountry = "city, country";
+String devicecitycountry = "City, Country";
 String datetime="Day x, Month x:xx ym";
 int centraltempnum = 0;
-String subtxtwcondition = "Double tap here";
+String subtxtwcondition = "Double tap big zero";
 
 //Middle container in listview
 double precipitation = 0.0;
@@ -30,11 +30,16 @@ double windspeed = 0.0;
 
 //Bottom container in List view
 //Daily
-String today="day";
-String day2="day";
-String day3="day";
+List<String>days=["day","day","day",
+  "day","day","day","day",];
+List<List<int>>maxmintemps=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],];
 
 //Hourly
+List<int> hours=[0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+List<int> temphours=[0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
 
 //global variables
 /////////////////////////////////////////////////////////////////////////////
@@ -104,16 +109,16 @@ class _landingpageState extends State<landingpage> {
                     //Declare and obtain list with latitude and longitude
                     List<double> latlon = await getgpslocation(context);
 
-                    //Declare and obtain list with all weather information
-                    Map<String, dynamic> weatherinfo= await
-                      getCURRENTweatherdata(context: context,latlon: latlon);
-
                     //Declare and obtain string of city and country
                     String devicelocation = await getcitycountry(context, latlon);
 
                     //Declare and obtain string of date and time
                     Map<String,dynamic>dateinfo= await
                       getdatetimedata(context);
+
+                    // Declare and obtain list with all weather information
+                    Map<String, dynamic> weatherinfo = await
+                      getCURRENTweatherdata(context: context, latlon: latlon);
 
                     //TODO: implement function to get date and time in format
 
@@ -129,19 +134,50 @@ class _landingpageState extends State<landingpage> {
                           "${dateinfo["minutes"]}";
 
                       //Weather information
-                      centraltempnum=weatherinfo["current"]["Ctemp"].toInt();
-                      subtxtwcondition=weatherinfo["current"]["weathercond"];
-                      precipitation=weatherinfo["current"]["precipiMM"];
-                      humidity=weatherinfo["current"]["humid"];
-                      windspeed=weatherinfo["current"]["KPHwind"];
+                      centraltempnum=weatherinfo["Ctemp"].round();
+                      subtxtwcondition=weatherinfo["weathercond"];
+                      precipitation=weatherinfo["precipiMM"];
+                      humidity=weatherinfo["humid"];
+                      windspeed=weatherinfo["KPHwind"];
 
                       //Daily information
-                      today=dateinfo["weekdaystr"];
-                      day2=dateinfo["weekdaystr2"];
-                      day3=dateinfo["weekdaystr3"];
+                      days[0]=dateinfo["weekdaystr"];
+                      days[1]=dateinfo["weekdaystr2"];
+                      days[2]=dateinfo["weekdaystr3"];
+                      days[3]=dateinfo["weekdaystr4"];
+                      days[4]=dateinfo["weekdaystr5"];
+                      days[5]=dateinfo["weekdaystr6"];
+                      days[6]=dateinfo["weekdaystr7"];
+
+                      //Hourly information
+                      hours[0]=dateinfo["hour"];
+                      hours[1]=dateinfo["hour2"];
+                      hours[2]=dateinfo["hour3"];
+                      hours[3]=dateinfo["hour4"];
+                      hours[4]=dateinfo["hour5"];
+                      hours[5]=dateinfo["hour6"];
+                      hours[6]=dateinfo["hour7"];
+                      hours[7]=dateinfo["hour8"];
+                      hours[8]=dateinfo["hour9"];
+                      hours[9]=dateinfo["hour10"];
+                      hours[10]=dateinfo["hour11"];
+                      hours[11]=dateinfo["hour12"];
+                      hours[12]=dateinfo["hour13"];
+                      hours[13]=dateinfo["hour14"];
+                      hours[14]=dateinfo["hour15"];
+                      hours[15]=dateinfo["hour16"];
+                      hours[16]=dateinfo["hour17"];
+                      hours[17]=dateinfo["hour18"];
+                      hours[18]=dateinfo["hour19"];
+                      hours[19]=dateinfo["hour20"];
+                      hours[20]=dateinfo["hour21"];
+                      hours[21]=dateinfo["hour22"];
+                      hours[22]=dateinfo["hour23"];
+
                     });
                   },
 
+                  //Top Container
                   child: Container(
                     //color: Colors.brown,
                     height: 240,
@@ -247,7 +283,7 @@ class _landingpageState extends State<landingpage> {
 
                 //Sized box for spacing
                 SizedBox(
-                  height: 20,
+                  height: 51,
                 ),
 
                 //Middle container (Least height and max width)
@@ -502,13 +538,10 @@ class _landingpageState extends State<landingpage> {
 
                             //Insert list of results (maybe a list view)
                             //TODO: Decide if show only 3 days or full week
-                            child: Column(
-                              //Alignment in the inner column
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-
+                            child: ListView(
                               //Children
                               children: [
+
                                 //Today container
                                 Container(
                                   //Round up container's edge
@@ -541,7 +574,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "$today",
+                                              "${days[0]}",
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -567,7 +600,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "23\u00B0 - 22\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[0][0]}\u00B0 - ${maxmintemps[0][1]}\u00B0", //TODO: insert function to get temp here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -584,7 +617,13 @@ class _landingpageState extends State<landingpage> {
                                     ),
                                   ),
                                 ),
-                                //Next day container
+
+                                //Sized box for spacing
+                                SizedBox(
+                                  height: 9,
+                                ),
+
+                                //day2 container
                                 Container(
                                   //Round up container's edge
                                   decoration: BoxDecoration(
@@ -616,7 +655,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "$day2", //TODO: insert function to get next day here
+                                              "${days[1]}", //TODO: insert function to get next day here
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -643,7 +682,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "14\u00B0 - 25\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[1][0]}\u00B0 - ${maxmintemps[1][1]}\u00B0", //TODO: insert function to get temp here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -660,7 +699,13 @@ class _landingpageState extends State<landingpage> {
                                     ),
                                   ),
                                 ),
-                                //Next-next day container
+
+                                //Sized box for spacing
+                                SizedBox(
+                                  height: 9,
+                                ),
+
+                                //day3 container
                                 Container(
                                   //Round up container's edge
                                   decoration: BoxDecoration(
@@ -692,7 +737,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "$day3", //TODO: insert function to get next-next day here
+                                              "${days[2]}", //TODO: insert function to get next-next day here
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -719,7 +764,334 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "13\u00B0 - 18\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[2][0]}\u00B0 - ${maxmintemps[2][1]}\u00B0", //TODO: insert function to get temp here,
+                                              style: GoogleFonts.sansita(
+                                                textStyle: TextStyle(
+                                                  fontSize: 23,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.normal,
+                                                  color: Color.fromRGBO(
+                                                      35, 22, 81, 1.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                //Sized box for spacing
+                                SizedBox(
+                                  height: 9,
+                                ),
+
+                                //day4 container
+                                Container(
+                                  //Round up container's edge
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Color.fromRGBO(77, 204, 189, 0.7),
+                                  ),
+                                  width: double.infinity,
+                                  height: 50,
+
+                                  //Pad all sides evenly
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 15),
+
+                                    //Use row to organizer 3 widgets
+                                    child: Row(
+                                      //Alignment in inner row
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+
+                                      //3 widget children
+                                      children: [
+                                        Container(
+                                          //color: Colors.teal,
+                                          width: 130,
+                                          height: double.infinity,
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "${days[3]}", //TODO: insert function to get next-next day here
+                                              style: GoogleFonts.quantico(
+                                                textStyle: TextStyle(
+                                                  fontSize: 23,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.normal,
+                                                  color: Color.fromRGBO(
+                                                      35, 22, 81, 1.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          WeatherIcons
+                                              .wi_day_snow, //Maybe use icon package
+                                          //TODO: insert function to get appropiate weather condition icon
+                                          size: 35,
+                                          color: Colors.white,
+                                        ),
+                                        Container(
+                                          //color: Colors.teal,
+                                          width: 130,
+                                          height: double.infinity,
+
+                                          child: Center(
+                                            child: Text(
+                                              "${maxmintemps[3][0]}\u00B0 - ${maxmintemps[3][1]}\u00B0", //TODO: insert function to get temp here,
+                                              style: GoogleFonts.sansita(
+                                                textStyle: TextStyle(
+                                                  fontSize: 23,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.normal,
+                                                  color: Color.fromRGBO(
+                                                      35, 22, 81, 1.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                //Sized box for spacing
+                                SizedBox(
+                                  height: 9,
+                                ),
+
+                                //day5 container
+                                Container(
+                                  //Round up container's edge
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Color.fromRGBO(77, 204, 189, 0.7),
+                                  ),
+                                  width: double.infinity,
+                                  height: 50,
+
+                                  //Pad all sides evenly
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 15),
+
+                                    //Use row to organizer 3 widgets
+                                    child: Row(
+                                      //Alignment in inner row
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+
+                                      //3 widget children
+                                      children: [
+                                        Container(
+                                          //color: Colors.teal,
+                                          width: 130,
+                                          height: double.infinity,
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "${days[4]}", //TODO: insert function to get next-next day here
+                                              style: GoogleFonts.quantico(
+                                                textStyle: TextStyle(
+                                                  fontSize: 23,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.normal,
+                                                  color: Color.fromRGBO(
+                                                      35, 22, 81, 1.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          WeatherIcons
+                                              .wi_day_snow, //Maybe use icon package
+                                          //TODO: insert function to get appropiate weather condition icon
+                                          size: 35,
+                                          color: Colors.white,
+                                        ),
+                                        Container(
+                                          //color: Colors.teal,
+                                          width: 130,
+                                          height: double.infinity,
+
+                                          child: Center(
+                                            child: Text(
+                                              "${maxmintemps[4][0]}\u00B0 - ${maxmintemps[4][1]}\u00B0", //TODO: insert function to get temp here,
+                                              style: GoogleFonts.sansita(
+                                                textStyle: TextStyle(
+                                                  fontSize: 23,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.normal,
+                                                  color: Color.fromRGBO(
+                                                      35, 22, 81, 1.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                //Sized box for spacing
+                                SizedBox(
+                                  height: 9,
+                                ),
+
+                                //day6 container
+                                Container(
+                                  //Round up container's edge
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Color.fromRGBO(77, 204, 189, 0.7),
+                                  ),
+                                  width: double.infinity,
+                                  height: 50,
+
+                                  //Pad all sides evenly
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 15),
+
+                                    //Use row to organizer 3 widgets
+                                    child: Row(
+                                      //Alignment in inner row
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+
+                                      //3 widget children
+                                      children: [
+                                        Container(
+                                          //color: Colors.teal,
+                                          width: 130,
+                                          height: double.infinity,
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "${days[5]}", //TODO: insert function to get next-next day here
+                                              style: GoogleFonts.quantico(
+                                                textStyle: TextStyle(
+                                                  fontSize: 23,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.normal,
+                                                  color: Color.fromRGBO(
+                                                      35, 22, 81, 1.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          WeatherIcons
+                                              .wi_day_snow, //Maybe use icon package
+                                          //TODO: insert function to get appropiate weather condition icon
+                                          size: 35,
+                                          color: Colors.white,
+                                        ),
+                                        Container(
+                                          //color: Colors.teal,
+                                          width: 130,
+                                          height: double.infinity,
+
+                                          child: Center(
+                                            child: Text(
+                                              "${maxmintemps[5][0]}\u00B0 - ${maxmintemps[5][1]}\u00B0", //TODO: insert function to get temp here,
+                                              style: GoogleFonts.sansita(
+                                                textStyle: TextStyle(
+                                                  fontSize: 23,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.normal,
+                                                  color: Color.fromRGBO(
+                                                      35, 22, 81, 1.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                //Sized box for spacing
+                                SizedBox(
+                                  height: 9,
+                                ),
+
+                                //day7 container
+                                Container(
+                                  //Round up container's edge
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Color.fromRGBO(77, 204, 189, 0.7),
+                                  ),
+                                  width: double.infinity,
+                                  height: 50,
+
+                                  //Pad all sides evenly
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 15),
+
+                                    //Use row to organizer 3 widgets
+                                    child: Row(
+                                      //Alignment in inner row
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+
+                                      //3 widget children
+                                      children: [
+                                        Container(
+                                          //color: Colors.teal,
+                                          width: 130,
+                                          height: double.infinity,
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "${days[6]}", //TODO: insert function to get next-next day here
+                                              style: GoogleFonts.quantico(
+                                                textStyle: TextStyle(
+                                                  fontSize: 23,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontStyle: FontStyle.normal,
+                                                  color: Color.fromRGBO(
+                                                      35, 22, 81, 1.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          WeatherIcons
+                                              .wi_day_snow, //Maybe use icon package
+                                          //TODO: insert function to get appropiate weather condition icon
+                                          size: 35,
+                                          color: Colors.white,
+                                        ),
+                                        Container(
+                                          //color: Colors.teal,
+                                          width: 130,
+                                          height: double.infinity,
+
+                                          child: Center(
+                                            child: Text(
+                                              "${maxmintemps[6][0]}\u00B0 - ${maxmintemps[6][1]}\u00B0", //TODO: insert function to get temp here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,

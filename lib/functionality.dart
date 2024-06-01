@@ -65,6 +65,7 @@ Future<List<double>> getgpslocation(BuildContext context) async {
       //Assign the latitude and longitude to the list
       coordinates = [position.latitude, position.longitude];
 
+      //TODO: delete print after function is not going to be modified
       print("Latitude and Longitude: $coordinates");
     } else {
       //Handle access denied situation
@@ -83,7 +84,7 @@ Future<List<double>> getgpslocation(BuildContext context) async {
 //
 
 //API and data extraction
-//Get current weather data by either latitude and longitude or city name
+// Get current weather data by either latitude and longitude or city name
 Future<Map<String, dynamic>> getCURRENTweatherdata({
   required BuildContext context,
   String? cityname,
@@ -99,7 +100,6 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
     // Use city name to build the URL
     url =
     'https://api.openweathermap.org/data/2.5/weather?q=$cityname&exclude=minutely,alerts&appid=$OWeatherapikey';
-
   } else if (latlon != null) {
     // Use latitude and longitude to build the URL
     url =
@@ -124,94 +124,155 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       Map<String, dynamic> APIdata = conv.jsonDecode(response.body);
 
       // Extract and store CURRENT weather data
-      //Temperature
-      double Ktemperature = APIdata['main']['temp'];
+      // Temperature
+      double Ktemperature = (APIdata['main']['temp'] as num).toDouble();
       double Ftemperature = (Ktemperature - 273.15) * 9 / 5 + 32;
       double Ctemperature = Ktemperature - 273.15;
 
-      //Feels like temperature
-      double Kfeelslike = APIdata['main']['feels_like'];
+      // Feels like temperature
+      double Kfeelslike = (APIdata['main']['feels_like'] as num).toDouble();
       double Ffeelslike = (Kfeelslike - 273.15) * 9 / 5 + 32;
       double Cfeelslike = Kfeelslike - 273.15;
 
-      //Weather condition
+      // Extract and convert temp_min and temp_max
+      double Ktempmin = (APIdata['main']['temp_min'] as num).toDouble();
+      double Ftempmin = (Ktempmin - 273.15) * 9 / 5 + 32;
+      double Ctempmin = Ktempmin - 273.15;
+
+      double Ktempmax = (APIdata['main']['temp_max'] as num).toDouble();
+      double Ftempmax = (Ktempmax - 273.15) * 9 / 5 + 32;
+      double Ctempmax = Ktempmax - 273.15;
+
+      // Weather condition
       String wcondition = APIdata['weather'][0]['description'];
-      double HPApressure = APIdata['main']['pressure'].toDouble();
-      double MBpressure = HPApressure / 100.0;;
+      double HPApressure = (APIdata['main']['pressure'] as num).toDouble();
+      double MBpressure = HPApressure / 100.0;
+
       int cloudcoverage =
-      APIdata.containsKey('clouds') ? APIdata['clouds']['all'] : 0;
+        APIdata.containsKey('clouds') ? APIdata['clouds']['all'] : 0;
 
-      //Wind information
-      double MPHwindspeed = APIdata['wind']['speed'].toDouble();
+      // Wind information
+      double MPHwindspeed = (APIdata['wind']['speed'] as num).toDouble();
       double KPHwindspeed = MPHwindspeed * 1.60934;
-      int winddirection = APIdata['wind']['deg'].toInt();
+      int winddirection = APIdata['wind']['deg'];
+      double? windgustMPH = APIdata['wind'].containsKey('gust')
+          ? (APIdata['wind']['gust'] as num).toDouble()
+          : 0.0;
+      double? windgustKPH = windgustMPH != 0.0 ? windgustMPH * 1.60934 : 0.0;
 
-      //Water related things
+      // Water related things
       int humidity = APIdata['main']['humidity'];
 
-      //Precipitation is a real pain in the spine
+      // Precipitation
       double MMprecipitation = 0.0;
-
-      // Check if there's rain data
+      // Check if there's precipitation data
       if (APIdata.containsKey('rain') && APIdata['rain'].containsKey('1h')) {
-        MMprecipitation = APIdata['rain']['1h'].toDouble();
+        MMprecipitation += (APIdata['rain']['1h'] as num).toDouble();
       }
-      // Check if there's snow data (and add it to the rain data if both are present)
+      // Check if there's snow data and add it to precipitation
       if (APIdata.containsKey('snow') && APIdata['snow'].containsKey('1h')) {
-        MMprecipitation =  MMprecipitation + APIdata['snow']['1h'].toDouble();
+        MMprecipitation += (APIdata['snow']['1h'] as num).toDouble();
       }
+      double INprecipitation =
+          MMprecipitation * 0.0393701; // 1 mm = 0.0393701 inches
 
-      double INprecipitation = MMprecipitation * 0.0393701; // 1 mm = 0.0393701 inches
+      // UV index
+      double uvindex = APIdata.containsKey('uvi') ?
+        (APIdata['uvi'] as num).toDouble() : 0.0;
 
-      //UV index
-      double uvindex =
-      APIdata.containsKey('uvi') ? APIdata['uvi'].toDouble() : 0.0;
+      // Extract sunrise and sunset timestamps and convert to hour and minute
+      //Extract int of both
+      int sunriseTimestamp = APIdata['sys']['sunrise'];
+      int sunsetTimestamp = APIdata['sys']['sunset'];
+
+      //Convert to DateTime format
+      DateTime sunriseTime = DateTime.fromMillisecondsSinceEpoch(sunriseTimestamp * 1000, isUtc: true);
+      DateTime sunsetTime = DateTime.fromMillisecondsSinceEpoch(sunsetTimestamp * 1000, isUtc: true);
+
+      //Convert to string
+      String sunriseHrMin = '${sunriseTime.hour}:${sunriseTime.minute}';
+      String sunsetHrMin = '${sunsetTime.hour}:${sunsetTime.minute}';
 
       // Add extracted data to the CURRENT section of the map
-      currentweatherdata["current"] = {
+      currentweatherdata = {
         'Ktemp': Ktemperature,
         'Ftemp': Ftemperature,
         'Ctemp': Ctemperature,
-        'Ktempfeel':Kfeelslike,
-        'Ftempfeel':Ffeelslike,
-        'Ctempfeel':Cfeelslike,
+        //
+        'Ktempfeel': Kfeelslike,
+        'Ftempfeel': Ffeelslike,
+        'Ctempfeel': Cfeelslike,
+        //
+        'Ktempmin': Ktempmin,
+        'Ktempmax': Ktempmax,
+        'Ftempmin': Ftempmin,
+        'Ftempmax': Ftempmax,
+        'Ctempmin': Ctempmin,
+        'Ctempmax': Ctempmax,
+        //
         'weathercond': wcondition,
+        //
         'MPHwind': MPHwindspeed,
         'KPHwind': KPHwindspeed,
-        'winddir' : winddirection,
+        'winddir': winddirection,
+        'MPHwindg': windgustMPH,
+        'KPHwindg': windgustKPH,
+        //
         'humid': humidity,
-        'pressHPA': HPApressure,
-        'pressMB' : MBpressure,
-        'clouds': cloudcoverage,
         'precipiMM': MMprecipitation,
-        'precipiIN':INprecipitation,
-        'uvi' : uvindex,
+        'precipiIN': INprecipitation,
+        //
+        'pressHPA': HPApressure,
+        'pressMB': MBpressure,
+        //
+        'clouds': cloudcoverage,
+        'uvi': uvindex,
+        //
+        'sunrisetime':sunriseHrMin,
+        'sunsettime':sunsetHrMin,
       };
 
-      //TODO: delete all prints once finished with the function
-      print("Kelvin K: ${currentweatherdata["current"]["Ktemp"]}");
-      print("Fahrenheit F: ${currentweatherdata["current"]["Ftemp"]}");
-      print("Celsius C: ${currentweatherdata["current"]["Ctemp"]}");
+      print('API Response: ${response.body}');
 
-      print("Feels K: ${currentweatherdata["current"]["Ktempfeel"]}");
-      print("Feels F: ${currentweatherdata["current"]["Ftempfeel"]}");
-      print("Feels C: ${currentweatherdata["current"]["Ctempfeel"]}");
+      // TODO: delete all prints once finished with the function
+      print("Kelvin K: ${currentweatherdata["Ktemp"]}");
+      print("Fahrenheit F: ${currentweatherdata["Ftemp"]}");
+      print("Celsius C: ${currentweatherdata["Ctemp"]}");
 
-      print("Weather condition: ${currentweatherdata["current"]["weathercond"]}");
-      print("Pressure in hPa: ${currentweatherdata["current"]["pressHPA"]}");
-      print("Pressure in mb: ${currentweatherdata["current"]["pressMB"]}");
-      print("Clouds in %: ${currentweatherdata["current"]["clouds"]}");
+      print("Feels K: ${currentweatherdata["Ktempfeel"]}");
+      print("Feels F: ${currentweatherdata["Ftempfeel"]}");
+      print("Feels C: ${currentweatherdata["Ctempfeel"]}");
 
-      print("MPH: ${currentweatherdata["current"]["MPHwind"]}");
-      print("KPH: ${currentweatherdata["current"]["KPHwind"]}");
-      print("Wind direction in degree: ${currentweatherdata["current"]["winddir"]}");
+      print("Min K: ${currentweatherdata["Ktempmin"]}");
+      print("Max K: ${currentweatherdata["Ktempmax"]}");
+      print("Min F: ${currentweatherdata["Ftempmin"]}");
+      print("Max F: ${currentweatherdata["Ftempmax"]}");
+      print("Min C: ${currentweatherdata["Ctempmin"]}");
+      print("Max C: ${currentweatherdata["Ctempmax"]}");
 
-      print("Humidity in %: ${currentweatherdata["current"]["humid"]}");
-      print("Precipitation in MM: ${currentweatherdata["current"]["precipiMM"]}");
-      print("Precipitation in IN: ${currentweatherdata["current"]["precipiIN"]}");
+      print(
+          "Weather condition: ${currentweatherdata["weathercond"]}");
+      print("Pressure in hPa: ${currentweatherdata["pressHPA"]}");
+      print("Pressure in mb: ${currentweatherdata["pressMB"]}");
+      print("Clouds in %: ${currentweatherdata["clouds"]}");
 
-      print("UV index: ${currentweatherdata["current"]["uvi"]}");
+      print("MPH: ${currentweatherdata["MPHwind"]}");
+      print("KPH: ${currentweatherdata["KPHwind"]}");
+      print(
+          "Wind direction in degree: ${currentweatherdata["winddir"]}");
+      print("MPH wind gust: ${currentweatherdata["MPHwindg"]}");
+      print("KPH wind gust: ${currentweatherdata["KPHwindg"]}");
 
+      print("Humidity in %: ${currentweatherdata["humid"]}");
+      print(
+          "Precipitation in MM: ${currentweatherdata["precipiMM"]}");
+      print(
+          "Precipitation in IN: ${currentweatherdata["precipiIN"]}");
+
+      print("UV index: ${currentweatherdata["uvi"]}");
+
+      print("Sunrise time: ${currentweatherdata["sunrisetime"]}");
+      print("Sunset time: ${currentweatherdata["sunsettime"]}");
     } else {
       // Display API error dialog
       showAPIerrordialog(context);
@@ -228,7 +289,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
   return currentweatherdata;
 }
 
-//Obtain city and country TODO: add get data based on city name
+//Obtain city and country
 Future<String> getcitycountry(BuildContext context, List<double> latlon) async {
   // Build the URL for the reverse geocoding API call
   String url =
@@ -252,6 +313,7 @@ Future<String> getcitycountry(BuildContext context, List<double> latlon) async {
 
         //Return the formatted city and country string
         return citycountry;
+
       } else {
         //Display location not found dialog
         showLOCATIONnotfounddialog(context);
@@ -277,7 +339,7 @@ Future<String> getcitycountry(BuildContext context, List<double> latlon) async {
 }
 
 //Obtain date and time
-Map<String,dynamic> getdatetimedata(BuildContext context){
+Map<String, dynamic> getdatetimedata(BuildContext context) {
   //Declare list of date and time data
   Map<String, dynamic> datetime = {};
 
@@ -285,48 +347,57 @@ Map<String,dynamic> getdatetimedata(BuildContext context){
   DateTime datenowextracteddata = DateTime.now();
 
   // Define weekdays and months
-  List<String> weekdays = ['','Monday', 'Tuesday', 'Wednesday',
-    'Thursday', 'Friday', 'Saturday','Sunday'];
-  List<String> months = ['','January', 'February', 'March', 'April', 'May',
+  List<String> weekdays = ['', 'Monday', 'Tuesday', 'Wednesday',
+    'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  List<String> months = ['', 'January', 'February', 'March', 'April', 'May',
     'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   //Extract data components
   int daynum = datenowextracteddata.day;
   String weekdaystr = weekdays[datenowextracteddata.weekday]; //From 1 to 7
   int monthnum = datenowextracteddata.month; //From 1 to 12
-  String monthstr= months[monthnum];
-  int hour = datenowextracteddata.hour;
-  int minutes = datenowextracteddata.minute;
-  int year = datenowextracteddata.year;
+  String monthstr = months[monthnum];
+  int currhour = datenowextracteddata.hour;
+  int currminutes = datenowextracteddata.minute;
+  int curryear = datenowextracteddata.year;
 
   //TODO: remove prints after finished with function
   print("Day number: $daynum");
   print("Weekday: $weekdaystr");
   print("Month number: $monthnum");
   print("Month: $monthstr");
-  print("Current hour: $hour");
-  print("Current minutes: $minutes");
-  print("Year number: $year");
+  print("Current hour: $currhour");
+  print("Current minutes: $currminutes");
+  print("Year number: $curryear");
 
   //Insert extracted data
   datetime = {
-    'daynum':daynum,
-    'weekdaystr':weekdaystr,
-    'monthnum':monthnum,
-    'monthstr':monthstr,
-    'hour':hour,
-    'minutes':minutes,
-    'year':year,
+    'daynum': daynum,
+    'weekdaystr': weekdaystr,
+    'monthnum': monthnum,
+    'monthstr': monthstr,
+    'hour': currhour,
+    'minutes': currminutes,
+    'year': curryear,
   };
 
   //Add the next six days' weekday names
   for (int i = 1; i <= 6; i++) {
-    int futureweekday = (datenowextracteddata.weekday + i) % 7; //Go from the next day onwards
+    int futureweekday =
+        (datenowextracteddata.weekday + i) % 7; //Go from the next day onwards
 
     futureweekday = futureweekday == 0 ? 7 : futureweekday; //Adjust for Sunday
 
-    datetime['weekdaystr${i + 1}'] = weekdays[futureweekday];//Insert future week day
-    //Format: 'weekday2':weekdays[futureweekday],
+    datetime['weekdaystr${i + 1}'] =
+        weekdays[futureweekday]; //Insert future week day
+    //Format= 'weekday2':weekdays[futureweekday], and so on
+  }
+
+  //Add the next 23 hours
+  for (int i = 1; i <= 23; i++) {
+    int futureHour = (currhour + i) % 24; // Calculate the future hour
+    datetime['hour${i + 1}'] = futureHour; // Insert future hour
+    //Format= 'hour2': futureHour, and so on
   }
 
   return datetime;
