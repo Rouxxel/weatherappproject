@@ -68,7 +68,7 @@ class _searchpageState extends State<searchpage> {
         //Pad column to maintain consistency
         body: Padding(
           //Pad horizontal part of of inner column
-          padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 16.0),
+          padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 16.0),
 
           //Central column
           child: Column(
@@ -146,9 +146,13 @@ class _searchpageState extends State<searchpage> {
                 ),
               ),
 
+              //Use size box for spacing
+              SizedBox(
+                height: 15,
+              ),
 
               //TODO: decide if to remove or solve overflow problem when phone is tilted and keyboard enabled
-              //"Suggestions" text
+              /*//"Suggestions" text
               Container(
                 //color: Colors.black,
                 height: 40,
@@ -172,7 +176,7 @@ class _searchpageState extends State<searchpage> {
                     ),
                   ),
                 ),
-              ),
+              ),*/
 
               //Container for list view of suggestions
               Expanded(
