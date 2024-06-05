@@ -48,7 +48,7 @@ dependencies:
   flutter_native_splash: ^2.4.0     #to style the splash screen when launching the app (possibly)
   google_fonts: ^6.2.1              #to directly use googlefonts instead of download-import
   icons_flutter: ^0.0.4             #to obtain a greater variety of icons
-  intl: ^0.17.0                     #to portray the date and time
+  intl: ^0.17.0                     #to get the date and time
 
 dev_dependencies:
   flutter_test:

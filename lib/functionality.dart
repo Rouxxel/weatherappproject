@@ -1,8 +1,10 @@
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart'; //For GPS function
 import 'package:http/http.dart' as http; //For http resources
 import 'dart:convert' as conv; //For JSON parsing
-import 'package:google_fonts/google_fonts.dart'; //For font import
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart'; //For font import
 
 //GPS information
 bool gpsaccess = false;
@@ -20,6 +22,8 @@ String OWeatherapikey = "809ed526e7c4e8e434c7f931a2e54742";
 //GPS related
 //Request GPS permission and get it if given (MUST BE EXECUTED FIRST)
 Future<void> getgpspermission(BuildContext context) async {
+  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
+  print("[------getgpspermission function executed------]");
   //Check if device has location active and prevent execution if disabled
   bool locationservice = await Geolocator.isLocationServiceEnabled();
   if (!locationservice) {
@@ -27,6 +31,7 @@ Future<void> getgpspermission(BuildContext context) async {
     showLOCATIONdisableddialog(context);
     gpsaccess = false;
 
+    print("GPS Location services are disabled");
     return Future.error("Location service is disabled");
   }
 
@@ -39,20 +44,24 @@ Future<void> getgpspermission(BuildContext context) async {
     if (permission == LocationPermission.denied) {
       // Handle denied permission
       gpsaccess = false;
+      print("GPS Permission denied");
       return Future.error("GPS permissions denied");
     }
   }
   if (permission == LocationPermission.deniedForever) {
     //Handle permanently denied permission
     gpsaccess = false;
+    print("GPS Permission denied permanently");
     return Future.error("GPS permissions permanently denied");
   }
-
+  print("GPS Permission granted");
   gpsaccess = true;
 }
 
 //Function to get GPS location and return as a list
 Future<List<double>> getgpslocation(BuildContext context) async {
+  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
+  print("[------getgpslocation function executed------]");
   //Create empty list for latitude and longitude
   List<double> coordinates = [];
   try {
@@ -64,9 +73,6 @@ Future<List<double>> getgpslocation(BuildContext context) async {
 
       //Assign the latitude and longitude to the list
       coordinates = [position.latitude, position.longitude];
-
-      //TODO: delete print after function is not going to be modified
-      print("Latitude and Longitude: $coordinates");
     } else {
       //Handle access denied situation
       showACCESStogpsdenieddialog(context);
@@ -77,6 +83,7 @@ Future<List<double>> getgpslocation(BuildContext context) async {
     print("Error getting location: $er");
   }
 
+  print("Latitude and Longitude from getgpslocation: $coordinates");
   //Return the list of coordinates
   return coordinates;
 }
@@ -87,9 +94,10 @@ Future<List<double>> getgpslocation(BuildContext context) async {
 // Get current weather data by either latitude and longitude or city name
 Future<Map<String, dynamic>> getCURRENTweatherdata({
   required BuildContext context,
-  String? cityname,
-  List<double>? latlon,
-}) async {
+  String? cityname, List<double>? latlon,}) async {
+  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
+  print("[------getCURRENTweatherdata function executed------]");
+
   // Determine the type of request
   String url;
 
@@ -97,9 +105,16 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
     // If both are provided, throw an error
     throw ArgumentError('Do not provide both latitude-longitude and city name');
   } else if (cityname != null) {
+    //Check cityname is valid (at least is not empty)
+    if (cityname.isEmpty){
+      showNOCITYORPOSTALCODEprovided(context);
+      throw Exception("--------User has entered an invalid city name--------");
+    }
+
     // Use city name to build the URL
     url =
     'https://api.openweathermap.org/data/2.5/weather?q=$cityname&exclude=minutely,alerts&appid=$OWeatherapikey';
+
   } else if (latlon != null) {
     // Use latitude and longitude to build the URL
     url =
@@ -110,7 +125,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
         'Either city name or both latitude and longitude must be provided.');
   }
 
-  // Map to store the extracted weather data
+  //Map to store the extracted weather data
   Map<String, dynamic> currentweatherdata = {};
 
   // Try to obtain API call from URL
@@ -122,6 +137,21 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
     if (response.statusCode == 200) {
       // Parse response if response is successful
       Map<String, dynamic> APIdata = conv.jsonDecode(response.body);
+
+      //Extract coordinates in case the input used is city name
+      // Extract longitude and latitude
+      List<double> coord = [APIdata['coord']['lat'], APIdata['coord']['lon']];
+
+      //Extract timezone
+      //Extract the timestamp and timezone offset from the response
+      int timestamp = APIdata['dt'];
+      int timezoneoffset = APIdata['timezone'];
+      //Convert the timestamp to a DateTime object
+      DateTime utctime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
+      //Apply the timezone offset to get the local time
+      DateTime localtime = utctime.add(Duration(seconds: timezoneoffset));
+      //Format the local time to a readable string
+      String formattedlocaltime = DateFormat('EEEE d, MMMM HH:mm').format(localtime);
 
       // Extract and store CURRENT weather data
       // Temperature
@@ -167,11 +197,11 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       double MMprecipitation = 0.0;
       // Check if there's precipitation data
       if (APIdata.containsKey('rain') && APIdata['rain'].containsKey('1h')) {
-        MMprecipitation += (APIdata['rain']['1h'] as num).toDouble();
+        MMprecipitation = MMprecipitation + (APIdata['rain']['1h'] as num).toDouble();
       }
       // Check if there's snow data and add it to precipitation
       if (APIdata.containsKey('snow') && APIdata['snow'].containsKey('1h')) {
-        MMprecipitation += (APIdata['snow']['1h'] as num).toDouble();
+        MMprecipitation = MMprecipitation + (APIdata['snow']['1h'] as num).toDouble();
       }
       double INprecipitation =
           MMprecipitation * 0.0393701; // 1 mm = 0.0393701 inches
@@ -184,17 +214,20 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       //Extract int of both
       int sunriseTimestamp = APIdata['sys']['sunrise'];
       int sunsetTimestamp = APIdata['sys']['sunset'];
-
       //Convert to DateTime format
       DateTime sunriseTime = DateTime.fromMillisecondsSinceEpoch(sunriseTimestamp * 1000, isUtc: true);
       DateTime sunsetTime = DateTime.fromMillisecondsSinceEpoch(sunsetTimestamp * 1000, isUtc: true);
-
       //Convert to string
-      String sunriseHrMin = '${sunriseTime.hour}:${sunriseTime.minute}';
-      String sunsetHrMin = '${sunsetTime.hour}:${sunsetTime.minute}';
+      String sunriseHrMin = '${sunriseTime.hour}:${sunriseTime.minute.toString().padLeft(2, '0')}';
+      String sunsetHrMin = '${sunsetTime.hour}:${sunsetTime.minute.toString().padLeft(2, '0')}';
 
       // Add extracted data to the CURRENT section of the map
       currentweatherdata = {
+        'coord': coord,
+        'utctime': utctime,
+        'localtime': localtime,
+        'formatdatetime': formattedlocaltime,
+        //
         'Ktemp': Ktemperature,
         'Ftemp': Ftemperature,
         'Ctemp': Ctemperature,
@@ -232,9 +265,16 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
         'sunsettime':sunsetHrMin,
       };
 
-      print('API Response: ${response.body}');
+      print('API getCURRENTweatherdata Response: ${response.body}');
+      print('Function getCURRENTweatherdata map return: ${currentweatherdata}');
 
-      // TODO: delete all prints once finished with the function
+      // TODO: delete all these prints once finished with the function
+      print("Latitude and longitude from getCURRENTweatherdata: ${currentweatherdata["coord"]}");
+
+      print("UTC time: ${currentweatherdata["utctime"]}");
+      print("Local time: ${currentweatherdata["localtime"]}");
+      print("Required format date and time: ${currentweatherdata["formatdatetime"]}");
+
       print("Kelvin K: ${currentweatherdata["Ktemp"]}");
       print("Fahrenheit F: ${currentweatherdata["Ftemp"]}");
       print("Celsius C: ${currentweatherdata["Ctemp"]}");
@@ -289,8 +329,67 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
   return currentweatherdata;
 }
 
+//Function to get current weather alerts by latitude and longitude
+Future<String> getCURRENTweatheralerts(
+    BuildContext context, List<double> latlon,) async {
+  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
+  print("[------getCURRENTweatheralerts function executed------]");
+
+  //Build the URL for the API call
+  final url = Uri.parse(
+      'https://api.openweathermap.org/data/3.0/onecall?lat=${latlon[0]}&lon=${latlon[1]}&exclude=current,minutely,hourly,daily&appid=$OWeatherapikey');
+
+  //Declare returning variable
+  String event="No alerts today!!!";
+
+  try{
+    //Make API call
+    final response = await http.get(url);
+    print("API getCURRENTweatheralerts response: "+response.body);
+
+    //Check if the response is successful
+    if (response.statusCode == 200) {
+
+      //Parse the response body if so
+      final APIdata = conv.jsonDecode(response.body);
+
+      //Extract wanted data
+      if (APIdata['alerts'] != null && (APIdata['alerts'] as List).isNotEmpty){
+        //Extract data
+        event = APIdata['alerts'][0]['event'];
+
+        print("Function String return: "+event);
+        return event;
+      } else {
+
+        //Handle case where no data is returned
+        print(event);
+        return event;
+      }
+    } else {
+      //Display API error
+      showAPIerrordialog(context);
+
+      //Handle API problem
+      throw Exception('Failed to load weather alerts');
+    }
+
+  } catch(er) {
+    //Display generic error
+    showGENERICerrordialog(context);
+
+    //Handle any other errors
+    print('Error: $er');
+    throw Exception('Generic error ocurred');
+  }
+}
+
 //Obtain city and country
-Future<String> getcitycountry(BuildContext context, List<double> latlon) async {
+Future<String> getcitycountry(
+    BuildContext context, List<double> latlon) async {
+  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
+  print("[------getcitycountry function executed------]");
+
   // Build the URL for the reverse geocoding API call
   String url =
       'http://api.openweathermap.org/geo/1.0/reverse?lat=${latlon[0]}&lon=${latlon[1]}&limit=1&appid=$OWeatherapikey';
@@ -302,14 +401,17 @@ Future<String> getcitycountry(BuildContext context, List<double> latlon) async {
     //Check if the response is successful
     if (response.statusCode == 200) {
       // Parse the response body
-      List<dynamic> responseData = conv.jsonDecode(response.body);
+      List<dynamic> APIdata = conv.jsonDecode(response.body);
 
       //Extract city and country from data in Json
-      if (responseData.isNotEmpty) {
-        String city = responseData[0]['name'];
-        String country = responseData[0]['country'];
+      if (APIdata.isNotEmpty) {
+        String city = APIdata[0]['name'];
+        String country = APIdata[0]['country'];
 
         String citycountry = "$city, $country";
+
+        print("API citycountry response: "+response.body);
+        print("Function citycountry string: $citycountry");
 
         //Return the formatted city and country string
         return citycountry;
@@ -340,13 +442,16 @@ Future<String> getcitycountry(BuildContext context, List<double> latlon) async {
 
 //Obtain date and time
 Map<String, dynamic> getdatetimedata(BuildContext context) {
+  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
+  print("[------getdatetimedata function executed------]");
+
   //Declare list of date and time data
   Map<String, dynamic> datetime = {};
 
   //Get current date and time
   DateTime datenowextracteddata = DateTime.now();
 
-  // Define weekdays and months
+  //Define weekdays and months
   List<String> weekdays = ['', 'Monday', 'Tuesday', 'Wednesday',
     'Thursday', 'Friday', 'Saturday', 'Sunday'];
   List<String> months = ['', 'January', 'February', 'March', 'April', 'May',
@@ -358,7 +463,7 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
   int monthnum = datenowextracteddata.month; //From 1 to 12
   String monthstr = months[monthnum];
   int currhour = datenowextracteddata.hour;
-  int currminutes = datenowextracteddata.minute;
+  String currminutes = datenowextracteddata.minute.toString().padLeft(2, '0'); // Pad minutes;
   int curryear = datenowextracteddata.year;
 
   //TODO: remove prints after finished with function
@@ -382,7 +487,7 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
   };
 
   //Add the next six days' weekday names
-  for (int i = 1; i <= 6; i++) {
+  for (int i = 1; i <= 6; i=i+1) {
     int futureweekday =
         (datenowextracteddata.weekday + i) % 7; //Go from the next day onwards
 
@@ -394,20 +499,23 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
   }
 
   //Add the next 23 hours
-  for (int i = 1; i <= 23; i++) {
+  for (int i = 1; i <= 23; i=i+1) {
     int futureHour = (currhour + i) % 24; // Calculate the future hour
     datetime['hour${i + 1}'] = futureHour; // Insert future hour
     //Format= 'hour2': futureHour, and so on
   }
+
+  print("Function gettimedate map return: $datetime");
 
   return datetime;
 }
 
 //
 
-//Data manipulation
+//Data manipulation and checking
 //To capitalize the first letter of the strings
 String capitalize(String input) {
+  print("------String capitalization executed------");
   if (input == null || input.isEmpty) {
     return input;
   }
@@ -417,6 +525,21 @@ String capitalize(String input) {
     }
     return word[0].toUpperCase() + word.substring(1).toLowerCase();
   }).join(' ');
+}
+
+//To check valid city (reserve for IT security)
+bool validateuserinput(String? cityname) {
+  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
+  print("[------validateuserinput function executed------]");
+
+  if (cityname == null || cityname.isEmpty) {
+    return false;
+  }
+
+  final validCharacters = RegExp(r'^[a-zA-Z\s\-]+$');
+  return cityname.length >= 2 &&
+      cityname.length <= 50 &&
+      validCharacters.hasMatch(cityname);
 }
 
 //
@@ -601,7 +724,7 @@ void showAPIerrordialog(BuildContext context) {
   );
 }
 
-// Function to generic error
+// Function to display generic error
 void showGENERICerrordialog(BuildContext context) {
   //Declare the buttons of alert
   Widget okbutton = TextButton(
@@ -660,7 +783,7 @@ void showGENERICerrordialog(BuildContext context) {
   );
 }
 
-// Function to generic error
+// Function to display location not found error
 void showLOCATIONnotfounddialog(BuildContext context) {
   //Declare the buttons of alert
   Widget okbutton = TextButton(
@@ -718,3 +841,125 @@ void showLOCATIONnotfounddialog(BuildContext context) {
     },
   );
 }
+
+// Function to display invalid cityname not found error
+void showINVALIDcityname(BuildContext context) {
+  //Declare the buttons of alert
+  Widget okbutton = TextButton(
+    child: Text(
+      "Ok",
+      style: GoogleFonts.quantico(
+        textStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Color.fromRGBO(77, 204, 189, 1.0),
+        ),
+      ),
+    ),
+    onPressed: () {
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+  );
+
+  //Set variables as the alert itself
+  var alert = AlertDialog(
+    backgroundColor: Color.fromRGBO(35, 22, 81, 1),
+    title: Text(
+      "Error: Invalid city name",
+      style: GoogleFonts.quantico(
+        textStyle: TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Color.fromRGBO(77, 204, 189, 1.0),
+        ),
+      ),
+    ),
+    content: Text(
+      "Entered city name is invalid, please enter a valid city name. "
+          "You can check in your built in Mapping app (Google maps or Apple maps)",
+      style: GoogleFonts.quantico(
+        textStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Colors.white,
+        ),
+      ),
+    ),
+    actions: [
+      okbutton,
+    ],
+  );
+
+  //Show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+//Function to display no cityname provided
+void showNOCITYORPOSTALCODEprovided(BuildContext context) {
+  //Declare the buttons of alert
+  Widget okbutton = TextButton(
+    child: Text(
+      "Ok",
+      style: GoogleFonts.quantico(
+        textStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Color.fromRGBO(77, 204, 189, 1.0),
+        ),
+      ),
+    ),
+    onPressed: () {
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+  );
+
+  //Set variables as the alert itself
+  var alert = AlertDialog(
+    backgroundColor: Color.fromRGBO(35, 22, 81, 1),
+    title: Text(
+      "Error: No city or Postal code provided",
+      style: GoogleFonts.quantico(
+        textStyle: TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Color.fromRGBO(77, 204, 189, 1.0),
+        ),
+      ),
+    ),
+    content: Text(
+      "No input has been provided, please provide a valid City name "
+          "or Postal Code before continuing",
+      style: GoogleFonts.quantico(
+        textStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Colors.white,
+        ),
+      ),
+    ),
+    actions: [
+      okbutton,
+    ],
+  );
+
+  //Show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+

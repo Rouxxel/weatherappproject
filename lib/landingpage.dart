@@ -18,9 +18,9 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 //global variables
 
 //Top most container in listview
-String devicecitycountry = "City, Country";
-String datetime="Day x, Month x:xx ym";
-int centraltempnum = 0;
+String devicecitycountry = "NaN, NaN";
+String datetime="NaN NaN, NaN NaN:NaN";
+double centraltempnum = 0;
 String subtxtwcondition = "Double tap big zero";
 
 //Middle container in listview
@@ -30,8 +30,8 @@ double windspeed = 0.0;
 
 //Bottom container in List view
 //Daily
-List<String>days=["day","day","day",
-  "day","day","day","day",];
+List<String>days=["NaN","NaN","NaN",
+  "NaN","NaN","NaN","NaN",];
 List<List<int>>maxmintemps=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],];
 
 //Hourly
@@ -103,14 +103,15 @@ class _landingpageState extends State<landingpage> {
 
               //Children of the listview
               children: [
-                //Top container (middle height)
+                //Top container (Gesture to trigger functions)
                 GestureDetector(
                   onDoubleTap: ()async{
                     //Declare and obtain list with latitude and longitude
                     List<double> latlon = await getgpslocation(context);
 
                     //Declare and obtain string of city and country
-                    String devicelocation = await getcitycountry(context, latlon);
+                    String devicelocation = await
+                      getcitycountry(context, latlon);
 
                     //Declare and obtain string of date and time
                     Map<String,dynamic>dateinfo= await
@@ -120,8 +121,7 @@ class _landingpageState extends State<landingpage> {
                     Map<String, dynamic> weatherinfo = await
                       getCURRENTweatherdata(context: context, latlon: latlon);
 
-                    //TODO: implement function to get date and time in format
-
+                    //Set state an all relevant variables
                     setState(() { //DO NOT USE ASYNC IN SET STATE
 
                       //Update relevant variables
@@ -134,46 +134,27 @@ class _landingpageState extends State<landingpage> {
                           "${dateinfo["minutes"]}";
 
                       //Weather information
-                      centraltempnum=weatherinfo["Ctemp"].round();
+                      centraltempnum=weatherinfo["Ctemp"];
                       subtxtwcondition=weatherinfo["weathercond"];
                       precipitation=weatherinfo["precipiMM"];
                       humidity=weatherinfo["humid"];
                       windspeed=weatherinfo["KPHwind"];
 
                       //Daily information
-                      days[0]=dateinfo["weekdaystr"];
-                      days[1]=dateinfo["weekdaystr2"];
-                      days[2]=dateinfo["weekdaystr3"];
-                      days[3]=dateinfo["weekdaystr4"];
-                      days[4]=dateinfo["weekdaystr5"];
-                      days[5]=dateinfo["weekdaystr6"];
-                      days[6]=dateinfo["weekdaystr7"];
+                      //Using a for loop to assign values
+                      for (int i = 0; i < days.length; i=i+1) {
+                        // Construct the key dynamically
+                        String key = 'weekdaystr${i == 0 ? '' : (i + 1).toString()}';
+                        days[i] = dateinfo[key];
+                      }
 
                       //Hourly information
-                      hours[0]=dateinfo["hour"];
-                      hours[1]=dateinfo["hour2"];
-                      hours[2]=dateinfo["hour3"];
-                      hours[3]=dateinfo["hour4"];
-                      hours[4]=dateinfo["hour5"];
-                      hours[5]=dateinfo["hour6"];
-                      hours[6]=dateinfo["hour7"];
-                      hours[7]=dateinfo["hour8"];
-                      hours[8]=dateinfo["hour9"];
-                      hours[9]=dateinfo["hour10"];
-                      hours[10]=dateinfo["hour11"];
-                      hours[11]=dateinfo["hour12"];
-                      hours[12]=dateinfo["hour13"];
-                      hours[13]=dateinfo["hour14"];
-                      hours[14]=dateinfo["hour15"];
-                      hours[15]=dateinfo["hour16"];
-                      hours[16]=dateinfo["hour17"];
-                      hours[17]=dateinfo["hour18"];
-                      hours[18]=dateinfo["hour19"];
-                      hours[19]=dateinfo["hour20"];
-                      hours[20]=dateinfo["hour21"];
-                      hours[21]=dateinfo["hour22"];
-                      hours[22]=dateinfo["hour23"];
-
+                      // Using a for loop to assign values
+                      for (int i = 0; i < hours.length; i=i+1) {
+                        // Construct the key dynamically
+                        String key = 'hour${i == 0 ? '' : (i + 1).toString()}';
+                        hours[i] = dateinfo[key];
+                      }
                     });
                   },
 
@@ -181,102 +162,104 @@ class _landingpageState extends State<landingpage> {
                   child: Container(
                     //color: Colors.brown,
                     height: 240,
-                    child: Padding(
-                      //Pad only left and right inside container
-                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 75),
+                    child: Column(
+                      //Alignment of the inner column
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
 
-                      //Inner column (in case of needing a background, use container)
-                      child: Column(
-                        //Alignment of the inner column
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      //Children
+                      children: [
+                        //Top text with location icon
+                        Row(
+                          //Alignment of inner row (maybe put inside a container
+                          //with width: 260, height: 30,)
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
 
-                        //Children
-                        children: [
-                          //Top text with location icon
-                          Row(
-                            //Alignment of inner row (maybe put inside a container
-                            //with width: 260, height: 30,)
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          //Children
+                          children: [
+                            Icon(
+                              MaterialIcons.location_on, //maybe location_city
+                              size: 30,
+                              color: Colors.white,
+                            ),
 
-                            //Children
-                            children: [
-                              Icon(
-                                Icons.location_on, //Maybe my_location of package
-                                size: 30,
+                            //Sized box for minimal spacing
+                            SizedBox(
+                              width: 5,
+                            ),
+
+                            Text(
+                              "$devicecitycountry",
+                              style: GoogleFonts.quantico(
+                                textStyle: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              maxLines: 2, //Allowing up to 2 lines
+                              softWrap: true, //Enable text wrapping to avoid overflow
+                            ),
+                          ],
+                        ),
+
+                        //Subtext of top text (maybe punt in a container with
+                        //width: 260, height: 18,)
+                        Center(
+                          child: Text(
+                            datetime,
+                            style: GoogleFonts.quantico(
+                              textStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.normal,
+                                fontStyle: FontStyle.normal,
                                 color: Colors.white,
                               ),
-                              Text(
-                                "$devicecitycountry", //TODO: insert here function to get city and country
-                                style: GoogleFonts.quantico(
+                            ),
+                          ),
+                        ),
+
+                        //Big temperature text (Do not remove expanded or container)
+                        Expanded(
+                          child: Container(
+                            //color: Colors.greenAccent,
+                            width: 260,
+                            height: 140,
+                            child: Center(
+                              child: Text(
+                                "${centraltempnum.round()}\u00B0C",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.sansita(
                                   textStyle: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 120,
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FontStyle.normal,
                                     color: Colors.white,
                                   ),
                                 ),
                               ),
-                            ],
+                            ),
                           ),
+                        ),
 
-                          //Subtext of top text (maybe punt in a container with
-                          //width: 260, height: 18,)
-                          Center(
-                            child: Text(
-                              datetime, //TODO: insert here function to get date and time
-                              style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.normal,
-                                  fontStyle: FontStyle.normal,
-                                  color: Colors.white,
-                                ),
+                        //Subtext of Big temperature text (maybe out in a
+                        //container with width: 260,height: 26,)
+                        Center(
+                          child: Text(
+                            capitalize(subtxtwcondition),
+                            style: GoogleFonts.quantico(
+                              textStyle: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.normal,
+                                fontStyle: FontStyle.normal,
+                                color: Colors.white,
                               ),
                             ),
                           ),
-
-                          // Big temperature text (Do not remove expanded or container)
-                          Expanded(
-                            child: Container(
-                              //color: Colors.greenAccent,
-                              width: 260,
-                              height: 140,
-                              child: Center(
-                                child: Text(
-                                  "$centraltempnum\u00B0C",
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.sansita(
-                                    textStyle: TextStyle(
-                                      fontSize: 120,
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.normal,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          //Subtext of Big temperature text (maybe out in a
-                          //container with width: 260,height: 26,)
-                          Center(
-                            child: Text(
-                              capitalize(subtxtwcondition), //TODO: insert here function to get weather condition
-                              style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.normal,
-                                  fontStyle: FontStyle.normal,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -318,7 +301,7 @@ class _landingpageState extends State<landingpage> {
                             color: Colors.white,
                           ),
                           Text(
-                            "${precipitation.round()}mm", //TODO: insert function to get precipitation
+                            "${precipitation}mm",
                             style: GoogleFonts.sansita(
                               textStyle: TextStyle(
                                 fontSize: 23,
@@ -368,7 +351,7 @@ class _landingpageState extends State<landingpage> {
                             ),
                           ),
                           Text(
-                            "Humidity", //TODO: insert function to get humidity
+                            "Humidity",
                             style: GoogleFonts.quantico(
                               textStyle: TextStyle(
                                 fontSize: 17,
@@ -396,7 +379,7 @@ class _landingpageState extends State<landingpage> {
                             color: Colors.white,
                           ),
                           Text(
-                            "${windspeed.round()} KMH", //TODO: insert function to get wind speed
+                            "${windspeed.round()} KMH",
                             style: GoogleFonts.sansita(
                               textStyle: TextStyle(
                                 fontSize: 23,
@@ -536,8 +519,7 @@ class _landingpageState extends State<landingpage> {
                           child: Padding(
                             padding: EdgeInsets.all(10),
 
-                            //Insert list of results (maybe a list view)
-                            //TODO: Decide if show only 3 days or full week
+                            //Insert list of results
                             child: ListView(
                               //Children
                               children: [
@@ -600,7 +582,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "${maxmintemps[0][0]}\u00B0 - ${maxmintemps[0][1]}\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[0][0]}\u00B0 - ${maxmintemps[0][1]}\u00B0", //TODO: insert function to get temp day1 here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -655,7 +637,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "${days[1]}", //TODO: insert function to get next day here
+                                              "${days[1]}",
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -682,7 +664,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "${maxmintemps[1][0]}\u00B0 - ${maxmintemps[1][1]}\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[1][0]}\u00B0 - ${maxmintemps[1][1]}\u00B0", //TODO: insert function to get temp day2 here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -737,7 +719,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "${days[2]}", //TODO: insert function to get next-next day here
+                                              "${days[2]}",
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -764,7 +746,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "${maxmintemps[2][0]}\u00B0 - ${maxmintemps[2][1]}\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[2][0]}\u00B0 - ${maxmintemps[2][1]}\u00B0", //TODO: insert function to get temp day3 here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -819,7 +801,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "${days[3]}", //TODO: insert function to get next-next day here
+                                              "${days[3]}",
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -846,7 +828,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "${maxmintemps[3][0]}\u00B0 - ${maxmintemps[3][1]}\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[3][0]}\u00B0 - ${maxmintemps[3][1]}\u00B0", //TODO: insert function to get temp day4 here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -901,7 +883,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "${days[4]}", //TODO: insert function to get next-next day here
+                                              "${days[4]}",
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -928,7 +910,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "${maxmintemps[4][0]}\u00B0 - ${maxmintemps[4][1]}\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[4][0]}\u00B0 - ${maxmintemps[4][1]}\u00B0", //TODO: insert function to get temp day5 here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -983,7 +965,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "${days[5]}", //TODO: insert function to get next-next day here
+                                              "${days[5]}",
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -1010,7 +992,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "${maxmintemps[5][0]}\u00B0 - ${maxmintemps[5][1]}\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[5][0]}\u00B0 - ${maxmintemps[5][1]}\u00B0", //TODO: insert function to get temp day6 here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -1064,7 +1046,7 @@ class _landingpageState extends State<landingpage> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              "${days[6]}", //TODO: insert function to get next-next day here
+                                              "${days[6]}",
                                               style: GoogleFonts.quantico(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -1091,7 +1073,7 @@ class _landingpageState extends State<landingpage> {
 
                                           child: Center(
                                             child: Text(
-                                              "${maxmintemps[6][0]}\u00B0 - ${maxmintemps[6][1]}\u00B0", //TODO: insert function to get temp here,
+                                              "${maxmintemps[6][0]}\u00B0 - ${maxmintemps[6][1]}\u00B0", //TODO: insert function to get temp6 here,
                                               style: GoogleFonts.sansita(
                                                 textStyle: TextStyle(
                                                   fontSize: 23,
@@ -1145,7 +1127,6 @@ class _landingpageState extends State<landingpage> {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  //TODO: DECIDE ICON COLORS
                   color: Color.fromRGBO(140, 127, 186, 0.5),
                   icon: Icon(Icons.info_outline),
                   onPressed: () {
@@ -1168,7 +1149,6 @@ class _landingpageState extends State<landingpage> {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  //TODO: DECIDE ICON COLORS
                   color: Color.fromRGBO(140, 127, 186, 1.0),
                   icon: Icon(Icons.home),
                   onPressed: () {
@@ -1186,7 +1166,6 @@ class _landingpageState extends State<landingpage> {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  //TODO: DECIDE ICON COLORS
                   color: Color.fromRGBO(140, 127, 186, 0.5),
                   icon: Icon(Icons.search_outlined),
                   onPressed: () {

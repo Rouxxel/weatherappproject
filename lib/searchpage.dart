@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:geolocator/geolocator.dart'; //For GPS function
+import 'package:icons_flutter/icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart' as url; //For URL launch
 import 'package:http/http.dart' as http; //For http resources
 import 'dart:convert' as conv; //For JSON parsing
@@ -11,6 +12,7 @@ import 'dart:convert' as conv; //For JSON parsing
 //Other pages import
 import 'package:weatherappproject/landingpage.dart';
 import 'package:weatherappproject/detailspage.dart';
+import 'package:weatherappproject/functionality.dart'; //Import necessary functionality
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
@@ -32,6 +34,9 @@ class searchpage extends StatefulWidget {
 }
 
 class _searchpageState extends State<searchpage> {
+  //Create a TextEditingController to control the TextField
+  final TextEditingController _Scontroller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -68,7 +73,7 @@ class _searchpageState extends State<searchpage> {
         //Pad column to maintain consistency
         body: Padding(
           //Pad horizontal part of of inner column
-          padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 16.0),
+          padding: EdgeInsets.symmetric(vertical: 13.0,horizontal: 16.0),
 
           //Central column
           child: Column(
@@ -94,10 +99,14 @@ class _searchpageState extends State<searchpage> {
                       Expanded(
                         //input Text field
                         child: TextField(
+                          //Controller to update city variable based on user input
+                          controller: _Scontroller,
+
+                          //Decorate hint text
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Color.fromRGBO(77, 204, 189, 0.4),
-                            hintText: "Search city by name...",
+                            hintText: "Search City or Postal Code...",
                             hintStyle: GoogleFonts.quantico(
                               textStyle: TextStyle(
                                 fontSize: 20,
@@ -106,6 +115,8 @@ class _searchpageState extends State<searchpage> {
                                 color: Colors.white,
                               ),
                             ),
+
+                            //Round up Textfield's edges
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(12.0),
@@ -113,30 +124,104 @@ class _searchpageState extends State<searchpage> {
                             ),
                           ),
 
-                          //Align text to always be in center-left
-                          textAlignVertical: TextAlignVertical.center,
+                          //Modify the style of characters the user types
+                          style: GoogleFonts.quantico(
+                            textStyle: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.normal,
+                              fontStyle: FontStyle.normal,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
 
                       //Container to create frame for Search icon button
                       Container(
+                        //Round up Iconbutton's container edges
                         decoration: BoxDecoration(
                           color: Color.fromRGBO(77, 204, 189, 0.4),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
 
                         height: 58,
                         width: 58,
 
-                        //search Icon button
+                        //Search Icon button
                         child: Center(
                           child: IconButton(
-                            icon: Icon(Icons.search),
+                            icon: Icon(MaterialCommunityIcons.map_search_outline),
                             alignment: Alignment.center,
                             iconSize: 40,
                             color: Colors.white,
-                            onPressed: () {
-                              //TODO: insert functionality to search based on city name and go to main page
+                            onPressed: () async {
+
+                              //Update city according to user input
+                              Dcitybyuser= _Scontroller.text;
+
+                              //Declare and obtain list with all weather information
+                              Map<String, dynamic> Dweatherinfo = await
+                              getCURRENTweatherdata(context: context, cityname: "$Dcitybyuser");
+
+                              //Declare and obtain the city and country location
+                              String Dcitylocation= await
+                              getcitycountry(context, Dweatherinfo["coord"]);
+
+                              //Declare and obtain possible alerts
+                              String Dalertstoday= await
+                              getCURRENTweatheralerts(context, Dweatherinfo["coord"]);
+
+
+                              setState(() {
+
+                                //Update citycountry string
+                                Dcitycountry = Dcitylocation;
+
+                                //Update date and time string
+                                Ddatetime=Dweatherinfo["formatdatetime"];
+
+                                //Update alert
+                                Dalert = Dalertstoday;
+
+                                //Weather information
+                                //Top container
+                                Dcentraltempnum=Dweatherinfo["Ctemp"];
+                                Dsubtxtwcondition=Dweatherinfo["weathercond"];
+
+                                //Temp container
+                                Dmaxtemp=Dweatherinfo["Ctempmax"];
+                                Dfeelstemp=Dweatherinfo["Ctempfeel"];
+                                Dmintemp=Dweatherinfo["Ctempmin"];
+
+                                //Precipitation, Humidity, clouds container
+                                Dprecipitation=Dweatherinfo["precipiMM"];
+                                Dhumidity=Dweatherinfo["humid"];
+                                Dcloudsper=Dweatherinfo["clouds"];
+
+
+                                //Wind container
+                                Dwinddir=Dweatherinfo["winddir"];
+                                Dwindgust=Dweatherinfo["KPHwindg"];
+                                Dwindspeed=Dweatherinfo["KPHwind"];
+
+                                //Sun container
+                                Dsunset=Dweatherinfo["sunsettime"];
+                                Duvi=Dweatherinfo["uvi"];
+                                Dsunrise=Dweatherinfo["sunrisetime"];
+
+
+                                //Pressure container
+                                Dpressurehpa=Dweatherinfo["pressHPA"];
+                                Dpressuremb=Dweatherinfo["pressMB"];
+                              });
+
+                              //Use navigator to go to the landing page
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => detailspage(),
+                                ),
+                              );
+                              print("Printing city given by user: "+Dcitybyuser);
                             },
                           ),
                         ),
@@ -146,8 +231,6 @@ class _searchpageState extends State<searchpage> {
                 ),
               ),
 
-
-              //TODO: decide if to remove or solve overflow problem when phone is tilted and keyboard enabled
               //"Suggestions" text
               Container(
                 //color: Colors.black,
@@ -210,36 +293,16 @@ class _searchpageState extends State<searchpage> {
                                   vertical: 0, horizontal: 20),
 
                               //Use column to organize texts
-                              child: Column(
-                                //Ensure content aligns to the left
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-
-                                //Children that shows options
-                                children: [
-                                  Text(
-                                    "19\u00B0",
-                                    style: GoogleFonts.sansita(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              child: Text(
+                                "Hamburg, Germany",
+                                style: GoogleFonts.quantico(
+                                  textStyle: TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
                                   ),
-                                  Text(
-                                    "Hamburg, Germany",
-                                    style: GoogleFonts.quantico(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                ],
+                                ),
                               ),
                             ),
                           ),
@@ -270,35 +333,16 @@ class _searchpageState extends State<searchpage> {
                                   vertical: 0, horizontal: 20),
 
                               //Use column to organize texts
-                              child: Column(
-                                //Ensure content aligns to the left
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-
-                                children: [
-                                  Text(
-                                    "23\u00B0",
-                                    style: GoogleFonts.sansita(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              child: Text(
+                                "Paris, France",
+                                style: GoogleFonts.quantico(
+                                  textStyle: TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
                                   ),
-                                  Text(
-                                    "Paris, France",
-                                    style: GoogleFonts.quantico(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                ],
+                                ),
                               ),
                             ),
                           ),
@@ -329,35 +373,16 @@ class _searchpageState extends State<searchpage> {
                                   vertical: 0, horizontal: 20),
 
                               //Use column to organize texts
-                              child: Column(
-                                //Ensure content aligns to the left
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-
-                                children: [
-                                  Text(
-                                    "9\u00B0",
-                                    style: GoogleFonts.sansita(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              child: Text(
+                                "Shenzhen, China",
+                                style: GoogleFonts.quantico(
+                                  textStyle: TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
                                   ),
-                                  Text(
-                                    "Shenzhen, China",
-                                    style: GoogleFonts.quantico(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                ],
+                                ),
                               ),
                             ),
                           ),
@@ -388,35 +413,16 @@ class _searchpageState extends State<searchpage> {
                                   vertical: 0, horizontal: 20),
 
                               //Use column to organize texts
-                              child: Column(
-                                //Ensure content aligns to the left
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-
-                                children: [
-                                  Text(
-                                    "13\u00B0",
-                                    style: GoogleFonts.sansita(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              child: Text(
+                                "Tokyo, Japan",
+                                style: GoogleFonts.quantico(
+                                  textStyle: TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
                                   ),
-                                  Text(
-                                    "Tokyo, Japan",
-                                    style: GoogleFonts.quantico(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                ],
+                                ),
                               ),
                             ),
                           ),
@@ -447,35 +453,96 @@ class _searchpageState extends State<searchpage> {
                                   vertical: 0, horizontal: 20),
 
                               //Use column to organize texts
-                              child: Column(
-                                //Ensure content aligns to the left
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-
-                                children: [
-                                  Text(
-                                    "10\u00B0",
-                                    style: GoogleFonts.sansita(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              child: Text(
+                                "London, England",
+                                style: GoogleFonts.quantico(
+                                  textStyle: TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
                                   ),
-                                  Text(
-                                    "London, England",
-                                    style: GoogleFonts.quantico(
-                                      textStyle: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //Sized box for spacing
+                        SizedBox(
+                          height: 25,
+                        ),
+
+                        //Suggestion 6
+                        Container(
+                          //Round up container's edges
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black, //TODO: replace color with image
+                          ),
+                          height: 100,
+                          width: double.infinity,
+
+                          //Align text to center left of container
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+
+                            //Pad children of the Column
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 20),
+
+                              //Use column to organize texts
+                              child: Text(
+                                "New York, England",
+                                style: GoogleFonts.quantico(
+                                  textStyle: TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //Sized box for spacing
+                        SizedBox(
+                          height: 25,
+                        ),
+
+                        //Suggestion 7
+                        Container(
+                          //Round up container's edges
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black, //TODO: replace color with image
+                          ),
+                          height: 100,
+                          width: double.infinity,
+
+                          //Align text to center left of container
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+
+                            //Pad children of the Column
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 20),
+
+                              //Use column to organize texts
+                              child: Text(
+                                "Madrid, Spain",
+                                style: GoogleFonts.quantico(
+                                  textStyle: TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
