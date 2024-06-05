@@ -274,33 +274,41 @@ class _searchpageState extends State<searchpage> {
                     child: ListView(
                       children: [
                         //Suggestion 1
-                        Container(
-                          //Round up container's edges
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.black, //TODO: replace color with image
-                          ),
-                          height: 100,
-                          width: double.infinity,
+                        GestureDetector(
+                          onTap:(){
+                            setState(() {
+                              _Scontroller.text="Hamburg"; //TODO: see how to optimize this
+                            });
+                          },
 
-                          //Align Column of children to center left of container
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+                          child: Container(
+                            //Round up container's edges
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.black, //TODO: replace color with image
+                            ),
+                            height: 100,
+                            width: double.infinity,
 
-                            //Pad children of the Column
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 20),
+                            //Align Column of children to center left of container
+                            child: Align(
+                              alignment: Alignment.centerLeft,
 
-                              //Use column to organize texts
-                              child: Text(
-                                "Hamburg, Germany",
-                                style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
+                              //Pad children of the Column
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 20),
+
+                                //Use column to organize texts
+                                child: Text(
+                                  "Hamburg, Germany",
+                                  style: GoogleFonts.quantico(
+                                    textStyle: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -314,33 +322,40 @@ class _searchpageState extends State<searchpage> {
                         ),
 
                         //Suggestion 2
-                        Container(
-                          //Round up container's edges
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.black, //TODO: replace color with image
-                          ),
-                          height: 100,
-                          width: double.infinity,
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              _Scontroller.text="Paris"; //TODO: see how to optimize this
+                            });
+                          },
+                          child: Container(
+                            //Round up container's edges
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.black, //TODO: replace color with image
+                            ),
+                            height: 100,
+                            width: double.infinity,
 
-                          //Align text to center left of container
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+                            //Align text to center left of container
+                            child: Align(
+                              alignment: Alignment.centerLeft,
 
-                            //Pad children of the Column
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 20),
+                              //Pad children of the Column
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 20),
 
-                              //Use column to organize texts
-                              child: Text(
-                                "Paris, France",
-                                style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
+                                //Use column to organize texts
+                                child: Text(
+                                  "Paris, France",
+                                  style: GoogleFonts.quantico(
+                                    textStyle: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -354,33 +369,40 @@ class _searchpageState extends State<searchpage> {
                         ),
 
                         //Suggestion 3
-                        Container(
-                          //Round up container's edges
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.black, //TODO: replace color with image
-                          ),
-                          height: 100,
-                          width: double.infinity,
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              _Scontroller.text="Shenzhen"; //TODO: see how to optimize this
+                            });
+                          },
+                          child: Container(
+                            //Round up container's edges
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.black, //TODO: replace color with image
+                            ),
+                            height: 100,
+                            width: double.infinity,
 
-                          //Align text to center left of container
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+                            //Align text to center left of container
+                            child: Align(
+                              alignment: Alignment.centerLeft,
 
-                            //Pad children of the Column
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 20),
+                              //Pad children of the Column
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 20),
 
-                              //Use column to organize texts
-                              child: Text(
-                                "Shenzhen, China",
-                                style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
+                                //Use column to organize texts
+                                child: Text(
+                                  "Shenzhen, China",
+                                  style: GoogleFonts.quantico(
+                                    textStyle: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -394,33 +416,41 @@ class _searchpageState extends State<searchpage> {
                         ),
 
                         //Suggestion 4
-                        Container(
-                          //Round up container's edges
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.black, //TODO: replace color with image
-                          ),
-                          height: 100,
-                          width: double.infinity,
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              _Scontroller.text="Tokyo"; //TODO: see how to optimize this
+                            });
+                          },
 
-                          //Align text to center left of container
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+                          child: Container(
+                            //Round up container's edges
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.black, //TODO: replace color with image
+                            ),
+                            height: 100,
+                            width: double.infinity,
 
-                            //Pad children of the Column
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 20),
+                            //Align text to center left of container
+                            child: Align(
+                              alignment: Alignment.centerLeft,
 
-                              //Use column to organize texts
-                              child: Text(
-                                "Tokyo, Japan",
-                                style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
+                              //Pad children of the Column
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 20),
+
+                                //Use column to organize texts
+                                child: Text(
+                                  "Tokyo, Japan",
+                                  style: GoogleFonts.quantico(
+                                    textStyle: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -434,33 +464,41 @@ class _searchpageState extends State<searchpage> {
                         ),
 
                         //Suggestion 5
-                        Container(
-                          //Round up container's edges
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.black, //TODO: replace color with image
-                          ),
-                          height: 100,
-                          width: double.infinity,
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              _Scontroller.text="London"; //TODO: see how to optimize this
+                            });
+                          },
 
-                          //Align text to center left of container
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+                          child: Container(
+                            //Round up container's edges
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.black, //TODO: replace color with image
+                            ),
+                            height: 100,
+                            width: double.infinity,
 
-                            //Pad children of the Column
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 20),
+                            //Align text to center left of container
+                            child: Align(
+                              alignment: Alignment.centerLeft,
 
-                              //Use column to organize texts
-                              child: Text(
-                                "London, England",
-                                style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
+                              //Pad children of the Column
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 20),
+
+                                //Use column to organize texts
+                                child: Text(
+                                  "London, United Kingdom",
+                                  style: GoogleFonts.quantico(
+                                    textStyle: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -474,33 +512,41 @@ class _searchpageState extends State<searchpage> {
                         ),
 
                         //Suggestion 6
-                        Container(
-                          //Round up container's edges
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.black, //TODO: replace color with image
-                          ),
-                          height: 100,
-                          width: double.infinity,
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              _Scontroller.text="New York"; //TODO: see how to optimize this
+                            });
+                          },
 
-                          //Align text to center left of container
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+                          child: Container(
+                            //Round up container's edges
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.black, //TODO: replace color with image
+                            ),
+                            height: 100,
+                            width: double.infinity,
 
-                            //Pad children of the Column
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 20),
+                            //Align text to center left of container
+                            child: Align(
+                              alignment: Alignment.centerLeft,
 
-                              //Use column to organize texts
-                              child: Text(
-                                "New York, England",
-                                style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
+                              //Pad children of the Column
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 20),
+
+                                //Use column to organize texts
+                                child: Text(
+                                  "New York, England",
+                                  style: GoogleFonts.quantico(
+                                    textStyle: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -514,33 +560,41 @@ class _searchpageState extends State<searchpage> {
                         ),
 
                         //Suggestion 7
-                        Container(
-                          //Round up container's edges
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.black, //TODO: replace color with image
-                          ),
-                          height: 100,
-                          width: double.infinity,
+                        GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              _Scontroller.text="Madrid"; //TODO: see how to optimize this
+                            });
+                          },
 
-                          //Align text to center left of container
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+                          child: Container(
+                            //Round up container's edges
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.black, //TODO: replace color with image
+                            ),
+                            height: 100,
+                            width: double.infinity,
 
-                            //Pad children of the Column
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 20),
+                            //Align text to center left of container
+                            child: Align(
+                              alignment: Alignment.centerLeft,
 
-                              //Use column to organize texts
-                              child: Text(
-                                "Madrid, Spain",
-                                style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
+                              //Pad children of the Column
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 20),
+
+                                //Use column to organize texts
+                                child: Text(
+                                  "Madrid, Spain",
+                                  style: GoogleFonts.quantico(
+                                    textStyle: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
