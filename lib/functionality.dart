@@ -1,10 +1,14 @@
 import 'dart:ffi';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart'; //For GPS function
 import 'package:http/http.dart' as http; //For http resources
 import 'dart:convert' as conv; //For JSON parsing
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart'; //For font import
+import 'package:url_launcher/url_launcher.dart' as url; //For URL launch
+import 'package:google_fonts/google_fonts.dart'; //For font import
+import 'package:intl/intl.dart'; //For data formatting import
+import 'package:audioplayers/audioplayers.dart'; //For Audiosource playing
 
 //GPS information
 bool gpsaccess = false;
@@ -21,7 +25,7 @@ String OWeatherapikey = "809ed526e7c4e8e434c7f931a2e54742";
 
 //GPS related
 //Request GPS permission and get it if given (MUST BE EXECUTED FIRST)
-Future<void> getgpspermission(BuildContext context) async {
+void getgpspermission(BuildContext context) async {
   print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
   print("[------getgpspermission function executed------]");
   //Check if device has location active and prevent execution if disabled
@@ -102,7 +106,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
   String url;
 
   if ((cityname != null) && (latlon != null)) {
-    // If both are provided, throw an error
+    //If both are provided, throw an error
     throw ArgumentError('Do not provide both latitude-longitude and city name');
   } else if (cityname != null) {
     //Check cityname is valid (at least is not empty)
@@ -128,18 +132,18 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
   //Map to store the extracted weather data
   Map<String, dynamic> currentweatherdata = {};
 
-  // Try to obtain API call from URL
+  //Try to obtain API call from URL
   try {
-    // Make API call
+    //Make API call
     final response = await http.get(Uri.parse(url));
 
-    // Check response success
+    //Check response success
     if (response.statusCode == 200) {
       // Parse response if response is successful
       Map<String, dynamic> APIdata = conv.jsonDecode(response.body);
 
       //Extract coordinates in case the input used is city name
-      // Extract longitude and latitude
+      //Extract longitude and latitude
       List<double> coord = [APIdata['coord']['lat'], APIdata['coord']['lon']];
 
       //Extract timezone
@@ -185,10 +189,9 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       double MPHwindspeed = (APIdata['wind']['speed'] as num).toDouble();
       double KPHwindspeed = MPHwindspeed * 1.60934;
       int winddirection = APIdata['wind']['deg'];
-      double? windgustMPH = APIdata['wind'].containsKey('gust')
-          ? (APIdata['wind']['gust'] as num).toDouble()
-          : 0.0;
-      double? windgustKPH = windgustMPH != 0.0 ? windgustMPH * 1.60934 : 0.0;
+      double windgustMPH = APIdata['wind'].containsKey('gust') ?
+        (APIdata['wind']['gust'] as num).toDouble() : 0.0;
+      double windgustKPH = windgustMPH != 0.0 ? windgustMPH * 1.60934 : 0.0;
 
       // Water related things
       int humidity = APIdata['main']['humidity'];
@@ -203,14 +206,13 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       if (APIdata.containsKey('snow') && APIdata['snow'].containsKey('1h')) {
         MMprecipitation = MMprecipitation + (APIdata['snow']['1h'] as num).toDouble();
       }
-      double INprecipitation =
-          MMprecipitation * 0.0393701; // 1 mm = 0.0393701 inches
+      double INprecipitation = MMprecipitation * 0.0393701;
 
       // UV index
       double uvindex = APIdata.containsKey('uvi') ?
         (APIdata['uvi'] as num).toDouble() : 0.0;
 
-      // Extract sunrise and sunset timestamps and convert to hour and minute
+      //Extract sunrise and sunset timestamps and convert to hour and minute
       //Extract int of both
       int sunriseTimestamp = APIdata['sys']['sunrise'];
       int sunsetTimestamp = APIdata['sys']['sunset'];
@@ -321,7 +323,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
     // Handle any other exceptions
     print('Error: $er');
 
-    // Display generic error dialog
+    //Display generic error dialog
     showGENERICerrordialog(context);
   }
 
@@ -471,15 +473,6 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
   String currminutes = datenowextracteddata.minute.toString().padLeft(2, '0'); // Pad minutes;
   int curryear = datenowextracteddata.year;
 
-  //TODO: remove prints after finished with function
-  print("Day number: $daynum");
-  print("Weekday: $weekdaystr");
-  print("Month number: $monthnum");
-  print("Month: $monthstr");
-  print("Current hour: $currhour");
-  print("Current minutes: $currminutes");
-  print("Year number: $curryear");
-
   //Insert extracted data
   datetime = {
     'daynum': daynum,
@@ -511,7 +504,6 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
   }
 
   print("Function gettimedate map return: $datetime");
-
   return datetime;
 }
 

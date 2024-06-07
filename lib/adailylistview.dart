@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:geolocator/geolocator.dart'; //For GPS function
-import 'package:icons_flutter/icons_flutter.dart';
+import 'package:icons_flutter/icons_flutter.dart'; //For more icons
 import 'package:url_launcher/url_launcher.dart' as url; //For URL launch
 import 'package:http/http.dart' as http; //For http resources
 import 'dart:convert' as conv; //For JSON parsing

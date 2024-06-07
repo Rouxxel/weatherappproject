@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart'; //For font import
 
 //
 //Other pages import
@@ -17,8 +17,8 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 
 // Function to navigate to the landing page after 8 seconds
 void autonavigationtimer(BuildContext context) {
-  //Use Future<t> method with .delayed(Duration(time unit:int)) to execute code
-  // after 6 seconds
+  //Use Future<t> method with .delayed(Duration(time unit:int))
+  //to execute code after 8 seconds
   Future.delayed(Duration(seconds: 8), () {
     //Use navigator to go to the landing page
     Navigator.of(context).pushReplacement(
@@ -73,6 +73,7 @@ class loadingpage extends StatelessWidget {
                     width: double.infinity,
                   ),
 
+                  //ForKast container
                   Container(
                     //Original emulator is Pixel 8 Pro (height: 2992px, width: 1344px)
                     //Dynamically scale according to screen size
@@ -92,6 +93,8 @@ class loadingpage extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  //Loading... container
                   Container(
                     height: 45,
                     width: 150,
