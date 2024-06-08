@@ -1,14 +1,12 @@
-import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart'; //For GPS function
 import 'package:http/http.dart' as http; //For http resources
+import 'package:icons_flutter/icons_flutter.dart';
 import 'dart:convert' as conv; //For JSON parsing
-import 'package:url_launcher/url_launcher.dart' as url; //For URL launch
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:intl/intl.dart'; //For data formatting import
-import 'package:audioplayers/audioplayers.dart'; //For Audiosource playing
 
 //GPS information
 bool gpsaccess = false;
@@ -46,7 +44,7 @@ void getgpspermission(BuildContext context) async {
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      // Handle denied permission
+      //Handle denied permission
       gpsaccess = false;
       print("GPS Permission denied");
       return Future.error("GPS permissions denied");
@@ -92,7 +90,7 @@ Future<List<double>> getgpslocation(BuildContext context) async {
   return coordinates;
 }
 
-//
+/////////////////////////////////////////////////////////////////////////////
 
 //API and data extraction
 // Get current weather data by either latitude and longitude or city name
@@ -145,6 +143,9 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       //Extract coordinates in case the input used is city name
       //Extract longitude and latitude
       List<double> coord = [APIdata['coord']['lat'], APIdata['coord']['lon']];
+
+      //Extract icon code
+      String iconstr = APIdata['weather'][0]['icon'];
 
       //Extract timezone
       //Extract the timestamp and timezone offset from the response
@@ -229,6 +230,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
         'utctime': utctime,
         'localtime': localtime,
         'formatdatetime': formattedlocaltime,
+        'iconstr': iconstr,
         //
         'Ktemp': Ktemperature,
         'Ftemp': Ftemperature,
@@ -270,12 +272,14 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       print('API getCURRENTweatherdata Response: ${response.body}');
       print('Function getCURRENTweatherdata map return: ${currentweatherdata}');
 
-      // TODO: delete all these prints once finished with the function
+      //Enable this prints only for testing
+      /*
       print("Latitude and longitude from getCURRENTweatherdata: ${currentweatherdata["coord"]}");
 
       print("UTC time: ${currentweatherdata["utctime"]}");
       print("Local time: ${currentweatherdata["localtime"]}");
       print("Required format date and time: ${currentweatherdata["formatdatetime"]}");
+      print("Icon string: ${currentweatherdata["iconstr"]}");
 
       print("Kelvin K: ${currentweatherdata["Ktemp"]}");
       print("Fahrenheit F: ${currentweatherdata["Ftemp"]}");
@@ -315,6 +319,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
 
       print("Sunrise time: ${currentweatherdata["sunrisetime"]}");
       print("Sunset time: ${currentweatherdata["sunsettime"]}");
+      */
     } else {
       // Display API error dialog
       showAPIerrordialog(context);
@@ -389,6 +394,115 @@ Future<String> getCURRENTweatheralerts(
     print('Error: $er');
     throw Exception('Generic error ocurred');
   }
+}
+
+//Function to get daily max/min temp, hourly temp and icons
+Future<Map<String, dynamic>> getWEEKLYHOURLYtempsicons(
+    BuildContext context, List<double> latlon, int currentweekday) async {
+  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
+  print("[------getWEEKLYHOURLYtempsicons function executed------]");
+
+  // Build URL using latitude and longitude
+  final url = Uri.parse(
+      'https://api.openweathermap.org/data/3.0/onecall?lat=${latlon[0]}&lon=${latlon[1]}&exclude=current,minutely&appid=$OWeatherapikey');
+
+  // Declare returning variable (2 sections)
+  Map<String, dynamic> weekhouricondata = {
+    "daily": {},
+    "hourly": {}
+  };
+
+  try {
+    // Make API call
+    final response = await http.get(url);
+    print("API getWEEKLYHOURLYtempsicons response: " + response.body);
+
+    //Check if API response is successful
+    if (response.statusCode == 200) {
+      //Parse the response body
+      final APIdata = conv.jsonDecode(response.body);
+      final dailydata = APIdata['daily'];
+      final hourlydata = APIdata['hourly'];
+
+      //Process daily min/max temperatures and weather icons starting with current weekday
+      for (int i = 0; i < dailydata.length; i++) {
+        int dayindex = (currentweekday + i) % 7;
+        double Kmintemp = dailydata[i]['temp']['min'].toDouble();
+        double Kmaxtemp = dailydata[i]['temp']['max'].toDouble();
+        double Fmintemp = (Kmintemp - 273.15) * 9 / 5 + 32;
+        double Fmaxtemp = (Kmaxtemp - 273.15) * 9 / 5 + 32;
+        double Cmintemp = Kmintemp - 273.15;
+        double Cmaxtemp = Kmaxtemp - 273.15;
+        String weathericon = dailydata[i]['weather'][0]['icon'];
+
+        weekhouricondata['daily']['day${dayindex + 1}'] = {
+          'Kmintemp': Kmintemp,
+          'Kmaxtemp': Kmaxtemp,
+          'Fmintemp': Fmintemp,
+          'Fmaxtemp': Fmaxtemp,
+          'Cmintemp': Cmintemp,
+          'Cmaxtemp': Cmaxtemp,
+          'icon': weathericon
+        };
+
+        //Enable this prints only for testing
+        //Print the values being inserted for daily data
+        /*
+        print("Day ${dayindex + 1} "
+            "Kmintemp: $Kmintemp, "
+            "Kmaxtemp: $Kmaxtemp, "
+            "Fmintemp: $Fmintemp, "
+            "Fmaxtemp: $Fmaxtemp, "
+            "Cmintemp: $Cmintemp, "
+            "Cmaxtemp: $Cmaxtemp, "
+            "icon: $weathericon");
+         */
+      } //Format is weekhouricondata['daily']['day1']['Cmintemp'];
+
+      //Process hourly temperatures and weather icons for the next 24 hours
+      for (int i = 0; i < 24; i++) {
+        int hourIndex = (DateTime.now().hour + i) % 24;
+        double Ktemp = (hourlydata[i]['temp'] as num).toDouble();
+        double Ftemp = (Ktemp - 273.15) * 9 / 5 + 32;
+        double Ctemp = Ktemp - 273.15;
+        String weatherIcon = hourlydata[i]['weather'][0]['icon'];
+
+        weekhouricondata['hourly']['hour${hourIndex + 1}'] = {
+          'Ktemp': Ktemp,
+          'Ftemp': Ftemp,
+          'Ctemp': Ctemp,
+          'icon': weatherIcon
+        };
+
+        //Enable this prints only for testing
+        // Print the values being inserted for hourly data
+        /*
+        print("Hour ${hourIndex + 1} "
+            "Ktemp: $Ktemp, "
+            "Ftemp: $Ftemp, "
+            "Ctemp: $Ctemp, "
+            "icon: $weatherIcon");
+        */
+      } //Format is weekhouricondata['hourly']['hour1']['Ctemp'];
+    } else {
+      // Display API error
+      showAPIerrordialog(context);
+
+      // Handle API problem
+      throw Exception('Failed to load weather alerts');
+    }
+  } catch (er) {
+    // Display generic error
+    showGENERICerrordialog(context);
+
+    // Handle any other errors
+    print('Error: $er');
+    throw Exception('Generic error occurred');
+  }
+
+  // Return and print successful result
+  print("getWEEKLYHOURLYtempsicons return value: $weekhouricondata");
+  return weekhouricondata;
 }
 
 //Obtain city and country
@@ -466,7 +580,8 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
 
   //Extract data components
   int daynum = datenowextracteddata.day;
-  String weekdaystr = weekdays[datenowextracteddata.weekday]; //From 1 to 7
+  int weekdaynum = datenowextracteddata.weekday;
+  String weekdaystr = weekdays[weekdaynum]; //From 1 to 7
   int monthnum = datenowextracteddata.month; //From 1 to 12
   String monthstr = months[monthnum];
   int currhour = datenowextracteddata.hour;
@@ -476,6 +591,7 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
   //Insert extracted data
   datetime = {
     'daynum': daynum,
+    'weekdaynum':weekdaynum,
     'weekdaystr': weekdaystr,
     'monthnum': monthnum,
     'monthstr': monthstr,
@@ -507,7 +623,7 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
   return datetime;
 }
 
-//
+/////////////////////////////////////////////////////////////////////////////
 
 //Data manipulation and checking
 //To capitalize the first letter of the strings
@@ -525,7 +641,7 @@ String capitalize(String input) {
 }
 
 //To check valid city (reserve for IT security)
-bool validateuserinput(String? cityname) {
+bool validateuserinput(String cityname) {
   print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
   print("[------validateuserinput function executed------]");
 
@@ -539,7 +655,49 @@ bool validateuserinput(String? cityname) {
       validCharacters.hasMatch(cityname);
 }
 
-//
+//To convert icon codes into actual icons
+IconData returnCORRECTiconforweather(String striconcode) {
+  //Use switch statement to select the correct case
+  switch (striconcode) {
+    //For when it is day
+    case '01d':
+      return WeatherIcons.wi_day_sunny;
+    case '02d':
+    case '03d':
+    case '04d':
+      return WeatherIcons.wi_day_cloudy;
+    case '09d':
+    case '10d':
+      return WeatherIcons.wi_day_rain;
+    case '11d':
+      return WeatherIcons.wi_day_thunderstorm;
+    case '13d':
+      return WeatherIcons.wi_day_snow;
+    case '50d':
+      return WeatherIcons.wi_day_fog;
+
+    //For when it is night
+    case '01n':
+      return WeatherIcons.wi_night_clear;
+    case '02n':
+    case '03n':
+    case '04n':
+      return WeatherIcons.wi_night_cloudy;
+    case '09n':
+    case '10n':
+      return WeatherIcons.wi_night_rain;
+    case '11n':
+      return WeatherIcons.wi_night_thunderstorm;
+    case '13n':
+      return WeatherIcons.wi_night_snow;
+    case '50n':
+      return WeatherIcons.wi_night_fog;
+    default:
+      return WeatherIcons.wi_na; // Default icon for unknown codes
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
 
 //Alert dialog for error handling
 // Function to display the location is disabled in the device

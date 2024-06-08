@@ -2,20 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
-import 'package:geolocator/geolocator.dart'; //For GPS function
-import 'package:icons_flutter/icons_flutter.dart'; //For more icons
-import 'package:url_launcher/url_launcher.dart' as url; //For URL launch
-import 'package:http/http.dart' as http; //For http resources
-import 'dart:convert' as conv; //For JSON parsing
-//TODO: Determine if all of this imports are truly necessary
 
 //Other pages import
 import 'package:weatherappproject/landingpage.dart';
 import 'package:weatherappproject/functionality.dart'; //Import necessary functionality
 
-//List views imports
-import 'ahourlylistview.dart';
-import 'ahourlylistview.dart';
+//imports
+/////////////////////////////////////////////////////////////////////////////
+//Actual List view
 
 class dailyweatherscreen extends StatelessWidget {
   @override
@@ -85,7 +79,7 @@ class dailyweatherscreen extends StatelessWidget {
 
                       //Icon weather container
                       Icon(
-                        WeatherIcons.wi_cloud, //TODO: insert function to get appropiate weather condition icon
+                          returnCORRECTiconforweather(dailyiconsstr[index]),
                         size: 35,
                         color: Colors.white,
                       ),
@@ -98,7 +92,7 @@ class dailyweatherscreen extends StatelessWidget {
 
                         child: Center(
                           child: Text(
-                            "${maxmintemps[index][0].round()} - ${maxmintemps[index][1].round()} \u00B0C", //TODO: insert function to get temp here,
+                            "${maxmintemps[index][0].round()} - ${maxmintemps[index][1].round()} \u00B0C",
                             style: GoogleFonts.sansita(
                               textStyle: TextStyle(
                                 fontSize: 23,
