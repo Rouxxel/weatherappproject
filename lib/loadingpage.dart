@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 
@@ -15,10 +14,10 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 void autonavigationtimer(BuildContext context) {
   //Use Future<t> method with .delayed(Duration(time unit:int))
   //to execute code after 8 seconds
-  Future.delayed(Duration(seconds: 8), () {
+  Future.delayed(const Duration(seconds: 8), () {
     //Use navigator to go to the landing page
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => landingpage()),
+      MaterialPageRoute(builder: (context) => const landingpage()),
     );
   });
 }
@@ -41,7 +40,7 @@ class loadingpage extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         //Background main color
-        backgroundColor: Color.fromRGBO(35, 22, 81, 1.0),
+        backgroundColor: const Color.fromRGBO(35, 22, 81, 1.0),
 
         body: Stack(
           children: [
@@ -70,7 +69,7 @@ class loadingpage extends StatelessWidget {
                   ),
 
                   //ForKast container
-                  Container(
+                  SizedBox(
                     //Original emulator is Pixel 8 Pro (height: 2992px, width: 1344px)
                     //Dynamically scale according to screen size
                     height: 80,
@@ -79,7 +78,7 @@ class loadingpage extends StatelessWidget {
                       child: Text(
                         "ForKast",
                         style: GoogleFonts.pressStart2p(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             fontSize: 45,
                             fontWeight: FontWeight.normal,
                             fontStyle: FontStyle.normal,
@@ -91,14 +90,14 @@ class loadingpage extends StatelessWidget {
                   ),
 
                   //Loading... container
-                  Container(
+                  SizedBox(
                     height: 45,
                     width: 150,
                     child: Center(
                       child: Text(
                         "Loading...",
                         style: GoogleFonts.quantico(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.normal,
                             fontStyle: FontStyle.normal,

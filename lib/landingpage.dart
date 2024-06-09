@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:icons_flutter/icons_flutter.dart'; //For more icons
 
@@ -65,8 +62,8 @@ class _landingpageState extends State<landingpage> {
   //Prepare index controller for Hourly and Daily
   int _selectedIndex = 0;
   final List<Widget> _pages = [
-    hourlyweatherscreen(),
-    dailyweatherscreen(),
+    const hourlyweatherscreen(),
+    const dailyweatherscreen(),
   ];
 
   @override
@@ -78,7 +75,7 @@ class _landingpageState extends State<landingpage> {
 
         //Appbar only with the name of the app
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(35, 22, 81, 1.0),
+          backgroundColor: const Color.fromRGBO(35, 22, 81, 1.0),
 
           title: Align(
             //Align the title in a certain way
@@ -117,7 +114,7 @@ class _landingpageState extends State<landingpage> {
             //Actual content of the body
             Padding(
               //Pad everything in the body (in this case a list view)
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
 
               //Align everything in the body to the Top center
               child: Align(
@@ -139,7 +136,7 @@ class _landingpageState extends State<landingpage> {
 
                         //Declare and obtain string of date and time
                         Map<String, dynamic> dateinfo =
-                            await getdatetimedata(context);
+                            getdatetimedata(context);
 
                         //Declare and obtain list with all weather information
                         Map<String, dynamic> weatherinfo =
@@ -214,7 +211,7 @@ class _landingpageState extends State<landingpage> {
                       },
 
                       //Top Container
-                      child: Container(
+                      child: SizedBox(
                         //color: Colors.brown,
                         height: 240,
                         child: Column(
@@ -233,7 +230,7 @@ class _landingpageState extends State<landingpage> {
 
                               //Children
                               children: [
-                                Icon(
+                                const Icon(
                                   MaterialIcons
                                       .location_on, //maybe location_city
                                   size: 30,
@@ -241,14 +238,14 @@ class _landingpageState extends State<landingpage> {
                                 ),
 
                                 //Sized box for minimal spacing
-                                SizedBox(
+                                const SizedBox(
                                   width: 5,
                                 ),
 
                                 Text(
-                                  "$devicecitycountry",
+                                  devicecitycountry,
                                   style: GoogleFonts.quantico(
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       fontStyle: FontStyle.normal,
@@ -268,7 +265,7 @@ class _landingpageState extends State<landingpage> {
                               child: Text(
                                 datetime,
                                 style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: FontStyle.normal,
@@ -280,7 +277,7 @@ class _landingpageState extends State<landingpage> {
 
                             //Big temperature text (Do not remove expanded or container)
                             Expanded(
-                              child: Container(
+                              child: SizedBox(
                                 //color: Colors.greenAccent,
                                 width: 260,
                                 height: 140,
@@ -289,7 +286,7 @@ class _landingpageState extends State<landingpage> {
                                     "${centraltempnum.round()}\u00B0C",
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.sansita(
-                                      textStyle: TextStyle(
+                                      textStyle: const TextStyle(
                                         fontSize: 120,
                                         fontWeight: FontWeight.bold,
                                         fontStyle: FontStyle.normal,
@@ -307,7 +304,7 @@ class _landingpageState extends State<landingpage> {
                               child: Text(
                                 capitalize(subtxtwcondition),
                                 style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: FontStyle.normal,
@@ -322,7 +319,7 @@ class _landingpageState extends State<landingpage> {
                     ),
 
                     //Sized box for spacing
-                    SizedBox(
+                    const SizedBox(
                       height: 51,
                     ),
 
@@ -331,7 +328,7 @@ class _landingpageState extends State<landingpage> {
                       //Round up container's edges
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Color.fromRGBO(214, 255, 246, 0.15),
+                        color: const Color.fromRGBO(214, 255, 246, 0.15),
                       ),
                       height: 145,
 
@@ -352,7 +349,7 @@ class _landingpageState extends State<landingpage> {
 
                             //Children
                             children: [
-                              Icon(
+                              const Icon(
                                 FontAwesome.umbrella,
                                 size: 45,
                                 color: Colors.white,
@@ -360,7 +357,7 @@ class _landingpageState extends State<landingpage> {
                               Text(
                                 "${precipitation}mm",
                                 style: GoogleFonts.sansita(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 23,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: FontStyle.normal,
@@ -371,7 +368,7 @@ class _landingpageState extends State<landingpage> {
                               Text(
                                 "Precipitation",
                                 style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: FontStyle.normal,
@@ -391,7 +388,7 @@ class _landingpageState extends State<landingpage> {
 
                             //Children
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons
                                     .water_drop, //maybe Entypo.water of package
                                 size: 45,
@@ -400,7 +397,7 @@ class _landingpageState extends State<landingpage> {
                               Text(
                                 "$humidity%",
                                 style: GoogleFonts.sansita(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 23,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: FontStyle.normal,
@@ -411,7 +408,7 @@ class _landingpageState extends State<landingpage> {
                               Text(
                                 "Humidity",
                                 style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: FontStyle.normal,
@@ -431,7 +428,7 @@ class _landingpageState extends State<landingpage> {
 
                             //Children
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.wind_power_rounded,
                                 size: 45,
                                 color: Colors.white,
@@ -439,7 +436,7 @@ class _landingpageState extends State<landingpage> {
                               Text(
                                 "${windspeed.round()} KMH",
                                 style: GoogleFonts.sansita(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 23,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: FontStyle.normal,
@@ -450,7 +447,7 @@ class _landingpageState extends State<landingpage> {
                               Text(
                                 "Wind speed",
                                 style: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: FontStyle.normal,
@@ -465,7 +462,7 @@ class _landingpageState extends State<landingpage> {
                     ),
 
                     //Sized box for spacing
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
 
@@ -474,14 +471,14 @@ class _landingpageState extends State<landingpage> {
                       //Round up container's edges
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Color.fromRGBO(214, 255, 246, 0.15),
+                        color: const Color.fromRGBO(214, 255, 246, 0.15),
                       ),
                       height: 335,
 
                       child: Padding(
                         //Padding for the column within the container
                         padding:
-                            EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+                            const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
 
                         //Column with inner containers
                         child: Column(
@@ -496,7 +493,7 @@ class _landingpageState extends State<landingpage> {
                               //Round up container's edges
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Color.fromRGBO(35, 22, 81, 0.3),
+                                color: const Color.fromRGBO(35, 22, 81, 0.3),
                               ),
                               height: 75,
                               width: double.infinity,
@@ -514,11 +511,11 @@ class _landingpageState extends State<landingpage> {
                                   ElevatedButton(
                                     //Manipulate button size
                                     style: ElevatedButton.styleFrom(
-                                      minimumSize: Size(150, 45),
+                                      minimumSize: const Size(150, 45),
                                       //Dynamically change button background color
                                       backgroundColor: _selectedIndex == 0
-                                          ? Color.fromRGBO(77, 204, 189, 1.0)
-                                          : Color.fromRGBO(35, 22, 81, 1.0),
+                                          ? const Color.fromRGBO(77, 204, 189, 1.0)
+                                          : const Color.fromRGBO(35, 22, 81, 1.0),
                                     ),
 
                                     child: Text(
@@ -530,7 +527,7 @@ class _landingpageState extends State<landingpage> {
                                           fontStyle: FontStyle.normal,
                                           //Dynamically change the Texts color
                                           color: _selectedIndex == 0
-                                              ? Color.fromRGBO(35, 22, 81, 1.0)
+                                              ? const Color.fromRGBO(35, 22, 81, 1.0)
                                               : Colors.white,
                                         ),
                                       ),
@@ -547,11 +544,11 @@ class _landingpageState extends State<landingpage> {
                                   ElevatedButton(
                                     //Manipulate button size
                                     style: ElevatedButton.styleFrom(
-                                      minimumSize: Size(150, 45),
+                                      minimumSize: const Size(150, 45),
                                       //Dynamically change button background color
                                       backgroundColor: _selectedIndex == 1
-                                          ? Color.fromRGBO(77, 204, 189, 1.0)
-                                          : Color.fromRGBO(35, 22, 81, 1.0),
+                                          ? const Color.fromRGBO(77, 204, 189, 1.0)
+                                          : const Color.fromRGBO(35, 22, 81, 1.0),
                                     ),
 
                                     child: Text(
@@ -564,7 +561,7 @@ class _landingpageState extends State<landingpage> {
 
                                           //Dynamically change the Texts color
                                           color: _selectedIndex == 1
-                                              ? Color.fromRGBO(35, 22, 81, 1.0)
+                                              ? const Color.fromRGBO(35, 22, 81, 1.0)
                                               : Colors.white,
                                         ),
                                       ),
@@ -600,7 +597,7 @@ class _landingpageState extends State<landingpage> {
         //Bottom navigation bar
         bottomNavigationBar: BottomAppBar(
           //Main color
-          color: Color.fromRGBO(35, 22, 81, 1.0),
+          color: const Color.fromRGBO(35, 22, 81, 1.0),
 
           //Use a container to manipulate the size of the row
           child: Row(
@@ -611,7 +608,7 @@ class _landingpageState extends State<landingpage> {
             //Children
             children: [
               //Left most container (leftmost button)
-              Container(
+              SizedBox(
                 height: 58,
                 width: 58,
 
@@ -619,13 +616,13 @@ class _landingpageState extends State<landingpage> {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  color: Color.fromRGBO(140, 127, 186, 0.5),
-                  icon: Icon(Icons.info_outline),
+                  color: const Color.fromRGBO(140, 127, 186, 0.5),
+                  icon: const Icon(Icons.info_outline),
                   onPressed: () {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => detailspage(),
+                        builder: (context) => const detailspage(),
                       ),
                     );
                   },
@@ -633,7 +630,7 @@ class _landingpageState extends State<landingpage> {
               ),
 
               //Center container (main button)
-              Container(
+              SizedBox(
                 height: 58,
                 width: 58,
 
@@ -641,8 +638,8 @@ class _landingpageState extends State<landingpage> {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  color: Color.fromRGBO(140, 127, 186, 1.0),
-                  icon: Icon(Icons.home),
+                  color: const Color.fromRGBO(140, 127, 186, 1.0),
+                  icon: const Icon(Icons.home),
                   onPressed: () {
                     //No functionality here because this is the page
                   },
@@ -650,7 +647,7 @@ class _landingpageState extends State<landingpage> {
               ),
 
               //Right most container (rightmost button)
-              Container(
+              SizedBox(
                 height: 58,
                 width: 58,
 
@@ -658,13 +655,13 @@ class _landingpageState extends State<landingpage> {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  color: Color.fromRGBO(140, 127, 186, 0.5),
-                  icon: Icon(Icons.search_outlined),
+                  color: const Color.fromRGBO(140, 127, 186, 0.5),
+                  icon: const Icon(Icons.search_outlined),
                   onPressed: () {
                     //Use navigator to go to the search page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => searchpage(),
+                        builder: (context) => const searchpage(),
                       ),
                     );
                   },

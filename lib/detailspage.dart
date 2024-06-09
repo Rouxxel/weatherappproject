@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:icons_flutter/icons_flutter.dart'; //For more icons
 
@@ -58,11 +56,11 @@ class _detailspageState extends State<detailspage> {
     return MaterialApp(
       home: Scaffold(
         //Background main color
-        backgroundColor: Color.fromRGBO(35, 22, 81, 0.85),
+        backgroundColor: const Color.fromRGBO(35, 22, 81, 0.85),
 
         //Appbar only with the name of the app
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(35, 22, 81, 1.0),
+          backgroundColor: const Color.fromRGBO(35, 22, 81, 1.0),
 
           title: Align(
             //Align the title in a certain way
@@ -71,7 +69,7 @@ class _detailspageState extends State<detailspage> {
             child: Text(
               "ForKast",
               style: GoogleFonts.pressStart2p(
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.normal,
                   fontStyle: FontStyle.normal,
@@ -101,7 +99,7 @@ class _detailspageState extends State<detailspage> {
             //Actual content of the body
             Padding(
             //Pad everything in the body
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
 
             //Align everything in the body to the Top center
             child: Align(
@@ -112,7 +110,7 @@ class _detailspageState extends State<detailspage> {
                 //Children of the listview
                 children: [
                   //Top container
-                  Container(
+                  SizedBox(
                     //color: Colors.brown,
                     height: 240,
                     child: Column(
@@ -131,21 +129,21 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               MaterialIcons.location_on, //maybe location_city
                               size: 30,
                               color: Colors.white,
                             ),
 
                             //Sized box for minimal spacing
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
 
                             Text(
-                              "$Dcitycountry",
+                              Dcitycountry,
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   fontStyle: FontStyle.normal,
@@ -162,9 +160,9 @@ class _detailspageState extends State<detailspage> {
                         //width: 260, height: 18,)
                         Center(
                           child: Text(
-                            "$Ddatetime",
+                            Ddatetime,
                             style: GoogleFonts.quantico(
-                              textStyle: TextStyle(
+                              textStyle: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.normal,
                                 fontStyle: FontStyle.normal,
@@ -176,7 +174,7 @@ class _detailspageState extends State<detailspage> {
 
                         // Big temperature text (Do not remove expanded or container)
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             //color: Colors.greenAccent,
                             width: 260,
                             height: 140,
@@ -185,7 +183,7 @@ class _detailspageState extends State<detailspage> {
                                 "${Dcentraltempnum.round()}\u00B0C",
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.sansita(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 120,
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FontStyle.normal,
@@ -203,7 +201,7 @@ class _detailspageState extends State<detailspage> {
                           child: Text(
                             capitalize(Dsubtxtwcondition),
                             style: GoogleFonts.quantico(
-                              textStyle: TextStyle(
+                              textStyle: const TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.normal,
                                 fontStyle: FontStyle.normal,
@@ -219,7 +217,7 @@ class _detailspageState extends State<detailspage> {
                   ),
 
                   //Sized box for spacing
-                  SizedBox(
+                  const SizedBox(
                     height: 51,
                   ),
 
@@ -228,7 +226,7 @@ class _detailspageState extends State<detailspage> {
                     //Round up container's edges
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(214, 255, 246, 0.15),
+                      color: const Color.fromRGBO(214, 255, 246, 0.15),
                     ),
                     height: 170,
 
@@ -246,7 +244,7 @@ class _detailspageState extends State<detailspage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
 
                           children: [
-                            Icon(
+                            const Icon(
                             FontAwesome.warning,
                               size: 75,
                               color: Colors.white,
@@ -254,7 +252,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Today!",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -266,9 +264,9 @@ class _detailspageState extends State<detailspage> {
                         ),
 
                         Text(
-                          "$Dalert",
+                          Dalert,
                           style: GoogleFonts.quantico(
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                               fontSize: 23,
                               fontWeight: FontWeight.normal,
                               fontStyle: FontStyle.normal,
@@ -283,7 +281,7 @@ class _detailspageState extends State<detailspage> {
                   ),
 
                   //Sized box for spacing
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
 
@@ -292,7 +290,7 @@ class _detailspageState extends State<detailspage> {
                     //Round up container's edges
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(214, 255, 246, 0.15),
+                      color: const Color.fromRGBO(214, 255, 246, 0.15),
                     ),
                     height: 145,
 
@@ -313,7 +311,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_thermometer,
                               size: 45,
                               color: Colors.white,
@@ -321,7 +319,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "${Dmaxtemp.round()}\u00B0C",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -332,7 +330,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Max today",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -352,7 +350,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_thermometer_exterior, //maybe Entypo.water of package
                               size: 45,
                               color: Colors.white,
@@ -360,7 +358,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "${Dfeelstemp.round()}\u00B0C",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -371,7 +369,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Feels..",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -391,7 +389,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_thermometer,
                               size: 45,
                               color: Colors.white,
@@ -399,7 +397,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "${Dmintemp.round()}\u00B0C",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -410,7 +408,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Min today",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -425,7 +423,7 @@ class _detailspageState extends State<detailspage> {
                   ),
 
                   //Sized box for spacing
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
 
@@ -434,7 +432,7 @@ class _detailspageState extends State<detailspage> {
                     //Round up container's edges
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(214, 255, 246, 0.15),
+                      color: const Color.fromRGBO(214, 255, 246, 0.15),
                     ),
                     height: 145,
 
@@ -455,7 +453,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               FontAwesome.umbrella,
                               size: 45,
                               color: Colors.white,
@@ -463,7 +461,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "${Dprecipitation}mm",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -474,7 +472,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Precipitation",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -494,7 +492,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.water_drop, //maybe Entypo.water of package
                               size: 45,
                               color: Colors.white,
@@ -502,7 +500,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "$Dhumidity%",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -513,7 +511,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Humidity",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -533,7 +531,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_cloudy,
                               size: 45,
                               color: Colors.white,
@@ -541,7 +539,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "$Dcloudsper%",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -552,7 +550,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Clouds",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -567,7 +565,7 @@ class _detailspageState extends State<detailspage> {
                   ),
 
                   //Sized box for spacing
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
 
@@ -576,7 +574,7 @@ class _detailspageState extends State<detailspage> {
                     //Round up container's edges
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(214, 255, 246, 0.15),
+                      color: const Color.fromRGBO(214, 255, 246, 0.15),
                     ),
                     height: 145,
 
@@ -597,7 +595,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_wind_direction,
                               size: 45,
                               color: Colors.white,
@@ -605,7 +603,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "$Dwinddir\u00B0",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -616,7 +614,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Direction",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -636,7 +634,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_wind_beaufort_1, //maybe Entypo.water of package
                               size: 45,
                               color: Colors.white,
@@ -644,7 +642,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "${Dwindgust.round()} KMH",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -655,7 +653,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Wind gust",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -675,7 +673,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.wind_power_rounded,
                               size: 45,
                               color: Colors.white,
@@ -683,7 +681,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "${Dwindspeed.round()} KMH",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -694,7 +692,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Wind speed",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -709,7 +707,7 @@ class _detailspageState extends State<detailspage> {
                   ),
 
                   //Sized box for spacing
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
 
@@ -718,7 +716,7 @@ class _detailspageState extends State<detailspage> {
                     //Round up container's edges
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(214, 255, 246, 0.15),
+                      color: const Color.fromRGBO(214, 255, 246, 0.15),
                     ),
                     height: 145,
 
@@ -739,15 +737,15 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_sunset,
                               size: 45,
                               color: Colors.white,
                             ),
                             Text(
-                              "$Dsunset",
+                              Dsunset,
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -758,7 +756,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Sunset",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -778,7 +776,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_day_sunny,
                               size: 45,
                               color: Colors.white,
@@ -786,7 +784,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "$Duvi",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -797,7 +795,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "UV index",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -817,15 +815,15 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_sunrise,
                               size: 45,
                               color: Colors.white,
                             ),
                             Text(
-                              "$Dsunrise",
+                              Dsunrise,
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -836,7 +834,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Sunrise",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -851,7 +849,7 @@ class _detailspageState extends State<detailspage> {
                   ),
 
                   //Sized box for spacing
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
 
@@ -860,7 +858,7 @@ class _detailspageState extends State<detailspage> {
                     //Round up container's edges
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(214, 255, 246, 0.15),
+                      color: const Color.fromRGBO(214, 255, 246, 0.15),
                     ),
                     height: 145,
 
@@ -881,7 +879,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_barometer,
                               size: 45,
                               color: Colors.white,
@@ -889,7 +887,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "${Dpressurehpa.round()}hPa",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -900,7 +898,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Pressure",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -920,7 +918,7 @@ class _detailspageState extends State<detailspage> {
 
                           //Children
                           children: [
-                            Icon(
+                            const Icon(
                               WeatherIcons.wi_barometer,
                               size: 45,
                               color: Colors.white,
@@ -928,7 +926,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "${Dpressuremb}mb",
                               style: GoogleFonts.sansita(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 23,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -939,7 +937,7 @@ class _detailspageState extends State<detailspage> {
                             Text(
                               "Pressure",
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -964,7 +962,7 @@ class _detailspageState extends State<detailspage> {
         //Bottom navigation bar
         bottomNavigationBar: BottomAppBar(
           //Main color
-          color: Color.fromRGBO(35, 22, 81, 1.0),
+          color: const Color.fromRGBO(35, 22, 81, 1.0),
 
           //Use a container to manipulate the size of the row
           child: Row(
@@ -975,7 +973,7 @@ class _detailspageState extends State<detailspage> {
             //Children
             children: [
               //Left most container (leftmost button)
-              Container(
+              SizedBox(
                 height: 58,
                 width: 58,
 
@@ -983,9 +981,9 @@ class _detailspageState extends State<detailspage> {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  color: Color.fromRGBO(140, 127, 186, 1.0),
+                  color: const Color.fromRGBO(140, 127, 186, 1.0),
                   icon:
-                  Icon(Icons.info),
+                  const Icon(Icons.info),
                   onPressed: () {
                     //No functionality here because this is the page
                   },
@@ -993,7 +991,7 @@ class _detailspageState extends State<detailspage> {
               ),
 
               //Center container (main button)
-              Container(
+              SizedBox(
                 height: 58,
                 width: 58,
 
@@ -1001,13 +999,13 @@ class _detailspageState extends State<detailspage> {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  color: Color.fromRGBO(140, 127, 186, 0.5),
-                  icon: Icon(Icons.home_outlined),
+                  color: const Color.fromRGBO(140, 127, 186, 0.5),
+                  icon: const Icon(Icons.home_outlined),
                   onPressed: () {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => landingpage(),
+                        builder: (context) => const landingpage(),
                       ),
                     );
                   },
@@ -1015,7 +1013,7 @@ class _detailspageState extends State<detailspage> {
               ),
 
               //Right most container (rightmost button)
-              Container(
+              SizedBox(
                 height: 58,
                 width: 58,
 
@@ -1023,13 +1021,13 @@ class _detailspageState extends State<detailspage> {
                 child: IconButton(
                   alignment: Alignment.center,
                   iconSize: 40,
-                  color: Color.fromRGBO(140, 127, 186, 0.5),
-                  icon: Icon(Icons.search_outlined),
+                  color: const Color.fromRGBO(140, 127, 186, 0.5),
+                  icon: const Icon(Icons.search_outlined),
                   onPressed: () {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => searchpage(),
+                        builder: (context) => const searchpage(),
                       ),
                     );
                   },

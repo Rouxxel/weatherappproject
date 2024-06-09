@@ -7,7 +7,7 @@ import 'package:weatherappproject/loadingpage.dart';
 
 void main() {
   runApp(
-    MaterialApp(
+    const MaterialApp(
       home: loadingpage(),
     ),
   );

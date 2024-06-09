@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:icons_flutter/icons_flutter.dart'; //For more icons
 
@@ -29,11 +27,11 @@ class _searchpageState extends State<searchpage> {
     return MaterialApp(
       home: Scaffold(
         //Background main color
-        backgroundColor: Color.fromRGBO(35, 22, 81, 0.85),
+        backgroundColor: const Color.fromRGBO(35, 22, 81, 0.85),
 
         //Appbar only with the name of the app
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(35, 22, 81, 1.0),
+          backgroundColor: const Color.fromRGBO(35, 22, 81, 1.0),
           title: Align(
             //Align the title in a certain way
             alignment: Alignment.centerLeft,
@@ -41,7 +39,7 @@ class _searchpageState extends State<searchpage> {
             child: Text(
               "ForKast",
               style: GoogleFonts.pressStart2p(
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.normal,
                   fontStyle: FontStyle.normal,
@@ -71,7 +69,7 @@ class _searchpageState extends State<searchpage> {
             //Actual content of the body
             Padding(
               //Pad horizontal part of of inner column
-              padding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0),
 
               //Central column
               child: Column(
@@ -82,7 +80,7 @@ class _searchpageState extends State<searchpage> {
                 //Children of the column
                 children: [
                   //Container for User input
-                  Container(
+                  SizedBox(
                     //color: Colors.brown,
                     height: 58,
                     width: double.infinity,
@@ -103,10 +101,10 @@ class _searchpageState extends State<searchpage> {
                               //Decorate hint text
                               decoration: InputDecoration(
                                 filled: true,
-                                fillColor: Color.fromRGBO(77, 204, 189, 0.4),
+                                fillColor: const Color.fromRGBO(77, 204, 189, 0.4),
                                 hintText: "Search City or Postal Code...",
                                 hintStyle: GoogleFonts.quantico(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: FontStyle.normal,
@@ -115,7 +113,7 @@ class _searchpageState extends State<searchpage> {
                                 ),
 
                                 //Round up Textfield's edges
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(12.0),
                                   ),
@@ -124,7 +122,7 @@ class _searchpageState extends State<searchpage> {
 
                               //Modify the style of characters the user types
                               style: GoogleFonts.quantico(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FontStyle.normal,
@@ -138,7 +136,7 @@ class _searchpageState extends State<searchpage> {
                           Container(
                             //Round up Iconbutton's container edges
                             decoration: BoxDecoration(
-                              color: Color.fromRGBO(77, 204, 189, 0.4),
+                              color: const Color.fromRGBO(77, 204, 189, 0.4),
                               borderRadius: BorderRadius.circular(12.0),
                             ),
 
@@ -148,7 +146,7 @@ class _searchpageState extends State<searchpage> {
                             //Search Icon button
                             child: Center(
                               child: IconButton(
-                                icon: Icon(
+                                icon: const Icon(
                                     MaterialCommunityIcons.map_search_outline),
                                 alignment: Alignment.center,
                                 iconSize: 40,
@@ -161,7 +159,7 @@ class _searchpageState extends State<searchpage> {
                                   Map<String, dynamic> Dweatherinfo =
                                       await getCURRENTweatherdata(
                                           context: context,
-                                          cityname: "$Dcitybyuser");
+                                          cityname: Dcitybyuser);
 
                                   //Declare and obtain the city and country location
                                   String Dcitylocation = await getcitycountry(
@@ -216,7 +214,7 @@ class _searchpageState extends State<searchpage> {
                                   //Use navigator to go to the landing page
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => detailspage(),
+                                      builder: (context) => const detailspage(),
                                     ),
                                   );
                                   print("Printing city given by user: $Dcitybyuser");
@@ -230,20 +228,20 @@ class _searchpageState extends State<searchpage> {
                   ),
 
                   //"Suggestions" text
-                  Container(
+                  SizedBox(
                     //color: Colors.black,
                     height: 40,
                     width: double.infinity,
                     child: Padding(
                       //Move text a little offset to the right
-                      padding: EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: Align(
                         //Bound text to always be center left
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Suggestions:",
                           style: GoogleFonts.quantico(
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.normal,
                               fontStyle: FontStyle.normal,
@@ -261,12 +259,12 @@ class _searchpageState extends State<searchpage> {
                       //Round up container's edges
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Color.fromRGBO(214, 255, 246, 0.15),
+                        color: const Color.fromRGBO(214, 255, 246, 0.15),
                       ),
 
                       child: Padding(
                         //Pad all sides evenly
-                        padding: EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(20),
 
                         //Use list view to create a scrollable options
                         child: ListView(
@@ -295,14 +293,14 @@ class _searchpageState extends State<searchpage> {
 
                                   //Pad children of the Column
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 20),
 
                                     //Use column to organize texts
                                     child: Text(
                                       "Stuttgart, Germany",
                                       style: GoogleFonts.quantico(
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           fontSize: 23,
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.normal,
@@ -316,7 +314,7 @@ class _searchpageState extends State<searchpage> {
                             ),
 
                             //Sized box for spacing
-                            SizedBox(
+                            const SizedBox(
                               height: 25,
                             ),
 
@@ -344,14 +342,14 @@ class _searchpageState extends State<searchpage> {
 
                                   //Pad children of the Column
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 20),
 
                                     //Use column to organize texts
                                     child: Text(
                                       "Paris, France",
                                       style: GoogleFonts.quantico(
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           fontSize: 23,
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.normal,
@@ -365,7 +363,7 @@ class _searchpageState extends State<searchpage> {
                             ),
 
                             //Sized box for spacing
-                            SizedBox(
+                            const SizedBox(
                               height: 25,
                             ),
 
@@ -393,14 +391,14 @@ class _searchpageState extends State<searchpage> {
 
                                   //Pad children of the Column
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 20),
 
                                     //Use column to organize texts
                                     child: Text(
                                       "Shenzhen, China",
                                       style: GoogleFonts.quantico(
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           fontSize: 23,
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.normal,
@@ -414,7 +412,7 @@ class _searchpageState extends State<searchpage> {
                             ),
 
                             //Sized box for spacing
-                            SizedBox(
+                            const SizedBox(
                               height: 25,
                             ),
 
@@ -442,14 +440,14 @@ class _searchpageState extends State<searchpage> {
 
                                   //Pad children of the Column
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 20),
 
                                     //Use column to organize texts
                                     child: Text(
                                       "Tokyo, Japan",
                                       style: GoogleFonts.quantico(
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           fontSize: 23,
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.normal,
@@ -463,7 +461,7 @@ class _searchpageState extends State<searchpage> {
                             ),
 
                             //Sized box for spacing
-                            SizedBox(
+                            const SizedBox(
                               height: 25,
                             ),
 
@@ -491,14 +489,14 @@ class _searchpageState extends State<searchpage> {
 
                                   //Pad children of the Column
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 20),
 
                                     //Use column to organize texts
                                     child: Text(
                                       "London, United Kingdom",
                                       style: GoogleFonts.quantico(
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           fontSize: 23,
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.normal,
@@ -512,7 +510,7 @@ class _searchpageState extends State<searchpage> {
                             ),
 
                             //Sized box for spacing
-                            SizedBox(
+                            const SizedBox(
                               height: 25,
                             ),
 
@@ -540,14 +538,14 @@ class _searchpageState extends State<searchpage> {
 
                                   //Pad children of the Column
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 20),
 
                                     //Use column to organize texts
                                     child: Text(
                                       "New York, United States",
                                       style: GoogleFonts.quantico(
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           fontSize: 23,
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.normal,
@@ -561,7 +559,7 @@ class _searchpageState extends State<searchpage> {
                             ),
 
                             //Sized box for spacing
-                            SizedBox(
+                            const SizedBox(
                               height: 25,
                             ),
 
@@ -589,14 +587,14 @@ class _searchpageState extends State<searchpage> {
 
                                   //Pad children of the Column
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 20),
 
                                     //Use column to organize texts
                                     child: Text(
                                       "Madrid, Spain",
                                       style: GoogleFonts.quantico(
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                           fontSize: 23,
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.normal,
@@ -635,7 +633,7 @@ class _searchpageState extends State<searchpage> {
             //Children
             children: [
               //Left most container (leftmost button)
-              Container(
+              SizedBox(
                 height: 58,
                 width: 58,
 
@@ -649,7 +647,7 @@ class _searchpageState extends State<searchpage> {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => detailspage(),
+                        builder: (context) => const detailspage(),
                       ),
                     );
                   },
@@ -657,7 +655,7 @@ class _searchpageState extends State<searchpage> {
               ),
 
               //Center container (main button)
-              Container(
+              SizedBox(
                 height: 58,
                 width: 58,
 
@@ -671,7 +669,7 @@ class _searchpageState extends State<searchpage> {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => landingpage(),
+                        builder: (context) => const landingpage(),
                       ),
                     );
                   },
@@ -679,7 +677,7 @@ class _searchpageState extends State<searchpage> {
               ),
 
               //Right most container (rightmost button)
-              Container(
+              SizedBox(
                 height: 58,
                 width: 58,
 

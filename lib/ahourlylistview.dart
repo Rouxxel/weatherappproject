@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 
 //Other pages import
@@ -12,25 +10,27 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 //Actual List view
 
 class hourlyweatherscreen extends StatelessWidget {
+  const hourlyweatherscreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(35, 22, 81, 0),
+      backgroundColor: const Color.fromRGBO(35, 22, 81, 0),
 
       //Container for Hourly listview
       body: Container(
         //Round up container's edges
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color.fromRGBO(35, 22, 81, 0.3),
+          color: const Color.fromRGBO(35, 22, 81, 0.3),
         ),
-        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
         width: double.infinity,
         height: 190,
 
         //Pad everything evenly
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
 
           //Use Listview.builder to avoid hardcoding 24 containers
           child: ListView.builder(
@@ -44,9 +44,9 @@ class hourlyweatherscreen extends StatelessWidget {
                 //Round up container's edges
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color.fromRGBO(77, 204, 189, 0.7),
+                  color: const Color.fromRGBO(77, 204, 189, 0.7),
                 ),
-                margin: EdgeInsets.only(right: 10),
+                margin: const EdgeInsets.only(right: 10),
                 width: 100,
                 height: double.infinity,
 
@@ -66,7 +66,7 @@ class hourlyweatherscreen extends StatelessWidget {
                     Text(
                       "${temphours[index].round()}\u00B0C",
                       style: GoogleFonts.sansita(
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 33,
                           fontWeight: FontWeight.bold,
                           fontStyle: FontStyle.normal,
@@ -79,7 +79,7 @@ class hourlyweatherscreen extends StatelessWidget {
                     Text(
                       "${hours[index]}:00", //Hours of the day text
                       style: GoogleFonts.quantico(
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 21,
                           fontWeight: FontWeight.bold,
                           fontStyle: FontStyle.normal,

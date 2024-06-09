@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart'; //For GPS function
 import 'package:http/http.dart' as http; //For http resources
 import 'package:icons_flutter/icons_flutter.dart';
@@ -270,7 +268,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       };
 
       print('API getCURRENTweatherdata Response: ${response.body}');
-      print('Function getCURRENTweatherdata map return: ${currentweatherdata}');
+      print('Function getCURRENTweatherdata map return: $currentweatherdata');
 
       //Enable this prints only for testing
       /*
@@ -352,7 +350,7 @@ Future<String> getCURRENTweatheralerts(
   try{
     //Make API call
     final response = await http.get(url);
-    print("API getCURRENTweatheralerts response: "+response.body);
+    print("API getCURRENTweatheralerts response: ${response.body}");
 
     //Check if the response is successful
     if (response.statusCode == 200) {
@@ -370,7 +368,7 @@ Future<String> getCURRENTweatheralerts(
           event = event.substring(0, 25);
         }
 
-        print("Function String return: "+event);
+        print("Function String return: $event");
         return event;
       } else {
 
@@ -415,7 +413,7 @@ Future<Map<String, dynamic>> getWEEKLYHOURLYtempsicons(
   try {
     // Make API call
     final response = await http.get(url);
-    print("API getWEEKLYHOURLYtempsicons response: " + response.body);
+    print("API getWEEKLYHOURLYtempsicons response: ${response.body}");
 
     //Check if API response is successful
     if (response.statusCode == 200) {
@@ -531,7 +529,7 @@ Future<String> getcitycountry(
 
         String citycountry = "$city, $country";
 
-        print("API citycountry response: "+response.body);
+        print("API citycountry response: ${response.body}");
         print("Function citycountry string: $citycountry");
 
         //Return the formatted city and country string
@@ -629,7 +627,7 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
 //To capitalize the first letter of the strings
 String capitalize(String input) {
   print("------String capitalization executed------");
-  if (input == null || input.isEmpty) {
+  if (input.isEmpty) {
     return input;
   }
   return input.split(' ').map((word) {
@@ -645,7 +643,7 @@ bool validateuserinput(String cityname) {
   print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
   print("[------validateuserinput function executed------]");
 
-  if (cityname == null || cityname.isEmpty) {
+  if (cityname.isEmpty) {
     return false;
   }
 
@@ -707,7 +705,7 @@ void showLOCATIONdisableddialog(BuildContext context) {
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -722,11 +720,11 @@ void showLOCATIONdisableddialog(BuildContext context) {
 
   //Set variables as the alert itself
   var alert = AlertDialog(
-    backgroundColor: Color.fromRGBO(35, 22, 81, 1),
+    backgroundColor: const Color.fromRGBO(35, 22, 81, 1),
     title: Text(
       "Location services disabled",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 25,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -738,7 +736,7 @@ void showLOCATIONdisableddialog(BuildContext context) {
       "Please enable location services to use GPS feature, "
       "turn on location services in your device settings",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -767,7 +765,7 @@ void showACCESStogpsdenieddialog(BuildContext context) {
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -782,11 +780,11 @@ void showACCESStogpsdenieddialog(BuildContext context) {
 
   //Set variables as the alert itself
   var alert = AlertDialog(
-    backgroundColor: Color.fromRGBO(35, 22, 81, 1),
+    backgroundColor: const Color.fromRGBO(35, 22, 81, 1),
     title: Text(
       "Location services access denied",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 25,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -798,7 +796,7 @@ void showACCESStogpsdenieddialog(BuildContext context) {
       "Access to location services has been denied, "
       "please allow acees to use GPS feature",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -827,7 +825,7 @@ void showAPIerrordialog(BuildContext context) {
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -842,11 +840,11 @@ void showAPIerrordialog(BuildContext context) {
 
   //Set variables as the alert itself
   var alert = AlertDialog(
-    backgroundColor: Color.fromRGBO(35, 22, 81, 1),
+    backgroundColor: const Color.fromRGBO(35, 22, 81, 1),
     title: Text(
       "API or parsing Error",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 25,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -857,7 +855,7 @@ void showAPIerrordialog(BuildContext context) {
     content: Text(
       "There has been a problem with API call or data parsing",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -886,7 +884,7 @@ void showGENERICerrordialog(BuildContext context) {
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -901,11 +899,11 @@ void showGENERICerrordialog(BuildContext context) {
 
   //Set variables as the alert itself
   var alert = AlertDialog(
-    backgroundColor: Color.fromRGBO(35, 22, 81, 1),
+    backgroundColor: const Color.fromRGBO(35, 22, 81, 1),
     title: Text(
       "Error: Generic error",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 25,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -916,7 +914,7 @@ void showGENERICerrordialog(BuildContext context) {
     content: Text(
       "Unexpected unknonwn error, please try later again",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -945,7 +943,7 @@ void showLOCATIONnotfounddialog(BuildContext context) {
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -960,11 +958,11 @@ void showLOCATIONnotfounddialog(BuildContext context) {
 
   //Set variables as the alert itself
   var alert = AlertDialog(
-    backgroundColor: Color.fromRGBO(35, 22, 81, 1),
+    backgroundColor: const Color.fromRGBO(35, 22, 81, 1),
     title: Text(
       "Error: Location error",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 25,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -975,7 +973,7 @@ void showLOCATIONnotfounddialog(BuildContext context) {
     content: Text(
       "Unexpected error when trying to get location, please try later again",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -1004,7 +1002,7 @@ void showINVALIDcityname(BuildContext context) {
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -1019,11 +1017,11 @@ void showINVALIDcityname(BuildContext context) {
 
   //Set variables as the alert itself
   var alert = AlertDialog(
-    backgroundColor: Color.fromRGBO(35, 22, 81, 1),
+    backgroundColor: const Color.fromRGBO(35, 22, 81, 1),
     title: Text(
       "Error: Invalid city name",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 25,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -1035,7 +1033,7 @@ void showINVALIDcityname(BuildContext context) {
       "Entered city name is invalid, please enter a valid city name. "
           "You can check in your built in Mapping app (Google maps or Apple maps)",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -1064,7 +1062,7 @@ void showNOCITYORPOSTALCODEprovided(BuildContext context) {
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -1079,11 +1077,11 @@ void showNOCITYORPOSTALCODEprovided(BuildContext context) {
 
   //Set variables as the alert itself
   var alert = AlertDialog(
-    backgroundColor: Color.fromRGBO(35, 22, 81, 1),
+    backgroundColor: const Color.fromRGBO(35, 22, 81, 1),
     title: Text(
       "Error: No city or Postal code provided",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 25,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
@@ -1095,7 +1093,7 @@ void showNOCITYORPOSTALCODEprovided(BuildContext context) {
       "No input has been provided, please provide a valid City name "
           "or Postal Code before continuing",
       style: GoogleFonts.quantico(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.normal,
           fontStyle: FontStyle.normal,
