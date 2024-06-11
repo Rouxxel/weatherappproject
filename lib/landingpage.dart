@@ -127,87 +127,93 @@ class _landingpageState extends State<landingpage> {
                     //Top container (Gesture to trigger functions)
                     GestureDetector(
                       onDoubleTap: () async {
-                        //Declare and obtain list with latitude and longitude
-                        List<double> latlon = await getgpslocation(context);
+                        //Use block to create new scope and limit lifespan of variables
+                        {
+                          //Declare and obtain list with latitude and longitude
+                          List<double> latlon = await getgpslocation(context);
 
-                        //Declare and obtain string of city and country
-                        String devicelocation =
-                            await getcitycountry(context, latlon);
+                          //Declare and obtain string of city and country
+                          String devicelocation =
+                          await getcitycountry(context, latlon);
 
-                        //Declare and obtain string of date and time
-                        Map<String, dynamic> dateinfo =
-                            getdatetimedata(context);
+                          //Declare and obtain string of date and time
+                          Map<String, dynamic> dateinfo =
+                          getdatetimedata(context);
 
-                        //Declare and obtain list with all weather information
-                        Map<String, dynamic> weatherinfo =
-                            await getCURRENTweatherdata(
-                                context: context, latlon: latlon);
+                          //Declare and obtain list with all weather information
+                          Map<String, dynamic> weatherinfo =
+                          await getCURRENTweatherdata(
+                              context: context, latlon: latlon);
 
-                        //Declare and obtain list with temp hourly, weekly and weather icons
-                        Map<String, dynamic> weekhouricondata =
-                            await getWEEKLYHOURLYtempsicons(
-                                context, latlon, dateinfo['daynum']);
+                          //Declare and obtain list with temp hourly, weekly and weather icons
+                          Map<String, dynamic> weekhouricondata =
+                          await getWEEKLYHOURLYtempsicons(
+                              context, latlon, dateinfo['daynum']);
 
-                        //Set state an all relevant variables
-                        setState(() {
-                          //DO NOT USE ASYNC IN SET STATE
+                          //Set state an all relevant variables
+                          setState(() {
+                            //DO NOT USE ASYNC IN SET STATE
 
-                          //Update relevant variables
-                          //Device location
-                          devicecitycountry = devicelocation;
+                            //Update relevant variables
+                            //Device location
+                            devicecitycountry = devicelocation;
 
-                          //Date and time
-                          datetime =
-                              "${dateinfo["weekdaystr"]} ${dateinfo["weekdaynum"]}, "
-                              "${dateinfo["monthstr"]} ${dateinfo['hour']}:"
-                              "${dateinfo["minutes"]}";
+                            //Date and time
+                            datetime =
+                            "${dateinfo["weekdaystr"]} ${dateinfo["weekdaynum"]}, "
+                                "${dateinfo["monthstr"]} ${dateinfo['hour']}:"
+                                "${dateinfo["minutes"]}";
 
-                          //Weather information
-                          centraltempnum = weatherinfo["Ctemp"];
-                          subtxtwcondition = weatherinfo["weathercond"];
-                          precipitation = weatherinfo["precipiMM"];
-                          humidity = weatherinfo["humid"];
-                          windspeed = weatherinfo["KPHwind"];
+                            //Weather information
+                            centraltempnum = weatherinfo["Ctemp"];
+                            subtxtwcondition = weatherinfo["weathercond"];
+                            precipitation = weatherinfo["precipiMM"];
+                            humidity = weatherinfo["humid"];
+                            windspeed = weatherinfo["KPHwind"];
 
-                          //Daily information
-                          //Using a for loop to assign day strings and corresponding max min temp
-                          for (int i = 0; i < days.length; i = i + 1) {
-                            //Construct the key dynamically
-                            String key =
-                                'weekdaystr${i == 0 ? '' : (i + 1).toString()}';
-                            days[i] = dateinfo[key];
+                            //Daily information
+                            //Using a for loop to assign day strings and corresponding max min temp
+                            for (int i = 0; i < days.length; i = i + 1) {
+                              //Construct the key dynamically
+                              String key =
+                                  'weekdaystr${i == 0 ? '' : (i + 1)
+                                  .toString()}';
+                              days[i] = dateinfo[key];
 
-                            //Assign the temperatures
-                            int dayindex = (dateinfo['daynum'] + i) %
-                                7; // Calculate the correct day index
-                            maxmintemps[i][0] = weekhouricondata['daily']
-                                ['day${dayindex + 1}']['Cmintemp'];
-                            maxmintemps[i][1] = weekhouricondata['daily']
-                                ['day${dayindex + 1}']['Cmaxtemp'];
+                              //Assign the temperatures
+                              int dayindex = (dateinfo['daynum'] + i) %
+                                  7; // Calculate the correct day index
+                              maxmintemps[i][0] = weekhouricondata['daily']
+                              ['day${dayindex + 1}']['Cmintemp'];
+                              maxmintemps[i][1] = weekhouricondata['daily']
+                              ['day${dayindex + 1}']['Cmaxtemp'];
 
-                            //Assign icons
-                            dailyiconsstr[i] = weekhouricondata['daily']
-                                ['day${dayindex + 1}']['icon'];
-                          }
+                              //Assign icons
+                              dailyiconsstr[i] = weekhouricondata['daily']
+                              ['day${dayindex + 1}']['icon'];
+                            }
 
-                          //Hourly information
-                          //Using a for loop to assign hours ints
-                          for (int i = 0; i < hours.length; i = i + 1) {
-                            //Construct the key dynamically
-                            String key =
-                                'hour${i == 0 ? '' : (i + 1).toString()}';
-                            hours[i] = dateinfo[key];
+                            //Hourly information
+                            //Using a for loop to assign hours ints
+                            for (int i = 0; i < hours.length; i = i + 1) {
+                              //Construct the key dynamically
+                              String key =
+                                  'hour${i == 0 ? '' : (i + 1).toString()}';
+                              hours[i] = dateinfo[key];
 
-                            //Assign the temperatures
-                            int hourindex = (DateTime.now().hour + i) % 24;
-                            temphours[i] = weekhouricondata['hourly']
-                                ['hour${hourindex + 1}']['Ctemp'];
+                              //Assign the temperatures
+                              int hourindex = (DateTime
+                                  .now()
+                                  .hour + i) % 24;
+                              temphours[i] = weekhouricondata['hourly']
+                              ['hour${hourindex + 1}']['Ctemp'];
 
-                            //Assign icons
-                            hourlyiconsstr[i] = weekhouricondata['hourly']
-                                ['hour${hourindex + 1}']['icon'];
-                          }
-                        });
+                              //Assign icons
+                              hourlyiconsstr[i] = weekhouricondata['hourly']
+                              ['hour${hourindex + 1}']['icon'];
+                            }
+                          });
+                        } //End of block
                       },
 
                       //Top Container
@@ -254,7 +260,7 @@ class _landingpageState extends State<landingpage> {
                                   ),
                                   maxLines: 2, //Allowing up to 2 lines
                                   softWrap:
-                                      true, //Enable text wrapping to avoid overflow
+                                  true, //Enable text wrapping to avoid overflow
                                 ),
                               ],
                             ),
@@ -478,7 +484,7 @@ class _landingpageState extends State<landingpage> {
                       child: Padding(
                         //Padding for the column within the container
                         padding:
-                            const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+                        const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
 
                         //Column with inner containers
                         child: Column(
@@ -502,7 +508,7 @@ class _landingpageState extends State<landingpage> {
                               child: Row(
                                 //Alignment in inner row
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
 
                                 //Children

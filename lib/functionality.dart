@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart'; //For GPS function
 import 'package:http/http.dart' as http; //For http resources
-import 'package:icons_flutter/icons_flutter.dart';
+import 'package:icons_flutter/icons_flutter.dart'; //For icon import
 import 'dart:convert' as conv; //For JSON parsing
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:intl/intl.dart'; //For data formatting import
+import 'package:flutter_dotenv/flutter_dotenv.dart'; //To access API key
 
-//GPS information
+//GPS information (controller variable)
 bool gpsaccess = false;
 
 //API key and other variables
-String OWeatherapikey = "809ed526e7c4e8e434c7f931a2e54742";
+String OWeatherapikey = useapikey();
 
 //To get API data with city name Uri.parse('https://api.openweathermap.org/data/2.5/weather?q=$selectedcity&exclude=minutely,alerts&appid=$apikey)'
 //To get API data with latitude and longitude Uri.parse('https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&exclude=minutely,alerts&appid=$apikey)'
@@ -110,15 +111,14 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       showNOCITYORPOSTALCODEprovided(context);
       throw Exception("--------User has entered an invalid city name--------");
     }
-
     // Use city name to build the URL
-    url =
-    'https://api.openweathermap.org/data/2.5/weather?q=$cityname&exclude=minutely,alerts&appid=$OWeatherapikey';
+    url ='https://api.openweathermap.org/data/2.5/weather?q=$cityname'
+        '&exclude=minutely,alerts&appid=$OWeatherapikey';
 
   } else if (latlon != null) {
     // Use latitude and longitude to build the URL
-    url =
-    'https://api.openweathermap.org/data/2.5/weather?lat=${latlon[0]}&lon=${latlon[1]}&exclude=minutely,alerts&appid=$OWeatherapikey';
+    url ='https://api.openweathermap.org/data/2.5/weather?lat=${latlon[0]}'
+        '&lon=${latlon[1]}&exclude=minutely,alerts&appid=$OWeatherapikey';
   } else {
     // If neither is provided, throw an error
     throw ArgumentError(
@@ -137,6 +137,16 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
     if (response.statusCode == 200) {
       // Parse response if response is successful
       Map<String, dynamic> APIdata = conv.jsonDecode(response.body);
+
+      //Validate API response (sanitize)
+      if (!VALIDATEgetCURRENTweatherdata(APIdata)) {
+
+        //Handle if API response is weird
+        showAPIerrordialog(context);
+        print("---API response is invalid, Stopping---");
+        throw Exception('Invalid API response structure');
+      }
+      print("---API response is valid, proceeding---");
 
       //Extract coordinates in case the input used is city name
       //Extract longitude and latitude
@@ -182,14 +192,14 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       double MBpressure = HPApressure / 100.0;
 
       int cloudcoverage =
-        APIdata.containsKey('clouds') ? APIdata['clouds']['all'] : 0;
+      APIdata.containsKey('clouds') ? APIdata['clouds']['all'] : 0;
 
       // Wind information
       double MPHwindspeed = (APIdata['wind']['speed'] as num).toDouble();
       double KPHwindspeed = MPHwindspeed * 1.60934;
       int winddirection = APIdata['wind']['deg'];
       double windgustMPH = APIdata['wind'].containsKey('gust') ?
-        (APIdata['wind']['gust'] as num).toDouble() : 0.0;
+      (APIdata['wind']['gust'] as num).toDouble() : 0.0;
       double windgustKPH = windgustMPH != 0.0 ? windgustMPH * 1.60934 : 0.0;
 
       // Water related things
@@ -209,7 +219,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
 
       // UV index
       double uvindex = APIdata.containsKey('uvi') ?
-        (APIdata['uvi'] as num).toDouble() : 0.0;
+      (APIdata['uvi'] as num).toDouble() : 0.0;
 
       //Extract sunrise and sunset timestamps and convert to hour and minute
       //Extract int of both
@@ -350,13 +360,21 @@ Future<String> getCURRENTweatheralerts(
   try{
     //Make API call
     final response = await http.get(url);
-    print("API getCURRENTweatheralerts response: ${response.body}");
 
     //Check if the response is successful
     if (response.statusCode == 200) {
 
       //Parse the response body if so
       final APIdata = conv.jsonDecode(response.body);
+
+      //Validate API response
+      if (!VALIDATEgetCURRENTweatheralerts(APIdata)){
+        //Handle if API response is weird
+        print("---API response is invalid, Stopping---");
+        showAPIerrordialog(context);
+        throw Exception('Invalid weather alerts data');
+      }
+      print("---API response is valid, proceeding---");
 
       //Extract wanted data
       if (APIdata['alerts'] != null && (APIdata['alerts'] as List).isNotEmpty){
@@ -368,6 +386,7 @@ Future<String> getCURRENTweatheralerts(
           event = event.substring(0, 25);
         }
 
+        print("API getCURRENTweatheralerts response: ${response.body}");
         print("Function String return: $event");
         return event;
       } else {
@@ -413,12 +432,22 @@ Future<Map<String, dynamic>> getWEEKLYHOURLYtempsicons(
   try {
     // Make API call
     final response = await http.get(url);
-    print("API getWEEKLYHOURLYtempsicons response: ${response.body}");
 
     //Check if API response is successful
     if (response.statusCode == 200) {
       //Parse the response body
       final APIdata = conv.jsonDecode(response.body);
+
+      //Validate API response
+      if (!VALIDATEgetWEEKLYHOURLYtempsicons(APIdata)){
+        //Handle if API is kind of weird
+        print("---API response is invalid, Stopping---");
+        showAPIerrordialog(context);
+        throw Exception('Invalid weekly or hourly data');
+      }
+      print("---API response is valid, proceeding---");
+
+      print("API getWEEKLYHOURLYtempsicons response: ${response.body}");
       final dailydata = APIdata['daily'];
       final hourlydata = APIdata['hourly'];
 
@@ -498,7 +527,7 @@ Future<Map<String, dynamic>> getWEEKLYHOURLYtempsicons(
     throw Exception('Generic error occurred');
   }
 
-  // Return and print successful result
+  //Return and print successful result
   print("getWEEKLYHOURLYtempsicons return value: $weekhouricondata");
   return weekhouricondata;
 }
@@ -519,8 +548,17 @@ Future<String> getcitycountry(
 
     //Check if the response is successful
     if (response.statusCode == 200) {
-      // Parse the response body
+      //Parse the response body
       List<dynamic> APIdata = conv.jsonDecode(response.body);
+
+      //Validate API response
+      if (!VALIDATEgetcitycountry(APIdata)){
+        //Handle if response is kinda weird
+        print("---API response is invalid, Stopping---");
+        showAPIerrordialog(context);
+        throw Exception('Invalid city or country data');
+      }
+      print("---API response is valid, proceeding---");
 
       //Extract city and country from data in Json
       if (APIdata.isNotEmpty) {
@@ -606,7 +644,7 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
     futureweekday = futureweekday == 0 ? 7 : futureweekday; //Adjust for Sunday
 
     datetime['weekdaystr${i + 1}'] =
-        weekdays[futureweekday]; //Insert future week day
+    weekdays[futureweekday]; //Insert future week day
     //Format= 'weekday2':weekdays[futureweekday], and so on
   }
 
@@ -623,7 +661,7 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
 
 /////////////////////////////////////////////////////////////////////////////
 
-//Data manipulation and checking
+//Data manipulation, retrieval and checking
 //To capitalize the first letter of the strings
 String capitalize(String input) {
   print("------String capitalization executed------");
@@ -638,26 +676,39 @@ String capitalize(String input) {
   }).join(' ');
 }
 
-//To check valid city (reserve for IT security)
-bool validateuserinput(String cityname) {
-  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
+//To check valid city
+String validateuserinput(BuildContext context,
+    String givencityname) {
   print("[------validateuserinput function executed------]");
+  if (givencityname == null || givencityname.isEmpty) {
 
-  if (cityname.isEmpty) {
-    return false;
+    //Handle empty Text field
+    showNOCITYORPOSTALCODEprovided(context);
+    print("Invalid user input");
+    throw ArgumentError("Input is empty");
   }
 
-  final validCharacters = RegExp(r'^[a-zA-Z\s\-]+$');
-  return cityname.length >= 2 &&
-      cityname.length <= 50 &&
-      validCharacters.hasMatch(cityname);
+  //Limit the valid characters by user
+  final validCharacters = RegExp(r'^[a-zA-Z0-9\s\-]+$');
+
+  if (givencityname.length >= 3 &&
+      givencityname.length <= 40 &&
+      validCharacters.hasMatch(givencityname)) {
+    print("Valid user input");
+    return givencityname;
+  } else {
+    //Handle invalid name or even possible attack
+    showINVALIDcityname(context);
+    print("Invalid user input");
+    throw ArgumentError("Invalid input: Input does not meet criteria");
+  }
 }
 
 //To convert icon codes into actual icons
 IconData returnCORRECTiconforweather(String striconcode) {
   //Use switch statement to select the correct case
   switch (striconcode) {
-    //For when it is day
+  //For when it is day
     case '01d':
       return WeatherIcons.wi_day_sunny;
     case '02d':
@@ -674,7 +725,7 @@ IconData returnCORRECTiconforweather(String striconcode) {
     case '50d':
       return WeatherIcons.wi_day_fog;
 
-    //For when it is night
+  //For when it is night
     case '01n':
       return WeatherIcons.wi_night_clear;
     case '02n':
@@ -692,6 +743,103 @@ IconData returnCORRECTiconforweather(String striconcode) {
       return WeatherIcons.wi_night_fog;
     default:
       return WeatherIcons.wi_na; // Default icon for unknown codes
+  }
+}
+
+//To retrieve the apikey from .env file
+String useapikey() {
+  String? oWeatherApiKey = dotenv.env['OWeatherapikey'];
+  if (oWeatherApiKey == null) {
+    throw Exception('API key not found');
+  }
+
+  print("---API key succesfully retrieved---");
+  //Return the API key
+  return oWeatherApiKey;
+}
+
+//To validate API response for getCURRENTweatherdata
+bool VALIDATEgetCURRENTweatherdata(Map<String, dynamic> data) {
+  // Check for the presence and types of essential fields
+  try {
+    // Coordinates
+    if (data['coord'] == null || data['coord']['lat'] == null || data['coord']['lon'] == null) return false;
+
+    // Weather
+    if (data['weather'] == null || data['weather'][0] == null || data['weather'][0]['icon'] == null || data['weather'][0]['description'] == null) return false;
+
+    // Main data
+    if (data['main'] == null || data['main']['temp'] == null || data['main']['feels_like'] == null || data['main']['temp_min'] == null || data['main']['temp_max'] == null || data['main']['humidity'] == null || data['main']['pressure'] == null) return false;
+
+    // Wind data
+    if (data['wind'] == null || data['wind']['speed'] == null || data['wind']['deg'] == null) return false;
+
+    // System data (sunrise and sunset)
+    if (data['sys'] == null || data['sys']['sunrise'] == null || data['sys']['sunset'] == null) return false;
+
+    // Optional fields (check if they exist, if they do, check their types)
+    if (data.containsKey('clouds') && data['clouds']['all'] == null) return false;
+    if (data.containsKey('rain') && data['rain']['1h'] == null) return false;
+    if (data.containsKey('snow') && data['snow']['1h'] == null) return false;
+    if (data.containsKey('uvi') && data['uvi'] == null) return false;
+
+    return true;
+  } catch (e) {
+    //If any error occurs during validation, return false
+    return false;
+  }
+}
+
+//To validate API response for getCURRENTweatheralerts
+bool VALIDATEgetCURRENTweatheralerts(Map<String, dynamic> data) {
+  try {
+    // Check if 'alerts' key is present and is a list
+    if (data.containsKey('alerts') && data['alerts'] is List) {
+      for (var alert in data['alerts']) {
+        if (alert['event'] == null || alert['event'] is! String) return false;
+      }
+    }
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+//To validate API response for getWEEKLYHOURLYtempsicons
+bool VALIDATEgetWEEKLYHOURLYtempsicons(Map<String, dynamic> data) {
+  try {
+    if (!data.containsKey('daily') || !data.containsKey('hourly')) return false;
+
+    // Validate daily data
+    for (var dayData in data['daily']) {
+      if (dayData['temp']['min'] == null || dayData['temp']['max'] == null || dayData['weather'][0]['icon'] == null) {
+        return false;
+      }
+    }
+
+    // Validate hourly data
+    for (var hourData in data['hourly']) {
+      if (hourData['temp'] == null || hourData['weather'][0]['icon'] == null) {
+        return false;
+      }
+    }
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+//To validate API response for getcitycountry
+bool VALIDATEgetcitycountry(List<dynamic> data) {
+  try {
+    if (data.isEmpty) return false;
+    if (data[0]['name'] == null || data[0]['country'] == null) return false;
+
+    return true;
+  } catch (e) {
+    return false;
   }
 }
 
@@ -734,7 +882,7 @@ void showLOCATIONdisableddialog(BuildContext context) {
     ),
     content: Text(
       "Please enable location services to use GPS feature, "
-      "turn on location services in your device settings",
+          "turn on location services in your device settings",
       style: GoogleFonts.quantico(
         textStyle: const TextStyle(
           fontSize: 18,
@@ -794,7 +942,7 @@ void showACCESStogpsdenieddialog(BuildContext context) {
     ),
     content: Text(
       "Access to location services has been denied, "
-      "please allow acees to use GPS feature",
+          "please allow acees to use GPS feature",
       style: GoogleFonts.quantico(
         textStyle: const TextStyle(
           fontSize: 18,
@@ -1114,5 +1262,3 @@ void showNOCITYORPOSTALCODEprovided(BuildContext context) {
     },
   );
 }
-
-

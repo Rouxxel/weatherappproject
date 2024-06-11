@@ -151,65 +151,69 @@ class _searchpageState extends State<searchpage> {
                                 alignment: Alignment.center,
                                 iconSize: 40,
                                 color: Colors.white,
+
                                 onPressed: () async {
-                                  //Update city according to user input
-                                  Dcitybyuser = _Scontroller.text;
+                                  //Use block to create new scope and limit lifespan of variables
+                                  {
+                                    //Update city according to user input
+                                    Dcitybyuser = validateuserinput(context, _Scontroller.text);
 
-                                  //Declare and obtain list with all weather information
-                                  Map<String, dynamic> Dweatherinfo =
-                                      await getCURRENTweatherdata(
-                                          context: context,
-                                          cityname: Dcitybyuser);
+                                    //Declare and obtain list with all weather information
+                                    Map<String, dynamic> Dweatherinfo =
+                                    await getCURRENTweatherdata(
+                                        context: context,
+                                        cityname: Dcitybyuser);
 
-                                  //Declare and obtain the city and country location
-                                  String Dcitylocation = await getcitycountry(
-                                      context, Dweatherinfo["coord"]);
+                                    //Declare and obtain the city and country location
+                                    String Dcitylocation = await getcitycountry(
+                                        context, Dweatherinfo["coord"]);
 
-                                  //Declare and obtain possible alerts
-                                  String Dalertstoday =
-                                      await getCURRENTweatheralerts(
-                                          context, Dweatherinfo["coord"]);
+                                    //Declare and obtain possible alerts
+                                    String Dalertstoday =
+                                    await getCURRENTweatheralerts(
+                                        context, Dweatherinfo["coord"]);
 
-                                  setState(() {
-                                    //Update citycountry string
-                                    Dcitycountry = Dcitylocation;
+                                    setState(() {
+                                      //Update citycountry string
+                                      Dcitycountry = Dcitylocation;
 
-                                    //Update date and time string
-                                    Ddatetime = Dweatherinfo["formatdatetime"];
+                                      //Update date and time string
+                                      Ddatetime = Dweatherinfo["formatdatetime"];
 
-                                    //Update alert
-                                    Dalert = Dalertstoday;
+                                      //Update alert
+                                      Dalert = Dalertstoday;
 
-                                    //Weather information
-                                    //Top container
-                                    Dcentraltempnum = Dweatherinfo["Ctemp"];
-                                    Dsubtxtwcondition =
-                                        Dweatherinfo["weathercond"];
+                                      //Weather information
+                                      //Top container
+                                      Dcentraltempnum = Dweatherinfo["Ctemp"];
+                                      Dsubtxtwcondition =
+                                      Dweatherinfo["weathercond"];
 
-                                    //Temp container
-                                    Dmaxtemp = Dweatherinfo["Ctempmax"];
-                                    Dfeelstemp = Dweatherinfo["Ctempfeel"];
-                                    Dmintemp = Dweatherinfo["Ctempmin"];
+                                      //Temp container
+                                      Dmaxtemp = Dweatherinfo["Ctempmax"];
+                                      Dfeelstemp = Dweatherinfo["Ctempfeel"];
+                                      Dmintemp = Dweatherinfo["Ctempmin"];
 
-                                    //Precipitation, Humidity, clouds container
-                                    Dprecipitation = Dweatherinfo["precipiMM"];
-                                    Dhumidity = Dweatherinfo["humid"];
-                                    Dcloudsper = Dweatherinfo["clouds"];
+                                      //Precipitation, Humidity, clouds container
+                                      Dprecipitation = Dweatherinfo["precipiMM"];
+                                      Dhumidity = Dweatherinfo["humid"];
+                                      Dcloudsper = Dweatherinfo["clouds"];
 
-                                    //Wind container
-                                    Dwinddir = Dweatherinfo["winddir"];
-                                    Dwindgust = Dweatherinfo["KPHwindg"];
-                                    Dwindspeed = Dweatherinfo["KPHwind"];
+                                      //Wind container
+                                      Dwinddir = Dweatherinfo["winddir"];
+                                      Dwindgust = Dweatherinfo["KPHwindg"];
+                                      Dwindspeed = Dweatherinfo["KPHwind"];
 
-                                    //Sun container
-                                    Dsunset = Dweatherinfo["sunsettime"];
-                                    Duvi = Dweatherinfo["uvi"];
-                                    Dsunrise = Dweatherinfo["sunrisetime"];
+                                      //Sun container
+                                      Dsunset = Dweatherinfo["sunsettime"];
+                                      Duvi = Dweatherinfo["uvi"];
+                                      Dsunrise = Dweatherinfo["sunrisetime"];
 
-                                    //Pressure container
-                                    Dpressurehpa = Dweatherinfo["pressHPA"];
-                                    Dpressuremb = Dweatherinfo["pressMB"];
-                                  });
+                                      //Pressure container
+                                      Dpressurehpa = Dweatherinfo["pressHPA"];
+                                      Dpressuremb = Dweatherinfo["pressMB"];
+                                    });
+                                  } //End of block
 
                                   //Use navigator to go to the landing page
                                   Navigator.of(context).push(
@@ -274,7 +278,7 @@ class _searchpageState extends State<searchpage> {
                               onTap: () {
                                 setState(() {
                                   _Scontroller.text =
-                                      "Stuttgart"; //TODO: see how to optimize this
+                                  "Stuttgart"; //TODO: see how to optimize this
                                 });
                               },
                               child: Container(
@@ -323,7 +327,7 @@ class _searchpageState extends State<searchpage> {
                               onTap: () {
                                 setState(() {
                                   _Scontroller.text =
-                                      "Paris"; //TODO: see how to optimize this
+                                  "Paris"; //TODO: see how to optimize this
                                 });
                               },
                               child: Container(
@@ -372,7 +376,7 @@ class _searchpageState extends State<searchpage> {
                               onTap: () {
                                 setState(() {
                                   _Scontroller.text =
-                                      "Shenzhen"; //TODO: see how to optimize this
+                                  "Shenzhen"; //TODO: see how to optimize this
                                 });
                               },
                               child: Container(
@@ -421,7 +425,7 @@ class _searchpageState extends State<searchpage> {
                               onTap: () {
                                 setState(() {
                                   _Scontroller.text =
-                                      "Tokyo"; //TODO: see how to optimize this
+                                  "Tokyo"; //TODO: see how to optimize this
                                 });
                               },
                               child: Container(
@@ -470,7 +474,7 @@ class _searchpageState extends State<searchpage> {
                               onTap: () {
                                 setState(() {
                                   _Scontroller.text =
-                                      "London"; //TODO: see how to optimize this
+                                  "London"; //TODO: see how to optimize this
                                 });
                               },
                               child: Container(
@@ -519,7 +523,7 @@ class _searchpageState extends State<searchpage> {
                               onTap: () {
                                 setState(() {
                                   _Scontroller.text =
-                                      "New York"; //TODO: see how to optimize this
+                                  "New York"; //TODO: see how to optimize this
                                 });
                               },
                               child: Container(
@@ -568,7 +572,7 @@ class _searchpageState extends State<searchpage> {
                               onTap: () {
                                 setState(() {
                                   _Scontroller.text =
-                                      "Madrid"; //TODO: see how to optimize this
+                                  "Madrid"; //TODO: see how to optimize this
                                 });
                               },
                               child: Container(
@@ -699,3 +703,4 @@ class _searchpageState extends State<searchpage> {
     );
   }
 }
+
