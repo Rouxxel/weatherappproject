@@ -9,6 +9,15 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
+//global variables
+
+List<String> citysugs= ["Stuttgart","Paris","Shenzhen","Tokyo","London",
+  "New York","Madrid","Riyadh","Bangkok","Caracas"];
+List<String> countrysugs= ["Germany","France","China","Japan","United Kingdom",
+  "United States","Spain","Saudi Arabia","Thailand","Venezuela"];
+
+//global variables
+/////////////////////////////////////////////////////////////////////////////
 //screen itself
 
 class searchpage extends StatefulWidget {
@@ -270,348 +279,61 @@ class _searchpageState extends State<searchpage> {
                         //Pad all sides evenly
                         padding: const EdgeInsets.all(20),
 
-                        //Use list view to create a scrollable options
-                        child: ListView(
-                          children: [
-                            //Suggestion 1
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                  "Stuttgart"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
 
-                                //Align Column of children to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
+                        //Use Listview.builder to avoid hardcoding 10 containers
+                        child: ListView.builder(
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            // Actual container blueprint
+                            return Column(
+                              //Alignment of the inner column
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
 
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Stuttgart, Germany",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _Scontroller.text = "${citysugs[index]}";
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: const Color.fromRGBO(77, 204, 189, 0.4),
+                                    ),
+                                    height: 100,
+                                    width: double.infinity,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 0,
+                                            horizontal: 20
+                                        ),
+                                        child: Text(
+                                          "${citysugs[index]}, ${countrysugs[index]}",
+                                          style: GoogleFonts.quantico(
+                                            textStyle: const TextStyle(
+                                              fontSize: 23,
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle: FontStyle.normal,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 2
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                  "Paris"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
+                                SizedBox(
+                                    height: 25
                                 ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Paris, France",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 3
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                  "Shenzhen"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Shenzhen, China",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 4
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                  "Tokyo"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Tokyo, Japan",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 5
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                  "London"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "London, United Kingdom",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 6
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                  "New York"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "New York, United States",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 7
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                  "Madrid"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Madrid, Spain",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                              ],
+                            );
+                          },
                         ),
+
                       ),
                     ),
                   ),

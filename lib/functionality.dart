@@ -1,11 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart'; //For GPS function
 import 'package:http/http.dart' as http; //For http resources
+import 'package:url_launcher/url_launcher.dart'; //To launch URLs
 import 'package:icons_flutter/icons_flutter.dart'; //For icon import
 import 'dart:convert' as conv; //For JSON parsing
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:intl/intl.dart'; //For data formatting import
-import 'package:flutter_dotenv/flutter_dotenv.dart'; //To access API key
+import 'package:flutter_dotenv/flutter_dotenv.dart'; //To access API key .env
 
 //GPS information (controller variable)
 bool gpsaccess = false;
@@ -92,16 +95,15 @@ Future<List<double>> getgpslocation(BuildContext context) async {
 /////////////////////////////////////////////////////////////////////////////
 
 //API and data extraction
-// Get current weather data by either latitude and longitude or city name
+//Get current weather data by either latitude and longitude or city name
 Future<Map<String, dynamic>> getCURRENTweatherdata({
   required BuildContext context,
   String? cityname, List<double>? latlon,}) async {
   print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
   print("[------getCURRENTweatherdata function executed------]");
 
-  // Determine the type of request
+  //Determine the type of request
   String url;
-
   if ((cityname != null) && (latlon != null)) {
     //If both are provided, throw an error
     throw ArgumentError('Do not provide both latitude-longitude and city name');
@@ -192,7 +194,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       double MBpressure = HPApressure / 100.0;
 
       int cloudcoverage =
-      APIdata.containsKey('clouds') ? APIdata['clouds']['all'] : 0;
+        APIdata.containsKey('clouds') ? APIdata['clouds']['all'] : 0;
 
       // Wind information
       double MPHwindspeed = (APIdata['wind']['speed'] as num).toDouble();
@@ -217,7 +219,7 @@ Future<Map<String, dynamic>> getCURRENTweatherdata({
       }
       double INprecipitation = MMprecipitation * 0.0393701;
 
-      // UV index
+      //UV index
       double uvindex = APIdata.containsKey('uvi') ?
       (APIdata['uvi'] as num).toDouble() : 0.0;
 
@@ -352,7 +354,8 @@ Future<String> getCURRENTweatheralerts(
 
   //Build the URL for the API call
   final url = Uri.parse(
-      'https://api.openweathermap.org/data/3.0/onecall?lat=${latlon[0]}&lon=${latlon[1]}&exclude=current,minutely,hourly,daily&appid=$OWeatherapikey');
+      'https://api.openweathermap.org/data/3.0/onecall?lat=${latlon[0]}&lon=${latlon[1]}'
+          '&exclude=current,minutely,hourly,daily&lang=en&appid=$OWeatherapikey');
 
   //Declare returning variable
   String event="No alerts today!!!";
@@ -538,9 +541,10 @@ Future<String> getcitycountry(
   print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
   print("[------getcitycountry function executed------]");
 
-  // Build the URL for the reverse geocoding API call
+  //Build the URL for the reverse geocoding API call
   String url =
-      'http://api.openweathermap.org/geo/1.0/reverse?lat=${latlon[0]}&lon=${latlon[1]}&limit=1&appid=$OWeatherapikey';
+      'https://api.openweathermap.org/geo/1.0/reverse?'
+      'lat=${latlon[0]}&lon=${latlon[1]}&limit=1&appid=$OWeatherapikey';
 
   try {
     //Make the API call
@@ -691,14 +695,14 @@ String validateuserinput(BuildContext context,
   //Limit the valid characters by user
   final validCharacters = RegExp(r'^[a-zA-Z0-9\s\-]+$');
 
-  if (givencityname.length >= 3 &&
+  if (givencityname.length >= 2 &&
       givencityname.length <= 40 &&
       validCharacters.hasMatch(givencityname)) {
     print("Valid user input");
     return givencityname;
   } else {
     //Handle invalid name or even possible attack
-    showINVALIDcityname(context);
+    showNICETRYfed(context);
     print("Invalid user input");
     throw ArgumentError("Invalid input: Input does not meet criteria");
   }
@@ -1240,6 +1244,67 @@ void showNOCITYORPOSTALCODEprovided(BuildContext context) {
     content: Text(
       "No input has been provided, please provide a valid City name "
           "or Postal Code before continuing",
+      style: GoogleFonts.quantico(
+        textStyle: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Colors.white,
+        ),
+      ),
+    ),
+    actions: [
+      okbutton,
+    ],
+  );
+
+  //Show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+//Function to display dont try to hack me pal provided
+void showNICETRYfed(BuildContext context) {
+  //Declare the buttons of alert
+  Widget okbutton = TextButton(
+    child: Text(
+      "Ok",
+      style: GoogleFonts.quantico(
+        textStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Color.fromRGBO(77, 204, 189, 1.0),
+        ),
+      ),
+    ),
+    onPressed: () {
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+  );
+
+  //Set variables as the alert itself
+  var alert = AlertDialog(
+    backgroundColor: const Color.fromRGBO(35, 22, 81, 1),
+    title: Text(
+      "You think you can SQL-inject me?",
+      style: GoogleFonts.quantico(
+        textStyle: const TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Color.fromRGBO(77, 204, 189, 1.0),
+        ),
+      ),
+    ),
+    content: Text(
+      "Seriously mate?, you really believed it was going to be that "
+          "easy?, get sanitized you Numbskull, bypass this you filthy"
+          " casual",
       style: GoogleFonts.quantico(
         textStyle: const TextStyle(
           fontSize: 18,
