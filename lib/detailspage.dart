@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:icons_flutter/icons_flutter.dart'; //For more icons
+import 'package:url_launcher/url_launcher.dart'; //For launching URLs
 
 //Other pages import
 import 'package:weatherappproject/landingpage.dart';
@@ -10,6 +11,15 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 //imports
 /////////////////////////////////////////////////////////////////////////////
 //global variables
+
+final Uri _websiteurl = Uri.parse('https://www.youtube.com/watch?v=1DD_NCM_RJs');
+
+Future<void> _launchUrl() async {
+  if (!await launchUrl(_websiteurl,
+      mode: LaunchMode.externalApplication)) {
+    throw Exception('Could not launch $_websiteurl');
+  }
+}
 
 //City name given by user
 String Dcitybyuser="";
@@ -951,6 +961,42 @@ class _detailspageState extends State<detailspage> {
                     ),
                   ),
 
+                  //Sized box for spacing
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  //Container 6 (Link to webpage)
+                  GestureDetector(
+                    onTap: () async {
+                      await _launchUrl();
+                    },
+
+                    child: Container(
+                      //Round up container's edges
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: const Color.fromRGBO(214, 255, 246, 0.3),
+                      ),
+                      height: 145,
+
+                      //Center the Row for the 3 containers (Maybe wrap with Center)
+                      child: Center(
+                        //Children
+                        child: Text(
+                          "Check out our Web site !!!",
+                          style: GoogleFonts.quantico(
+                            textStyle: const TextStyle(
+                              fontSize: 23,
+                              fontWeight: FontWeight.normal,
+                              fontStyle: FontStyle.normal,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
