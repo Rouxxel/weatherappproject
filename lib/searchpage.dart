@@ -9,6 +9,15 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
+//global variables
+
+List<String> citysugs= ["Stuttgart","Paris","Shenzhen","Tokyo","London",
+  "New York","Madrid","Riyadh","Bangkok","Caracas"];
+List<String> countrysugs= ["Germany","France","China","Japan","United Kingdom",
+  "United States","Spain","Saudi Arabia","Thailand","Venezuela"];
+
+//global variables
+/////////////////////////////////////////////////////////////////////////////
 //screen itself
 
 class searchpage extends StatefulWidget {
@@ -151,65 +160,69 @@ class _searchpageState extends State<searchpage> {
                                 alignment: Alignment.center,
                                 iconSize: 40,
                                 color: Colors.white,
+
                                 onPressed: () async {
-                                  //Update city according to user input
-                                  Dcitybyuser = _Scontroller.text;
+                                  //Use block to create new scope and limit lifespan of variables
+                                  {
+                                    //Update city according to user input
+                                    Dcitybyuser = validateuserinput(context, _Scontroller.text);
 
-                                  //Declare and obtain list with all weather information
-                                  Map<String, dynamic> Dweatherinfo =
-                                      await getCURRENTweatherdata(
-                                          context: context,
-                                          cityname: Dcitybyuser);
+                                    //Declare and obtain list with all weather information
+                                    Map<String, dynamic> Dweatherinfo =
+                                    await getCURRENTweatherdata(
+                                        context: context,
+                                        cityname: Dcitybyuser);
 
-                                  //Declare and obtain the city and country location
-                                  String Dcitylocation = await getcitycountry(
-                                      context, Dweatherinfo["coord"]);
+                                    //Declare and obtain the city and country location
+                                    String Dcitylocation = await getcitycountry(
+                                        context, Dweatherinfo["coord"]);
 
-                                  //Declare and obtain possible alerts
-                                  String Dalertstoday =
-                                      await getCURRENTweatheralerts(
-                                          context, Dweatherinfo["coord"]);
+                                    //Declare and obtain possible alerts
+                                    String Dalertstoday =
+                                    await getCURRENTweatheralerts(
+                                        context, Dweatherinfo["coord"]);
 
-                                  setState(() {
-                                    //Update citycountry string
-                                    Dcitycountry = Dcitylocation;
+                                    setState(() {
+                                      //Update citycountry string
+                                      Dcitycountry = Dcitylocation;
 
-                                    //Update date and time string
-                                    Ddatetime = Dweatherinfo["formatdatetime"];
+                                      //Update date and time string
+                                      Ddatetime = Dweatherinfo["formatdatetime"];
 
-                                    //Update alert
-                                    Dalert = Dalertstoday;
+                                      //Update alert
+                                      Dalert = Dalertstoday;
 
-                                    //Weather information
-                                    //Top container
-                                    Dcentraltempnum = Dweatherinfo["Ctemp"];
-                                    Dsubtxtwcondition =
-                                        Dweatherinfo["weathercond"];
+                                      //Weather information
+                                      //Top container
+                                      Dcentraltempnum = Dweatherinfo["Ctemp"];
+                                      Dsubtxtwcondition =
+                                      Dweatherinfo["weathercond"];
 
-                                    //Temp container
-                                    Dmaxtemp = Dweatherinfo["Ctempmax"];
-                                    Dfeelstemp = Dweatherinfo["Ctempfeel"];
-                                    Dmintemp = Dweatherinfo["Ctempmin"];
+                                      //Temp container
+                                      Dmaxtemp = Dweatherinfo["Ctempmax"];
+                                      Dfeelstemp = Dweatherinfo["Ctempfeel"];
+                                      Dmintemp = Dweatherinfo["Ctempmin"];
 
-                                    //Precipitation, Humidity, clouds container
-                                    Dprecipitation = Dweatherinfo["precipiMM"];
-                                    Dhumidity = Dweatherinfo["humid"];
-                                    Dcloudsper = Dweatherinfo["clouds"];
+                                      //Precipitation, Humidity, clouds container
+                                      Dprecipitation = Dweatherinfo["precipiMM"];
+                                      Dhumidity = Dweatherinfo["humid"];
+                                      Dcloudsper = Dweatherinfo["clouds"];
 
-                                    //Wind container
-                                    Dwinddir = Dweatherinfo["winddir"];
-                                    Dwindgust = Dweatherinfo["KPHwindg"];
-                                    Dwindspeed = Dweatherinfo["KPHwind"];
+                                      //Wind container
+                                      Dwinddir = Dweatherinfo["winddir"];
+                                      Dwindgust = Dweatherinfo["KPHwindg"];
+                                      Dwindspeed = Dweatherinfo["KPHwind"];
 
-                                    //Sun container
-                                    Dsunset = Dweatherinfo["sunsettime"];
-                                    Duvi = Dweatherinfo["uvi"];
-                                    Dsunrise = Dweatherinfo["sunrisetime"];
+                                      //Sun container
+                                      Dsunset = Dweatherinfo["sunsettime"];
+                                      Duvi = Dweatherinfo["uvi"];
+                                      Dsunrise = Dweatherinfo["sunrisetime"];
 
-                                    //Pressure container
-                                    Dpressurehpa = Dweatherinfo["pressHPA"];
-                                    Dpressuremb = Dweatherinfo["pressMB"];
-                                  });
+                                      //Pressure container
+                                      Dpressurehpa = Dweatherinfo["pressHPA"];
+                                      Dpressuremb = Dweatherinfo["pressMB"];
+                                    });
+                                  } //End of block
 
                                   //Use navigator to go to the landing page
                                   Navigator.of(context).push(
@@ -266,348 +279,61 @@ class _searchpageState extends State<searchpage> {
                         //Pad all sides evenly
                         padding: const EdgeInsets.all(20),
 
-                        //Use list view to create a scrollable options
-                        child: ListView(
-                          children: [
-                            //Suggestion 1
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                      "Stuttgart"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
 
-                                //Align Column of children to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
+                        //Use Listview.builder to avoid hardcoding 10 containers
+                        child: ListView.builder(
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            // Actual container blueprint
+                            return Column(
+                              //Alignment of the inner column
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
 
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Stuttgart, Germany",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _Scontroller.text = "${citysugs[index]}";
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: const Color.fromRGBO(77, 204, 189, 0.4),
+                                    ),
+                                    height: 100,
+                                    width: double.infinity,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 0,
+                                            horizontal: 20
+                                        ),
+                                        child: Text(
+                                          "${citysugs[index]}, ${countrysugs[index]}",
+                                          style: GoogleFonts.quantico(
+                                            textStyle: const TextStyle(
+                                              fontSize: 23,
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle: FontStyle.normal,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 2
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                      "Paris"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
+                                SizedBox(
+                                    height: 25
                                 ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Paris, France",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 3
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                      "Shenzhen"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Shenzhen, China",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 4
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                      "Tokyo"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Tokyo, Japan",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 5
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                      "London"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "London, United Kingdom",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 6
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                      "New York"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "New York, United States",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Sized box for spacing
-                            const SizedBox(
-                              height: 25,
-                            ),
-
-                            //Suggestion 7
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _Scontroller.text =
-                                      "Madrid"; //TODO: see how to optimize this
-                                });
-                              },
-                              child: Container(
-                                //Round up container's edges
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors
-                                      .black, //TODO: replace color with image
-                                ),
-                                height: 100,
-                                width: double.infinity,
-
-                                //Align text to center left of container
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-
-                                  //Pad children of the Column
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 20),
-
-                                    //Use column to organize texts
-                                    child: Text(
-                                      "Madrid, Spain",
-                                      style: GoogleFonts.quantico(
-                                        textStyle: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                              ],
+                            );
+                          },
                         ),
+
                       ),
                     ),
                   ),
@@ -699,3 +425,4 @@ class _searchpageState extends State<searchpage> {
     );
   }
 }
+

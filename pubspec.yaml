@@ -48,6 +48,7 @@ dependencies:
   google_fonts: ^6.2.1              #to directly use googlefonts instead of download-import
   icons_flutter: ^0.0.4             #to obtain a greater variety of icons
   intl: ^0.17.0                     #to get the date and time
+  flutter_dotenv: ^5.0.2            #to protect API key
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +80,7 @@ flutter:
   assets:
     - images/map.png
     - images/background.png
+    - envvar.env #To load the environment variables
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
