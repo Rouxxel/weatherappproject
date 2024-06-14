@@ -274,7 +274,7 @@ class _detailspageState extends State<detailspage> {
                         ),
 
                         Text(
-                          Dalert,
+                          capitalize(Dalert),
                           style: GoogleFonts.quantico(
                             textStyle: const TextStyle(
                               fontSize: 23,

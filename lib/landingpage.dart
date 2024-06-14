@@ -160,7 +160,7 @@ class _landingpageState extends State<landingpage> {
 
                             //Date and time
                             datetime =
-                            "${dateinfo["weekdaystr"]} ${dateinfo["weekdaynum"]}, "
+                            "${dateinfo["weekdaystr"]} ${dateinfo["daynum"]}, "
                                 "${dateinfo["monthstr"]} ${dateinfo['hour']}:"
                                 "${dateinfo["minutes"]}";
 
