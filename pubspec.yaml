@@ -38,13 +38,9 @@ dependencies:
 
   #packages from https://pub.dev/packages ==
   geolocator: ^11.0.0               #For generic location functions (GPS) cross-platform API
-  #Need "--no-sound-null-safety" in Run->Edit Configuration->Additional run args->Apply
-  #Android: Add permissions in AndriodManifes.xml file in children of <manifest> tag, then restart the App.
-  #iOS: Add string and key to Info.pilst file in order to access to device
 
   url_launcher: ^6.2.6              #to launch URLs and get API
   http: ^1.2.1                      #to consume HTTP resources
-  flutter_native_splash: ^2.4.0     #to style the splash screen when launching the app (possibly)
   google_fonts: ^6.2.1              #to directly use googlefonts instead of download-import
   icons_flutter: ^0.0.4             #to obtain a greater variety of icons
   intl: ^0.17.0                     #to get the date and time

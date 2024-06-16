@@ -369,6 +369,9 @@ Future<String> getCURRENTweatheralerts(
 
       //Parse the response body if so
       final APIdata = conv.jsonDecode(response.body);
+      //Remove latitude and longitude
+      APIdata.remove('lat');
+      APIdata.remove('lon');
 
       //Validate API response
       if (!VALIDATEgetCURRENTweatheralerts(APIdata)){
@@ -378,24 +381,24 @@ Future<String> getCURRENTweatheralerts(
         throw Exception('Invalid weather alerts data');
       }
       print("---API response is valid, proceeding---");
+      print("API getCURRENTweatheralerts response: ${response.body}");
 
       //Extract wanted data
       if (APIdata['alerts'] != null && (APIdata['alerts'] as List).isNotEmpty){
         //Extract data
         event = APIdata['alerts'][0]['event'];
+        print("Function String return: $event");
 
         //Limit the event variable to a maximum of 25 characters
         if (event.length > 25) {
           event = event.substring(0, 25);
         }
 
-        print("API getCURRENTweatheralerts response: ${response.body}");
-        print("Function String return: $event");
         return event;
       } else {
 
         //Handle case where no data is returned
-        print(event);
+        print("Function String return: $event");
         return event;
       }
     } else {
@@ -440,6 +443,9 @@ Future<Map<String, dynamic>> getWEEKLYHOURLYtempsicons(
     if (response.statusCode == 200) {
       //Parse the response body
       final APIdata = conv.jsonDecode(response.body);
+      //Remove latitude and longitude
+      APIdata.remove('lat');
+      APIdata.remove('lon');
 
       //Validate API response
       if (!VALIDATEgetWEEKLYHOURLYtempsicons(APIdata)){
@@ -554,6 +560,9 @@ Future<String> getcitycountry(
     if (response.statusCode == 200) {
       //Parse the response body
       List<dynamic> APIdata = conv.jsonDecode(response.body);
+      //Remove latitude and longitude
+      APIdata.remove('lat');
+      APIdata.remove('lon');
 
       //Validate API response
       if (!VALIDATEgetcitycountry(APIdata)){
