@@ -390,8 +390,9 @@ Future<String> getCURRENTweatheralerts(
         print("Function String return: $event");
 
         //Limit the event variable to a maximum of 25 characters
-        if (event.length > 25) {
-          event = event.substring(0, 25);
+        int limiter = 21;
+        if (event.length > limiter) {
+          event = event.substring(0, limiter);
         }
 
         return event;

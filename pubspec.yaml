@@ -37,13 +37,13 @@ dependencies:
   cupertino_icons: ^1.0.6
 
   #packages from https://pub.dev/packages ==
-  geolocator: ^11.0.0               #For generic location functions (GPS) cross-platform API
+  geolocator: ^12.0.0               #For generic location functions (GPS) cross-platform API
 
   url_launcher: ^6.2.6              #to launch URLs and get API
   http: ^1.2.1                      #to consume HTTP resources
   google_fonts: ^6.2.1              #to directly use googlefonts instead of download-import
   icons_flutter: ^0.0.4             #to obtain a greater variety of icons
-  intl: ^0.17.0                     #to get the date and time
+  intl: ^0.19.0                     #to get the date and time
   flutter_dotenv: ^5.0.2            #to protect API key
 
 dev_dependencies:
@@ -55,7 +55,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
