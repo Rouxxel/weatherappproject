@@ -623,8 +623,8 @@ Map<String, dynamic> getdatetimedata(BuildContext context) {
   DateTime datenowextracteddata = DateTime.now();
 
   //Define weekdays and months
-  List<String> weekdays = ['', 'Monday', 'Tuesday', 'Wednesday',
-    'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  List<String> weekdays = ['', 'Mon', 'Tue', 'Wed',
+    'Thur', 'Fri', 'Sat', 'Sun'];
   List<String> months = ['', 'January', 'February', 'March', 'April', 'May',
     'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 

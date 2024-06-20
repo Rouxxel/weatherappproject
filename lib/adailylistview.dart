@@ -59,7 +59,7 @@ class dailyweatherscreen extends StatelessWidget {
                       //Weekday text container
                       SizedBox(
                         //color: Colors.teal,
-                        width: 130,
+                        width: 52, //Minimize pixel overflow
                         height: double.infinity,
                         child: Align(
                           alignment: Alignment.centerLeft,
