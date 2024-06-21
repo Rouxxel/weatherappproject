@@ -273,18 +273,22 @@ class _detailspageState extends State<detailspage> {
                           ],
                         ),
 
-                        Text(
-                          capitalize(Dalert),
-                          style: GoogleFonts.quantico(
-                            textStyle: const TextStyle(
-                              fontSize: 23,
-                              fontWeight: FontWeight.normal,
-                              fontStyle: FontStyle.normal,
-                              color: Colors.white,
+                        SizedBox(
+                          width: 200,
+                          //Put in a sized box to avoid overflow
+                          child: Text(
+                            capitalize(Dalert),
+                            style: GoogleFonts.quantico(
+                              textStyle: const TextStyle(
+                                fontSize: 23,
+                                fontWeight: FontWeight.normal,
+                                fontStyle: FontStyle.normal,
+                                color: Colors.white,
+                              ),
                             ),
+                            maxLines: 4, //Allowing up to 4 lines
+                            softWrap: true, //Enable text wrapping to avoid overflow
                           ),
-                          maxLines: 4, //Allowing up to 4 lines
-                          softWrap: true, //Enable text wrapping to avoid overflow
                         ),
                       ],
                     ),

@@ -389,12 +389,6 @@ Future<String> getCURRENTweatheralerts(
         event = APIdata['alerts'][0]['event'];
         print("Function String return: $event");
 
-        //Limit the event variable to a maximum of 25 characters
-        int limiter = 21;
-        if (event.length > limiter) {
-          event = event.substring(0, limiter);
-        }
-
         return event;
       } else {
 
