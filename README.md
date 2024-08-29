@@ -1,5 +1,8 @@
 # weatherappproject
 
+!!!IMPORTANT!!!
+As of right now the code won't work because the API key was disabled before making this repository public
+
 This is a weather app project with a team of 6 people in UE university
 
 This is the final project for our Front-end and IT Agile courses
