@@ -130,25 +130,25 @@ class _landingpageState extends State<landingpage> {
                         //Use block to create new scope and limit lifespan of variables
                         {
                           //Declare and obtain list with latitude and longitude
-                          List<double> latlon = await getgpslocation(context);
+                          List<double> latlon = await get_gps_location(context);
 
                           //Declare and obtain string of city and country
-                          String devicelocation =
+                          String devicelocation = //TODO:RENABLE THIS
                           await getcitycountry(context, latlon);
 
                           //Declare and obtain string of date and time
                           Map<String, dynamic> dateinfo =
-                          getdatetimedata(context);
+                          get_date_time_data(context);
 
                           //Declare and obtain list with all weather information
                           Map<String, dynamic> weatherinfo =
-                          await getCURRENTweatherdata(
-                              context: context, latlon: latlon);
+                          await get_current_weather_datas(
+                              context: context, lat_lon: latlon);
 
                           //Declare and obtain list with temp hourly, weekly and weather icons
-                          Map<String, dynamic> weekhouricondata =
-                          await getWEEKLYHOURLYtempsicons(
-                              context, latlon, dateinfo['daynum']);
+                          //Map<String, dynamic> weekhouricondata =
+                          //await getWEEKLYHOURLYtempsicons( TODO:RENABLE this
+                          //    context, latlon, dateinfo['daynum']);
 
                           //Set state an all relevant variables
                           setState(() {
@@ -160,20 +160,20 @@ class _landingpageState extends State<landingpage> {
 
                             //Date and time
                             datetime =
-                            "${dateinfo["weekdaystr"]} ${dateinfo["daynum"]}, "
-                                "${dateinfo["monthstr"]} ${dateinfo['hour']}:"
+                            "${dateinfo["weekday_str"]} ${dateinfo["month_day_num"]}, "
+                                "${dateinfo["month_str"]} ${dateinfo['hour']}:"
                                 "${dateinfo["minutes"]}";
 
                             //Weather information
                             centraltempnum = weatherinfo["Ctemp"];
-                            subtxtwcondition = weatherinfo["weathercond"];
-                            precipitation = weatherinfo["precipiMM"];
+                            subtxtwcondition = weatherinfo["weather_cond"];
+                            precipitation = weatherinfo["precipi_MM"];
                             humidity = weatherinfo["humid"];
-                            windspeed = weatherinfo["KPHwind"];
+                            windspeed = weatherinfo["KPH_wind"];
 
-                            //Daily information
+                            //Daily information TODO: RENABLE THIS
                             //Using a for loop to assign day strings and corresponding max min temp
-                            for (int i = 0; i < days.length; i = i + 1) {
+                            /*for (int i = 0; i < days.length; i = i + 1) {
                               //Construct the key dynamically
                               String key =
                                   'weekdaystr${i == 0 ? '' : (i + 1)
@@ -211,7 +211,7 @@ class _landingpageState extends State<landingpage> {
                               //Assign icons
                               hourlyiconsstr[i] = weekhouricondata['hourly']
                               ['hour${hourindex + 1}']['icon'];
-                            }
+                            }*/
                           });
                         } //End of block
                       },
@@ -308,7 +308,7 @@ class _landingpageState extends State<landingpage> {
                             //container with width: 260,height: 26,)
                             Center(
                               child: Text(
-                                capitalize(subtxtwcondition),
+                                capitalize_strings(subtxtwcondition),
                                 style: GoogleFonts.quantico(
                                   textStyle: const TextStyle(
                                     fontSize: 25,

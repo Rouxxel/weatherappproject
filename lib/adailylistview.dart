@@ -79,7 +79,7 @@ class dailyweatherscreen extends StatelessWidget {
 
                       //Icon weather container
                       Icon(
-                          returnCORRECTiconforweather(dailyiconsstr[index]),
+                          return_correct_icon(dailyiconsstr[index]),
                         size: 35,
                         color: Colors.white,
                       ),

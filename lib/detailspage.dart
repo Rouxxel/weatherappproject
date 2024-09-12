@@ -209,7 +209,7 @@ class _detailspageState extends State<detailspage> {
                         //container with width: 260,height: 26,)
                         Center(
                           child: Text(
-                            capitalize(Dsubtxtwcondition),
+                            capitalize_strings(Dsubtxtwcondition),
                             style: GoogleFonts.quantico(
                               textStyle: const TextStyle(
                                 fontSize: 25,
@@ -277,7 +277,7 @@ class _detailspageState extends State<detailspage> {
                           width: 200,
                           //Put in a sized box to avoid overflow
                           child: Text(
-                            capitalize(Dalert),
+                            capitalize_strings(Dalert),
                             style: GoogleFonts.quantico(
                               textStyle: const TextStyle(
                                 fontSize: 23,

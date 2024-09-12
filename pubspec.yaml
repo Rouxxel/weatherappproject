@@ -45,6 +45,7 @@ dependencies:
   icons_flutter: ^0.0.4             #to obtain a greater variety of icons
   intl: ^0.19.0                     #to get the date and time
   flutter_dotenv: ^5.0.2            #to protect API key
+  win32: ^5.5.1
 
 dev_dependencies:
   flutter_test:
@@ -74,10 +75,9 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - images/map.png
-    - images/background.png
-    - envvar.env #To load the environment variables
-    - google_fonts/
+    - images/         #To load images
+    - envvar.env      #To load the environment variables
+    - google_fonts/   #To load fonts
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

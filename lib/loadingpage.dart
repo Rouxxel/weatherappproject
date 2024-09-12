@@ -32,7 +32,7 @@ class loadingpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //Get permission right away
-    getgpspermission(context);
+    get_gps_permissions(context);
 
     //Timer to automatically navigate to the landing page
     autonavigationtimer(context);

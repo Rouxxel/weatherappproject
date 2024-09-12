@@ -57,7 +57,7 @@ class hourlyweatherscreen extends StatelessWidget {
                   children: [
                     //Icon weather container
                     Icon(
-                      returnCORRECTiconforweather(hourlyiconsstr[index]),
+                      return_correct_icon(hourlyiconsstr[index]),
                       size: 35,
                       color: Colors.white,
                     ),

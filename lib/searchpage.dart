@@ -165,29 +165,27 @@ class _searchpageState extends State<searchpage> {
                                   //Use block to create new scope and limit lifespan of variables
                                   {
                                     //Update city according to user input
-                                    Dcitybyuser = validateuserinput(context, _Scontroller.text);
+                                    Dcitybyuser = validate_user_input(context, _Scontroller.text);
 
                                     //Declare and obtain list with all weather information
                                     Map<String, dynamic> Dweatherinfo =
-                                    await getCURRENTweatherdata(
+                                    await get_current_weather_datas(
                                         context: context,
-                                        cityname: Dcitybyuser);
+                                        city_name: Dcitybyuser);
 
                                     //Declare and obtain the city and country location
                                     String Dcitylocation = await getcitycountry(
                                         context, Dweatherinfo["coord"]);
 
                                     //Declare and obtain possible alerts
-                                    String Dalertstoday =
-                                    await getCURRENTweatheralerts(
-                                        context, Dweatherinfo["coord"]);
+                                    String Dalertstoday =Dweatherinfo["alert"];
 
                                     setState(() {
-                                      //Update citycountry string
+                                      //Update city_country string
                                       Dcitycountry = Dcitylocation;
 
                                       //Update date and time string
-                                      Ddatetime = Dweatherinfo["formatdatetime"];
+                                      Ddatetime = Dweatherinfo["format_date_time"];
 
                                       //Update alert
                                       Dalert = Dalertstoday;
@@ -196,31 +194,32 @@ class _searchpageState extends State<searchpage> {
                                       //Top container
                                       Dcentraltempnum = Dweatherinfo["Ctemp"];
                                       Dsubtxtwcondition =
-                                      Dweatherinfo["weathercond"];
+                                      Dweatherinfo["weather_cond"];
 
                                       //Temp container
-                                      Dmaxtemp = Dweatherinfo["Ctempmax"];
-                                      Dfeelstemp = Dweatherinfo["Ctempfeel"];
-                                      Dmintemp = Dweatherinfo["Ctempmin"];
+                                      Dmaxtemp = Dweatherinfo["Ctemp_max"];
+                                      Dmintemp = Dweatherinfo["Ctemp_min"];
+                                      Dfeelstemp = Dweatherinfo["Ctemp_feel"];
+
 
                                       //Precipitation, Humidity, clouds container
-                                      Dprecipitation = Dweatherinfo["precipiMM"];
+                                      Dprecipitation = Dweatherinfo["precipi_MM"];
                                       Dhumidity = Dweatherinfo["humid"];
                                       Dcloudsper = Dweatherinfo["clouds"];
 
                                       //Wind container
-                                      Dwinddir = Dweatherinfo["winddir"];
-                                      Dwindgust = Dweatherinfo["KPHwindg"];
-                                      Dwindspeed = Dweatherinfo["KPHwind"];
+                                      Dwinddir = Dweatherinfo["wind_direction"];
+                                      Dwindgust = Dweatherinfo["KPH_wind_g"];
+                                      Dwindspeed = Dweatherinfo["KPH_wind"];
 
                                       //Sun container
-                                      Dsunset = Dweatherinfo["sunsettime"];
+                                      Dsunset = Dweatherinfo["sunset_time"];
                                       Duvi = Dweatherinfo["uvi"];
-                                      Dsunrise = Dweatherinfo["sunrisetime"];
+                                      Dsunrise = Dweatherinfo["sunrise_time"];
 
                                       //Pressure container
-                                      Dpressurehpa = Dweatherinfo["pressHPA"];
-                                      Dpressuremb = Dweatherinfo["pressMB"];
+                                      Dpressurehpa = Dweatherinfo["press_HPA"];
+                                      Dpressuremb = Dweatherinfo["press_MB"];
                                     });
                                   } //End of block
 
