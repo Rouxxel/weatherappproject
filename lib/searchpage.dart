@@ -174,7 +174,7 @@ class _searchpageState extends State<searchpage> {
                                         city_name: Dcitybyuser);
 
                                     //Declare and obtain the city and country location
-                                    String Dcitylocation = await getcitycountry(
+                                    String Dcitylocation = await get_city_country(
                                         context, Dweatherinfo["coord"]);
 
                                     //Declare and obtain possible alerts
@@ -192,14 +192,14 @@ class _searchpageState extends State<searchpage> {
 
                                       //Weather information
                                       //Top container
-                                      Dcentraltempnum = Dweatherinfo["Ctemp"];
+                                      Dcentraltempnum = Dweatherinfo["C_temp"];
                                       Dsubtxtwcondition =
                                       Dweatherinfo["weather_cond"];
 
                                       //Temp container
-                                      Dmaxtemp = Dweatherinfo["Ctemp_max"];
-                                      Dmintemp = Dweatherinfo["Ctemp_min"];
-                                      Dfeelstemp = Dweatherinfo["Ctemp_feel"];
+                                      Dmaxtemp = Dweatherinfo["C_temp_max"];
+                                      Dmintemp = Dweatherinfo["C_temp_min"];
+                                      Dfeelstemp = Dweatherinfo["C_temp_feel"];
 
 
                                       //Precipitation, Humidity, clouds container

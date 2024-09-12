@@ -133,8 +133,8 @@ class _landingpageState extends State<landingpage> {
                           List<double> latlon = await get_gps_location(context);
 
                           //Declare and obtain string of city and country
-                          String devicelocation = //TODO:RENABLE THIS
-                          await getcitycountry(context, latlon);
+                          String devicelocation =
+                          await get_city_country(context, latlon);
 
                           //Declare and obtain string of date and time
                           Map<String, dynamic> dateinfo =
@@ -146,9 +146,9 @@ class _landingpageState extends State<landingpage> {
                               context: context, lat_lon: latlon);
 
                           //Declare and obtain list with temp hourly, weekly and weather icons
-                          //Map<String, dynamic> weekhouricondata =
-                          //await getWEEKLYHOURLYtempsicons( TODO:RENABLE this
-                          //    context, latlon, dateinfo['daynum']);
+                          Map<String, dynamic> weekhouricondata =
+                            await get_weekly_hourly_temperature_icons(
+                              context, latlon, dateinfo['month_day_num']);
 
                           //Set state an all relevant variables
                           setState(() {
@@ -165,37 +165,78 @@ class _landingpageState extends State<landingpage> {
                                 "${dateinfo["minutes"]}";
 
                             //Weather information
-                            centraltempnum = weatherinfo["Ctemp"];
+                            centraltempnum = weatherinfo["C_temp"];
                             subtxtwcondition = weatherinfo["weather_cond"];
                             precipitation = weatherinfo["precipi_MM"];
                             humidity = weatherinfo["humid"];
                             windspeed = weatherinfo["KPH_wind"];
 
-                            //Daily information TODO: RENABLE THIS
+                        //Daily information
+                        //Using a for loop to assign day strings and corresponding max min temp
+                        for (int i = 0; i < days.length; i=i+1) {
+                        int dayindex = (dateinfo['month_day_num'] + i) % 7; //Calculate the correct day index
+
+                        //Construct the key dynamically for day names
+                        String key = 'weekday_str${i == 0 ? '' : (i + 1).toString()}';
+                        days[i] = dateinfo[key];
+
+                        //Assign temperatures
+                        maxmintemps[i][0] = weekhouricondata['daily']
+                          ['day${dayindex + 1}']['C_min_temp'];
+                        maxmintemps[i][1] = weekhouricondata['daily']
+                          ['day${dayindex + 1}']['C_max_temp'];
+
+                        //Assign icon strings
+                        dailyiconsstr[i] = weekhouricondata['daily']
+                          ['day${dayindex + 1}']['icon'];
+                        }
+
+                        //Hourly information
+                        //Using a for loop to assign hours ints
+                        for (int i = 0; i < hours.length; i=i+1) {
+                          int hourindex = (DateTime.now().hour + i) % 24; //Calculate the correct hour index
+
+                          //Construct the key dynamically for hours
+                          String key = 'hour${i == 0 ? '' : (i + 1).toString()}';
+                          hours[i] = dateinfo[key];
+
+                          //Assign icon temperature
+                          temphours[i] = weekhouricondata['hourly']
+                            ['hour${hourindex + 1}']['C_temp'];
+
+                          //Assign icon strings
+                          hourlyiconsstr[i] = weekhouricondata['hourly']
+                            ['hour${hourindex + 1}']['icon'];
+                        }
+
+                            //Daily information
                             //Using a for loop to assign day strings and corresponding max min temp
-                            /*for (int i = 0; i < days.length; i = i + 1) {
+                            for (int i = 0; i < days.length; i = i + 1) {
+                              /*
                               //Construct the key dynamically
                               String key =
                                   'weekdaystr${i == 0 ? '' : (i + 1)
                                   .toString()}';
-                              days[i] = dateinfo[key];
+                              days[i] = dateinfo[key];*/
 
                               //Assign the temperatures
-                              int dayindex = (dateinfo['daynum'] + i) %
+                              /*
+                              int dayindex = (dateinfo['month_day_num'] + i) %
                                   7; // Calculate the correct day index
                               maxmintemps[i][0] = weekhouricondata['daily']
-                              ['day${dayindex + 1}']['Cmintemp'];
+                              ['day${dayindex + 1}']['C_min_temp'];
                               maxmintemps[i][1] = weekhouricondata['daily']
-                              ['day${dayindex + 1}']['Cmaxtemp'];
+                              ['day${dayindex + 1}']['C_max_temp'];*/
 
                               //Assign icons
+                              /*
                               dailyiconsstr[i] = weekhouricondata['daily']
-                              ['day${dayindex + 1}']['icon'];
+                              ['day${dayindex + 1}']['icon'];*/
                             }
 
                             //Hourly information
                             //Using a for loop to assign hours ints
-                            for (int i = 0; i < hours.length; i = i + 1) {
+                            /*for (int i = 0; i < hours.length; i = i + 1) {
                               //Construct the key dynamically
                               String key =
                                   'hour${i == 0 ? '' : (i + 1).toString()}';
@@ -206,7 +247,7 @@ class _landingpageState extends State<landingpage> {
                                   .now()
                                   .hour + i) % 24;
                               temphours[i] = weekhouricondata['hourly']
-                              ['hour${hourindex + 1}']['Ctemp'];
+                              ['hour${hourindex + 1}']['C_temp'];
 
                               //Assign icons
                               hourlyiconsstr[i] = weekhouricondata['hourly']

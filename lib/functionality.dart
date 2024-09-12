@@ -111,7 +111,7 @@ Future<List<double>> get_gps_location(BuildContext context) async {
 /////////////////////////////////////////////////////////////////////////////
 
 //API and data extraction
-//Get current weather data by either latitude and longitude or city name
+//Get current weather data by either latitude and longitude or city name, 2 calls
 Future<Map<String, dynamic>> get_current_weather_datas({
   required BuildContext context,
   String? city_name, List<double>? lat_lon,}) async {
@@ -291,11 +291,11 @@ Future<Map<String, dynamic>> get_current_weather_datas({
 
       //Precipitation
       double MM_precipitation = 0.0;
-      // Check if there's precipitation data
+      //Check if there's precipitation data
       if (API_data.containsKey('rain') && API_data['rain'].containsKey('1h')) {
         MM_precipitation = MM_precipitation + (API_data['rain']['1h'] as num).toDouble();
       }
-      // Check if there's snow data and add it to precipitation
+      //Check if there's snow data and add it to precipitation
       if (API_data.containsKey('snow') && API_data['snow'].containsKey('1h')) {
         MM_precipitation = MM_precipitation + (API_data['snow']['1h'] as num).toDouble();
       }
@@ -321,20 +321,20 @@ Future<Map<String, dynamic>> get_current_weather_datas({
         'icon_str': icon_str,
         'alert':event,
         //
-        'Ktemp': Ktemp,
-        'Ftemp': ((Ktemp - 273.15) * 9 / 5 + 32),
-        'Ctemp': (Ktemp - 273.15),
+        'K_temp': Ktemp,
+        'F_temp': ((Ktemp - 273.15) * 9 / 5 + 32),
+        'C_temp': (Ktemp - 273.15),
         //
-        'Ktemp_feel': Kfeels,
-        'Ftemp_feel': ((Kfeels - 273.15) * 9 / 5 + 32),
-        'Ctemp_feel': (Kfeels - 273.15),
+        'K_temp_feel': Kfeels,
+        'F_temp_feel': ((Kfeels - 273.15) * 9 / 5 + 32),
+        'C_temp_feel': (Kfeels - 273.15),
         //
-        'Ktemp_min': Ktemp_min,
-        'Ktemp_max': Ktemp_max,
-        'Ftemp_min': ((Ktemp_min - 273.15) * 9 / 5 + 32),
-        'Ftemp_max': ((Ktemp_max - 273.15) * 9 / 5 + 32),
-        'Ctemp_min': (Ktemp_min - 273.15),
-        'Ctemp_max': (Ktemp_max - 273.15),
+        'K_temp_min': Ktemp_min,
+        'K_temp_max': Ktemp_max,
+        'F_temp_min': ((Ktemp_min - 273.15) * 9 / 5 + 32),
+        'F_temp_max': ((Ktemp_max - 273.15) * 9 / 5 + 32),
+        'C_temp_min': (Ktemp_min - 273.15),
+        'C_temp_max': (Ktemp_max - 273.15),
         //
         'weather_cond': W_condition,
         //
@@ -377,18 +377,19 @@ Future<Map<String, dynamic>> get_current_weather_datas({
   return current_weather_data;
 }
 
-//Function to get daily max/min temp, hourly temp and icons
-Future<Map<String, dynamic>> getWEEKLYHOURLYtempsicons(
-    BuildContext context, List<double> latlon, int currentweekday) async {
+//Function to get daily max/min temp, hourly temp and icons, 1 call
+Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
+    BuildContext context, List<double> lat_lon, int current_weekday) async {
   print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
-  print("[------getWEEKLYHOURLYtempsicons function executed------]");
+  print("[------get_weekly_hourly_temperature_icons function executed------]");
 
   // Build URL using latitude and longitude
   final url = Uri.parse(
-      'https://api.openweathermap.org/data/3.0/onecall?lat=${latlon[0]}&lon=${latlon[1]}&exclude=current,minutely&appid=$_OWeather_api_key');
+      'https://api.openweathermap.org/data/3.0/onecall?lat=${lat_lon[0]}'
+          '&lon=${lat_lon[1]}&exclude=current,minutely&appid=$_OWeather_api_key');
 
   // Declare returning variable (2 sections)
-  Map<String, dynamic> weekhouricondata = {
+  Map<String, dynamic> week_hour_icon_data = {
     "daily": {},
     "hourly": {}
   };
@@ -400,13 +401,13 @@ Future<Map<String, dynamic>> getWEEKLYHOURLYtempsicons(
     //Check if API response is successful
     if (response.statusCode == 200) {
       //Parse the response body
-      final APIdata = conv.jsonDecode(response.body);
+      final API_data = conv.jsonDecode(response.body);
       //Remove latitude and longitude
-      APIdata.remove('lat');
-      APIdata.remove('lon');
+      API_data.remove('lat');
+      API_data.remove('lon');
 
       //Validate API response
-      if (!validate_weekly_hourly_weather(APIdata)){
+      if (!validate_weekly_hourly_weather(API_data)){
         //Handle if API is kind of weird
         print("---API response is invalid, Stopping---");
         show_api_error(context);
@@ -414,101 +415,72 @@ Future<Map<String, dynamic>> getWEEKLYHOURLYtempsicons(
       }
       print("---API response is valid, proceeding---");
 
-      print("API getWEEKLYHOURLYtempsicons response: ${response.body}");
-      final dailydata = APIdata['daily'];
-      final hourlydata = APIdata['hourly'];
+      print("API get_weekly_hourly_temperature_icons response: ${response.body}");
+      final daily_data = API_data['daily'];
+      final hourly_data = API_data['hourly'];
 
       //Process daily min/max temperatures and weather icons starting with current weekday
-      for (int i = 0; i < dailydata.length; i++) {
-        int dayindex = (currentweekday + i) % 7;
-        double Kmintemp = dailydata[i]['temp']['min'].toDouble();
-        double Kmaxtemp = dailydata[i]['temp']['max'].toDouble();
-        double Fmintemp = (Kmintemp - 273.15) * 9 / 5 + 32;
-        double Fmaxtemp = (Kmaxtemp - 273.15) * 9 / 5 + 32;
-        double Cmintemp = Kmintemp - 273.15;
-        double Cmaxtemp = Kmaxtemp - 273.15;
-        String weathericon = dailydata[i]['weather'][0]['icon'];
+      for (int i = 0; i < daily_data.length; i++) {
+        int day_index = (current_weekday + i) % 7;
+        double K_min_temp = daily_data[i]['temp']['min'].toDouble();
+        double K_max_temp = daily_data[i]['temp']['max'].toDouble();
+        String weather_icon = daily_data[i]['weather'][0]['icon'];
 
-        weekhouricondata['daily']['day${dayindex + 1}'] = {
-          'Kmintemp': Kmintemp,
-          'Kmaxtemp': Kmaxtemp,
-          'Fmintemp': Fmintemp,
-          'Fmaxtemp': Fmaxtemp,
-          'Cmintemp': Cmintemp,
-          'Cmaxtemp': Cmaxtemp,
-          'icon': weathericon
+        week_hour_icon_data['daily']['day${day_index + 1}'] = {
+          'K_min_temp': K_min_temp,
+          'K_max_temp': K_max_temp,
+          'F_min_temp': ((K_min_temp - 273.15) * 9 / 5 + 32),
+          'F_max_temp': ((K_max_temp - 273.15) * 9 / 5 + 32),
+          'C_min_temp': (K_min_temp - 273.15),
+          'C_max_temp': (K_max_temp - 273.15),
+          'icon': weather_icon
         };
-
-        //Enable this prints only for testing
-        //Print the values being inserted for daily data
-        /*
-        print("Day ${dayindex + 1} "
-            "Kmintemp: $Kmintemp, "
-            "Kmaxtemp: $Kmaxtemp, "
-            "Fmintemp: $Fmintemp, "
-            "Fmaxtemp: $Fmaxtemp, "
-            "Cmintemp: $Cmintemp, "
-            "Cmaxtemp: $Cmaxtemp, "
-            "icon: $weathericon");
-         */
-      } //Format is weekhouricondata['daily']['day1']['Cmintemp'];
+      } //Format is week_hour_icon_data['daily']['day1']['C_min_temp'];
 
       //Process hourly temperatures and weather icons for the next 24 hours
       for (int i = 0; i < 24; i++) {
-        int hourIndex = (DateTime.now().hour + i) % 24;
-        double Ktemp = (hourlydata[i]['temp'] as num).toDouble();
-        double Ftemp = (Ktemp - 273.15) * 9 / 5 + 32;
-        double Ctemp = Ktemp - 273.15;
-        String weatherIcon = hourlydata[i]['weather'][0]['icon'];
+        int hour_Index = (DateTime.now().hour + i) % 24;
+        double K_temp = (hourly_data[i]['temp'] as num).toDouble();
+        String weatherIcon = hourly_data[i]['weather'][0]['icon'];
 
-        weekhouricondata['hourly']['hour${hourIndex + 1}'] = {
-          'Ktemp': Ktemp,
-          'Ftemp': Ftemp,
-          'Ctemp': Ctemp,
+        week_hour_icon_data['hourly']['hour${hour_Index + 1}'] = {
+          'K_temp': K_temp,
+          'F_temp': ((K_temp - 273.15) * 9 / 5 + 32),
+          'C_temp': (K_temp - 273.15),
           'icon': weatherIcon
         };
-
-        //Enable this prints only for testing
-        // Print the values being inserted for hourly data
-        /*
-        print("Hour ${hourIndex + 1} "
-            "Ktemp: $Ktemp, "
-            "Ftemp: $Ftemp, "
-            "Ctemp: $Ctemp, "
-            "icon: $weatherIcon");
-        */
-      } //Format is weekhouricondata['hourly']['hour1']['Ctemp'];
+      } //Format is week_hour_icon_data['hourly']['hour1']['C_temp'];
     } else {
-      // Display API error
+      //Display API error
       show_api_error(context);
 
-      // Handle API problem
-      throw Exception('Failed to load weather alerts');
+      //Handle API problem
+      throw Exception('Failed hourly and weekly temperature and icon strings');
     }
   } catch (er) {
-    // Display generic error
+    //Display generic error
     show_generic_error(context);
 
-    // Handle any other errors
+    //Handle any other errors
     print('Error: $er');
     throw Exception('Generic error occurred');
   }
 
   //Return and print successful result
-  print("getWEEKLYHOURLYtempsicons return value: $weekhouricondata");
-  return weekhouricondata;
+  print("get_weekly_hourly_temperature_icons return value: $week_hour_icon_data");
+  return week_hour_icon_data;
 }
 
-//Obtain city and country
-Future<String> getcitycountry(
-    BuildContext context, List<double> latlon) async {
+//Obtain city and country, 1 call
+Future<String> get_city_country(
+    BuildContext context, List<double> lat_lon) async {
   print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
-  print("[------getcitycountry function executed------]");
+  print("[------get_city_country function executed------]");
 
   //Build the URL for the reverse geocoding API call
   String url =
       'https://api.openweathermap.org/geo/1.0/reverse?'
-      'lat=${latlon[0]}&lon=${latlon[1]}&limit=1&appid=$_OWeather_api_key';
+        'lat=${lat_lon[0]}&lon=${lat_lon[1]}&limit=1&appid=$_OWeather_api_key';
 
   try {
     //Make the API call
@@ -517,13 +489,13 @@ Future<String> getcitycountry(
     //Check if the response is successful
     if (response.statusCode == 200) {
       //Parse the response body
-      List<dynamic> APIdata = conv.jsonDecode(response.body);
+      List<dynamic> API_data = conv.jsonDecode(response.body);
       //Remove latitude and longitude
-      APIdata.remove('lat');
-      APIdata.remove('lon');
+      API_data.remove('lat');
+      API_data.remove('lon');
 
       //Validate API response
-      if (!validate_get_city_country(APIdata)){
+      if (!validate_get_city_country(API_data)){
         //Handle if response is kinda weird
         print("---API response is invalid, Stopping---");
         show_api_error(context);
@@ -532,17 +504,17 @@ Future<String> getcitycountry(
       print("---API response is valid, proceeding---");
 
       //Extract city and country from data in Json
-      if (APIdata.isNotEmpty) {
-        String city = APIdata[0]['name'];
-        String country = APIdata[0]['country'];
+      if (API_data.isNotEmpty) {
+        String city = API_data[0]['name'];
+        String country = API_data[0]['country'];
 
-        String citycountry = "$city, $country";
+        String city_country = "$city, $country";
 
-        print("API citycountry response: ${response.body}");
-        print("Function citycountry string: $citycountry");
+        print("API get_city_country response: ${response.body}");
+        print("Function get_city_country string: $city_country");
 
         //Return the formatted city and country string
-        return citycountry;
+        return city_country;
 
       } else {
         //Display location not found dialog
@@ -568,7 +540,7 @@ Future<String> getcitycountry(
   }
 }
 
-//Obtain date and time
+//Obtain date and time, 0 calls
 Map<String, dynamic> get_date_time_data(BuildContext context) {
   print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
   print("[------get_date_time_data function executed------]");
@@ -609,9 +581,7 @@ Map<String, dynamic> get_date_time_data(BuildContext context) {
 
   //Add the next six days' weekday names
   for (int i = 1; i <= 6; i=i+1) {
-    int future_week_day =
-        (date_now_extracted_data.weekday + i) % 7; //Go from the next day onwards
-        //TODO: test using weekday_num instead
+    int future_week_day = (weekday_num + i) % 7; //Go from the next day onwards
     future_week_day = future_week_day == 0 ? 7 : future_week_day; //Adjust for Sunday
 
     date_time['weekday_str${i + 1}'] = weekdays[future_week_day]; //Insert future week day
