@@ -79,7 +79,7 @@ class dailyweatherscreen extends StatelessWidget {
 
                       //Icon weather container
                       Icon(
-                          return_correct_icon(dailyiconsstr[index]),
+                          return_correct_icon(daily_icon_strs[index]),
                         size: 35,
                         color: Colors.white,
                       ),
@@ -92,7 +92,7 @@ class dailyweatherscreen extends StatelessWidget {
 
                         child: Center(
                           child: Text(
-                            "${maxmintemps[index][0].round()} - ${maxmintemps[index][1].round()} \u00B0C",
+                            "${daily_max_min_temps[index][0].round()} - ${daily_max_min_temps[index][1].round()} \u00B0C",
                             style: GoogleFonts.sansita(
                               textStyle: const TextStyle(
                                 fontSize: 23,

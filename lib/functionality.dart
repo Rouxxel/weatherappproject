@@ -108,6 +108,14 @@ Future<List<double>> get_gps_location(BuildContext context) async {
   }
 }
 
+//Function to launch URLs
+Future<void> launch_URL(String given_URL) async {
+  if (!await launchUrl(Uri.parse(given_URL),
+      mode: LaunchMode.externalApplication)) {
+    throw Exception('Could not launch $given_URL');
+  }
+}
+
 /////////////////////////////////////////////////////////////////////////////
 
 //API and data extraction
@@ -705,18 +713,6 @@ bool validate_weekly_hourly_weather(Map<String, dynamic> data) {
         return false;
       }
     }
-
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-//To validate API response for getcitycountry
-bool validate_get_city_country(List<dynamic> data) {
-  try {
-    if (data.isEmpty) return false;
-    if (data[0]['name'] == null || data[0]['country'] == null) return false;
 
     return true;
   } catch (e) {

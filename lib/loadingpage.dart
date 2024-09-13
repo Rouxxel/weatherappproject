@@ -11,7 +11,7 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 //functions-method
 
 // Function to navigate to the landing page after 8 seconds
-void autonavigationtimer(BuildContext context) {
+void _auto_nav_timer(BuildContext context) {
   //Use Future<t> method with .delayed(Duration(time unit:int))
   //to execute code after 8 seconds
   Future.delayed(const Duration(seconds: 8), () {
@@ -35,7 +35,7 @@ class loadingpage extends StatelessWidget {
     get_gps_permissions(context);
 
     //Timer to automatically navigate to the landing page
-    autonavigationtimer(context);
+    _auto_nav_timer(context);
 
     return MaterialApp(
       home: Scaffold(
@@ -45,13 +45,11 @@ class loadingpage extends StatelessWidget {
         body: Stack(
           children: [
             //Background image
-            Container(
-              child: Image.asset(
-                "images/map.png",
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-              ),
+            Image.asset(
+              "images/map.png",
+              fit: BoxFit.cover,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
             ),
 
             //Content of the page

@@ -16,117 +16,26 @@ import 'package:weatherappproject/ahourlylistview.dart';
 //global variables
 
 //Top most container in listview
-String devicecitycountry = "NaN, NaN";
-String datetime = "NaN NaN, NaN NaN:NaN";
-double centraltempnum = 0;
-String subtxtwcondition = "Double tap big zero";
+String device_location = "NaN, NaN";
+String date_time = "NaN NaN, NaN NaN:NaN";
+double center_temp_numb = 0;
+String subtext_condition = "Double tap big zero";
 
 //Middle container in listview
 double precipitation = 0.0;
 int humidity = 0;
-double windspeed = 0.0;
+double wind_speed = 0.0;
 
 //Bottom container in List view
-//Daily
-List<String> days = [
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-];
-List<List<double>> maxmintemps = [
-  [0.0, 0.0],
-  [0.0, 0.0],
-  [0.0, 0.0],
-  [0.0, 0.0],
-  [0.0, 0.0],
-  [0.0, 0.0],
-  [0.0, 0.0],
-];
-List<String> dailyiconsstr = ["NaN", "NaN", "NaN", "NaN", "NaN", "NaN", "NaN"];
+//Daily initialization
+List<String> days = List.generate(7, (_) => "NaN");
+List<List<double>> daily_max_min_temps = List.generate(7, (_) => [0.0, 0.0]);
+List<String> daily_icon_strs = List.generate(7, (_) => "NaN");
 
-//Hourly
-List<int> hours = [
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0
-];
-List<double> temphours = [
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0,
-  0.0
-];
-List<String> hourlyiconsstr = [
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN",
-  "NaN"
-];
+//Hourly initialization
+List<int> hours = List.generate(24, (_) => 0);
+List<double> hourly_temps = List.generate(24, (_) => 0.0);
+List<String> hourly_icon_strs = List.generate(24, (_) => "NaN");
 
 //global variables
 /////////////////////////////////////////////////////////////////////////////
@@ -140,7 +49,7 @@ class landingpage extends StatefulWidget {
 
 class _landingpageState extends State<landingpage> {
   //Prepare index controller for Hourly and Daily
-  int _selectedIndex = 0;
+  int _selected_index = 0;
   final List<Widget> _pages = [
     const hourlyweatherscreen(),
     const dailyweatherscreen(),
@@ -180,13 +89,11 @@ class _landingpageState extends State<landingpage> {
         body: Stack(
           children: [
             //Background image
-            Container(
-              child: Image.asset(
-                "images/background.png",
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-              ),
+            Image.asset(
+              "images/background.png",
+              fit: BoxFit.cover,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
             ),
 
             //Pad listview to maintain consistency
@@ -209,21 +116,21 @@ class _landingpageState extends State<landingpage> {
                         //Use block to create new scope and limit lifespan of variables
                         {
                           //Declare and obtain list with latitude and longitude
-                          List<double> latlon = await get_gps_location(context);
+                          List<double> lat_lon = await get_gps_location(context);
 
                           //Declare and obtain string of date and time
-                          Map<String, dynamic> dateinfo =
+                          Map<String, dynamic> date_info =
                               get_date_time_data(context);
 
                           //Declare and obtain list with all weather information
-                          Map<String, dynamic> weatherinfo =
+                          Map<String, dynamic> weather_info =
                               await get_current_weather_datas(
-                                  context: context, lat_lon: latlon);
+                                  context: context, lat_lon: lat_lon);
 
                           //Declare and obtain list with temp hourly, weekly and weather icons
-                          Map<String, dynamic> weekhouricondata =
+                          Map<String, dynamic> weekhour_icon_data =
                               await get_weekly_hourly_temperature_icons(
-                                  context, latlon, dateinfo['month_day_num']);
+                                  context, lat_lon, date_info['month_day_num']);
 
                           //Set state an all relevant variables
                           setState(() {
@@ -231,40 +138,40 @@ class _landingpageState extends State<landingpage> {
 
                             //Update relevant variables
                             //Device location
-                            devicecitycountry = weatherinfo["rough_location"];
+                            device_location = weather_info["rough_location"];
 
                             //Date and time
-                            datetime =
-                                "${dateinfo["weekday_str"]} ${dateinfo["month_day_num"]}, "
-                                "${dateinfo["month_str"]} ${dateinfo['hour']}:"
-                                "${dateinfo["minutes"]}";
+                            date_time =
+                                "${date_info["weekday_str"]} ${date_info["month_day_num"]}, "
+                                "${date_info["month_str"]} ${date_info['hour']}:"
+                                "${date_info["minutes"]}";
 
                             //Weather information
-                            centraltempnum = weatherinfo["C_temp"];
-                            subtxtwcondition = weatherinfo["weather_cond"];
-                            precipitation = weatherinfo["precipi_MM"];
-                            humidity = weatherinfo["humid"];
-                            windspeed = weatherinfo["KPH_wind"];
+                            center_temp_numb = weather_info["C_temp"];
+                            subtext_condition = weather_info["weather_cond"];
+                            precipitation = weather_info["precipi_MM"];
+                            humidity = weather_info["humid"];
+                            wind_speed = weather_info["KPH_wind"];
 
                             //Daily information
                             //Using a for loop to assign day strings and corresponding max min temp
                             for (int i = 0; i < days.length; i = i + 1) {
-                              int dayindex = (dateinfo['month_day_num'] + i) %
+                              int dayindex = (date_info['month_day_num'] + i) %
                                   7; //Calculate the correct day index
 
                               //Construct the key dynamically for day names
                               String key =
                                   'weekday_str${i == 0 ? '' : (i + 1).toString()}';
-                              days[i] = dateinfo[key];
+                              days[i] = date_info[key];
 
                               //Assign temperatures
-                              maxmintemps[i][0] = weekhouricondata['daily']
+                              daily_max_min_temps[i][0] = weekhour_icon_data['daily']
                                   ['day${dayindex + 1}']['C_min_temp'];
-                              maxmintemps[i][1] = weekhouricondata['daily']
+                              daily_max_min_temps[i][1] = weekhour_icon_data['daily']
                                   ['day${dayindex + 1}']['C_max_temp'];
 
                               //Assign icon strings
-                              dailyiconsstr[i] = weekhouricondata['daily']
+                              daily_icon_strs[i] = weekhour_icon_data['daily']
                                   ['day${dayindex + 1}']['icon'];
                             }
 
@@ -277,14 +184,14 @@ class _landingpageState extends State<landingpage> {
                               //Construct the key dynamically for hours
                               String key =
                                   'hour${i == 0 ? '' : (i + 1).toString()}';
-                              hours[i] = dateinfo[key];
+                              hours[i] = date_info[key];
 
                               //Assign icon temperature
-                              temphours[i] = weekhouricondata['hourly']
+                              hourly_temps[i] = weekhour_icon_data['hourly']
                                   ['hour${hourindex + 1}']['C_temp'];
 
                               //Assign icon strings
-                              hourlyiconsstr[i] = weekhouricondata['hourly']
+                              hourly_icon_strs[i] = weekhour_icon_data['hourly']
                                   ['hour${hourindex + 1}']['icon'];
                             }
                           });
@@ -292,7 +199,7 @@ class _landingpageState extends State<landingpage> {
                       },
 
                       //Top Container
-                      child: SizedBox(
+                      child: Container(
                         //color: Colors.brown,
                         height: 240,
                         child: Column(
@@ -320,11 +227,11 @@ class _landingpageState extends State<landingpage> {
 
                                 //Sized box for minimal spacing
                                 const SizedBox(
-                                  width: 5,
+                                  width: 4,
                                 ),
 
                                 Text(
-                                  devicecitycountry,
+                                  device_location,
                                   style: GoogleFonts.quantico(
                                     textStyle: const TextStyle(
                                       fontSize: 20,
@@ -342,29 +249,27 @@ class _landingpageState extends State<landingpage> {
 
                             //Subtext of top text (maybe punt in a container with
                             //width: 260, height: 18,)
-                            Center(
-                              child: Text(
-                                datetime,
-                                style: GoogleFonts.quantico(
-                                  textStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
-                                  ),
+                            Text(
+                              date_time,
+                              style: GoogleFonts.quantico(
+                                textStyle: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.normal,
+                                  fontStyle: FontStyle.normal,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
 
                             //Big temperature text (Do not remove expanded or container)
                             Expanded(
-                              child: SizedBox(
+                              child: Container(
                                 //color: Colors.greenAccent,
                                 width: 260,
                                 height: 140,
                                 child: Center(
                                   child: Text(
-                                    "${centraltempnum.round()}\u00B0C",
+                                    "${center_temp_numb.round()}\u00B0C",
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.sansita(
                                       textStyle: const TextStyle(
@@ -381,16 +286,14 @@ class _landingpageState extends State<landingpage> {
 
                             //Subtext of Big temperature text (maybe out in a
                             //container with width: 260,height: 26,)
-                            Center(
-                              child: Text(
-                                capitalize_strings(subtxtwcondition),
-                                style: GoogleFonts.quantico(
-                                  textStyle: const TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.normal,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
-                                  ),
+                            Text(
+                              capitalize_strings(subtext_condition),
+                              style: GoogleFonts.quantico(
+                                textStyle: const TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.normal,
+                                  fontStyle: FontStyle.normal,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -515,7 +418,7 @@ class _landingpageState extends State<landingpage> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${windspeed.round()} KMH",
+                                "${wind_speed.round()} KMH",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -594,7 +497,7 @@ class _landingpageState extends State<landingpage> {
                                     style: ElevatedButton.styleFrom(
                                       minimumSize: const Size(150, 45),
                                       //Dynamically change button background color
-                                      backgroundColor: _selectedIndex == 0
+                                      backgroundColor: _selected_index == 0
                                           ? const Color.fromRGBO(
                                               77, 204, 189, 1.0)
                                           : const Color.fromRGBO(
@@ -609,7 +512,7 @@ class _landingpageState extends State<landingpage> {
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.normal,
                                           //Dynamically change the Texts color
-                                          color: _selectedIndex == 0
+                                          color: _selected_index == 0
                                               ? const Color.fromRGBO(
                                                   35, 22, 81, 1.0)
                                               : Colors.white,
@@ -618,8 +521,8 @@ class _landingpageState extends State<landingpage> {
                                     ),
                                     onPressed: () {
                                       setState(() {
-                                        _selectedIndex = 0;
-                                        print("Current index: $_selectedIndex");
+                                        _selected_index = 0;
+                                        print("Current index: $_selected_index");
                                       });
                                     },
                                   ),
@@ -630,7 +533,7 @@ class _landingpageState extends State<landingpage> {
                                     style: ElevatedButton.styleFrom(
                                       minimumSize: const Size(150, 45),
                                       //Dynamically change button background color
-                                      backgroundColor: _selectedIndex == 1
+                                      backgroundColor: _selected_index == 1
                                           ? const Color.fromRGBO(
                                               77, 204, 189, 1.0)
                                           : const Color.fromRGBO(
@@ -646,7 +549,7 @@ class _landingpageState extends State<landingpage> {
                                           fontStyle: FontStyle.normal,
 
                                           //Dynamically change the Texts color
-                                          color: _selectedIndex == 1
+                                          color: _selected_index == 1
                                               ? const Color.fromRGBO(
                                                   35, 22, 81, 1.0)
                                               : Colors.white,
@@ -655,8 +558,8 @@ class _landingpageState extends State<landingpage> {
                                     ),
                                     onPressed: () {
                                       setState(() {
-                                        _selectedIndex = 1;
-                                        print("Current index: $_selectedIndex");
+                                        _selected_index = 1;
+                                        print("Current index: $_selected_index");
                                       });
                                     },
                                   )
@@ -666,7 +569,7 @@ class _landingpageState extends State<landingpage> {
 
                             //Results of selected option
                             Expanded(
-                              child: _pages[_selectedIndex],
+                              child: _pages[_selected_index],
                             ),
                           ],
                         ),
