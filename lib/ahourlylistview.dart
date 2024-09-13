@@ -57,14 +57,14 @@ class hourlyweatherscreen extends StatelessWidget {
                   children: [
                     //Icon weather container
                     Icon(
-                      returnCORRECTiconforweather(hourlyiconsstr[index]),
+                      return_correct_icon(hourly_icon_strs[index]),
                       size: 35,
                       color: Colors.white,
                     ),
 
                     //Temperature
                     Text(
-                      "${temphours[index].round()}\u00B0C",
+                      "${hourly_temps[index].round()}\u00B0C",
                       style: GoogleFonts.sansita(
                         textStyle: const TextStyle(
                           fontSize: 33,

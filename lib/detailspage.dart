@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:icons_flutter/icons_flutter.dart'; //For more icons
-import 'package:url_launcher/url_launcher.dart'; //For launching URLs
 
 //Other pages import
 import 'package:weatherappproject/landingpage.dart';
@@ -12,42 +11,39 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 /////////////////////////////////////////////////////////////////////////////
 //global variables
 
-final Uri _websiteurl = Uri.parse('https://www.youtube.com/watch?v=1DD_NCM_RJs');
-
-Future<void> _launchUrl() async {
-  if (!await launchUrl(_websiteurl,
-      mode: LaunchMode.externalApplication)) {
-    throw Exception('Could not launch $_websiteurl');
-  }
-}
+final String _web_URL = 'https://www.youtube.com/watch?v=1DD_NCM_RJs';
 
 //City name given by user
-String Dcitybyuser="";
+String D_city_by_user="";
 
 //Top most container in listview
-String Dcitycountry = "NaN, NaN";
-String Ddatetime="NaN NaN, NaN NaN:NaN";
-double Dcentraltempnum = 0;
-String Dsubtxtwcondition = "Please go to search page";
+String D_city_country = "NaN, NaN";
+String D_date_time="NaN NaN, NaN NaN:NaN";
+double D_central_temp_num = 0;
+String D_subtxt_weather_condition = "Please go to search page";
 
 //Alert container in Listview
-String Dalert = "No Location provided...";
+String D_weather_alert = "No Location provided...";
 
 //All other containers in listview
-double Dmaxtemp = 0;
-double Dfeelstemp = 0;
-double Dmintemp = 0;
-double Dprecipitation = 0.0;
-int Dhumidity = 0;
-int Dcloudsper = 0;
-int Dwinddir = 0;
-double Dwindgust = 0.0;
-double Dwindspeed = 0.0;
-String Dsunset = "NaN:NaN";
-double Duvi = 0.0;
-String Dsunrise = "NaN:NaN";
-double Dpressurehpa = 0.0;
-double Dpressuremb = 0.0;
+double D_max_temp = 0;
+double D_feels_temp = 0;
+double D_min_temp = 0;
+
+double D_precipitation = 0.0;
+int D_humidity = 0;
+int D_clouds_percent = 0;
+
+int D_wind_dir = 0;
+double D_wind_gust = 0.0;
+double D_wind_speed = 0.0;
+
+String D_sunset = "NaN:NaN";
+double D_uvi = 0.0;
+String D_sunrise = "NaN:NaN";
+
+double D_pressure_hpa = 0.0;
+double D_pressure_mb = 0.0;
 
 //global variables
 /////////////////////////////////////////////////////////////////////////////
@@ -96,13 +92,11 @@ class _detailspageState extends State<detailspage> {
         body: Stack(
           children: [
             //Background image
-            Container(
-              child: Image.asset(
-                "images/background.png",
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-              ),
+            Image.asset(
+              "images/background.png",
+              fit: BoxFit.cover,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
             ),
 
             //Pad listview to maintain consistency
@@ -151,7 +145,7 @@ class _detailspageState extends State<detailspage> {
                             ),
 
                             Text(
-                              Dcitycountry,
+                              D_city_country,
                               style: GoogleFonts.quantico(
                                 textStyle: const TextStyle(
                                   fontSize: 20,
@@ -170,7 +164,7 @@ class _detailspageState extends State<detailspage> {
                         //width: 260, height: 18,)
                         Center(
                           child: Text(
-                            Ddatetime,
+                            D_date_time,
                             style: GoogleFonts.quantico(
                               textStyle: const TextStyle(
                                 fontSize: 15,
@@ -190,7 +184,7 @@ class _detailspageState extends State<detailspage> {
                             height: 140,
                             child: Center(
                               child: Text(
-                                "${Dcentraltempnum.round()}\u00B0C",
+                                "${D_central_temp_num.round()}\u00B0C",
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
@@ -209,7 +203,7 @@ class _detailspageState extends State<detailspage> {
                         //container with width: 260,height: 26,)
                         Center(
                           child: Text(
-                            capitalize(Dsubtxtwcondition),
+                            capitalize_strings(D_subtxt_weather_condition),
                             style: GoogleFonts.quantico(
                               textStyle: const TextStyle(
                                 fontSize: 25,
@@ -277,7 +271,7 @@ class _detailspageState extends State<detailspage> {
                           width: 200,
                           //Put in a sized box to avoid overflow
                           child: Text(
-                            capitalize(Dalert),
+                            capitalize_strings(D_weather_alert),
                             style: GoogleFonts.quantico(
                               textStyle: const TextStyle(
                                 fontSize: 23,
@@ -331,7 +325,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "${Dmaxtemp.round()}\u00B0C",
+                              "${D_max_temp.round()}\u00B0C",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -370,7 +364,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "${Dfeelstemp.round()}\u00B0C",
+                              "${D_feels_temp.round()}\u00B0C",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -409,7 +403,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "${Dmintemp.round()}\u00B0C",
+                              "${D_min_temp.round()}\u00B0C",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -473,7 +467,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "${Dprecipitation}mm",
+                              "${D_precipitation}mm",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -512,7 +506,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "$Dhumidity%",
+                              "$D_humidity%",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -551,7 +545,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "$Dcloudsper%",
+                              "$D_clouds_percent%",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -615,7 +609,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "$Dwinddir\u00B0",
+                              "$D_wind_dir\u00B0",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -654,7 +648,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "${Dwindgust.round()} KMH",
+                              "${D_wind_gust.round()} KMH",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -693,7 +687,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "${Dwindspeed.round()} KMH",
+                              "${D_wind_speed.round()} KMH",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -757,7 +751,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              Dsunset,
+                              D_sunset,
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -796,7 +790,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "$Duvi",
+                              "$D_uvi",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -835,7 +829,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              Dsunrise,
+                              D_sunrise,
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -899,7 +893,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "${Dpressurehpa.round()}hPa",
+                              "${D_pressure_hpa.round()}hPa",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -938,7 +932,7 @@ class _detailspageState extends State<detailspage> {
                               color: Colors.white,
                             ),
                             Text(
-                              "${Dpressuremb}mb",
+                              "${D_pressure_mb}mb",
                               style: GoogleFonts.sansita(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -973,7 +967,7 @@ class _detailspageState extends State<detailspage> {
                   //Container 6 (Link to webpage)
                   GestureDetector(
                     onTap: () async {
-                      await _launchUrl();
+                      await launch_URL(_web_URL);
                     },
 
                     child: Container(

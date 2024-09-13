@@ -11,9 +11,9 @@ import 'package:weatherappproject/functionality.dart'; //Import necessary functi
 /////////////////////////////////////////////////////////////////////////////
 //global variables
 
-List<String> citysugs= ["Stuttgart","Paris","Shenzhen","Tokyo","London",
+List<String> city_suggestions= ["Stuttgart","Paris","Shenzhen","Tokyo","London",
   "New York","Madrid","Riyadh","Bangkok","Caracas"];
-List<String> countrysugs= ["Germany","France","China","Japan","United Kingdom",
+List<String> country_suggestion= ["Germany","France","China","Japan","United Kingdom",
   "United States","Spain","Saudi Arabia","Thailand","Venezuela"];
 
 //global variables
@@ -29,7 +29,7 @@ class searchpage extends StatefulWidget {
 
 class _searchpageState extends State<searchpage> {
   //Create a TextEditingController to control the TextField
-  final TextEditingController _Scontroller = TextEditingController();
+  final TextEditingController _text_controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +65,11 @@ class _searchpageState extends State<searchpage> {
         body: Stack(
           children: [
             //Background image
-            Container(
-              child: Image.asset(
-                "images/background.png",
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-              ),
+            Image.asset(
+              "images/background.png",
+              fit: BoxFit.cover,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
             ),
 
             //Pad listview to maintain consistency
@@ -105,7 +103,7 @@ class _searchpageState extends State<searchpage> {
                             //input Text field
                             child: TextField(
                               //Controller to update city variable based on user input
-                              controller: _Scontroller,
+                              controller: _text_controller,
 
                               //Decorate hint text
                               decoration: InputDecoration(
@@ -165,62 +163,56 @@ class _searchpageState extends State<searchpage> {
                                   //Use block to create new scope and limit lifespan of variables
                                   {
                                     //Update city according to user input
-                                    Dcitybyuser = validateuserinput(context, _Scontroller.text);
+                                    D_city_by_user = validate_user_input(context, _text_controller.text);
 
                                     //Declare and obtain list with all weather information
-                                    Map<String, dynamic> Dweatherinfo =
-                                    await getCURRENTweatherdata(
+                                    Map<String, dynamic> D_weather_info =
+                                    await get_current_weather_datas(
                                         context: context,
-                                        cityname: Dcitybyuser);
-
-                                    //Declare and obtain the city and country location
-                                    String Dcitylocation = await getcitycountry(
-                                        context, Dweatherinfo["coord"]);
+                                        city_name: D_city_by_user);
 
                                     //Declare and obtain possible alerts
-                                    String Dalertstoday =
-                                    await getCURRENTweatheralerts(
-                                        context, Dweatherinfo["coord"]);
+                                    String D_alerts_today =D_weather_info["alert"];
 
                                     setState(() {
-                                      //Update citycountry string
-                                      Dcitycountry = Dcitylocation;
+                                      //Update city_country string
+                                      D_city_country = D_weather_info["rough_location"];
 
                                       //Update date and time string
-                                      Ddatetime = Dweatherinfo["formatdatetime"];
+                                      D_date_time = D_weather_info["format_date_time"];
 
                                       //Update alert
-                                      Dalert = Dalertstoday;
+                                      D_weather_alert = D_alerts_today;
 
                                       //Weather information
                                       //Top container
-                                      Dcentraltempnum = Dweatherinfo["Ctemp"];
-                                      Dsubtxtwcondition =
-                                      Dweatherinfo["weathercond"];
+                                      D_central_temp_num = D_weather_info["C_temp"];
+                                      D_subtxt_weather_condition = D_weather_info["weather_cond"];
 
                                       //Temp container
-                                      Dmaxtemp = Dweatherinfo["Ctempmax"];
-                                      Dfeelstemp = Dweatherinfo["Ctempfeel"];
-                                      Dmintemp = Dweatherinfo["Ctempmin"];
+                                      D_max_temp = D_weather_info["C_temp_max"];
+                                      D_min_temp = D_weather_info["C_temp_min"];
+                                      D_feels_temp = D_weather_info["C_temp_feel"];
+
 
                                       //Precipitation, Humidity, clouds container
-                                      Dprecipitation = Dweatherinfo["precipiMM"];
-                                      Dhumidity = Dweatherinfo["humid"];
-                                      Dcloudsper = Dweatherinfo["clouds"];
+                                      D_precipitation = D_weather_info["precipi_MM"];
+                                      D_humidity = D_weather_info["humid"];
+                                      D_clouds_percent = D_weather_info["clouds"];
 
                                       //Wind container
-                                      Dwinddir = Dweatherinfo["winddir"];
-                                      Dwindgust = Dweatherinfo["KPHwindg"];
-                                      Dwindspeed = Dweatherinfo["KPHwind"];
+                                      D_wind_dir = D_weather_info["wind_direction"];
+                                      D_wind_gust = D_weather_info["KPH_wind_g"];
+                                      D_wind_speed = D_weather_info["KPH_wind"];
 
                                       //Sun container
-                                      Dsunset = Dweatherinfo["sunsettime"];
-                                      Duvi = Dweatherinfo["uvi"];
-                                      Dsunrise = Dweatherinfo["sunrisetime"];
+                                      D_sunset = D_weather_info["sunset_time"];
+                                      D_uvi = D_weather_info["uvi"];
+                                      D_sunrise = D_weather_info["sunrise_time"];
 
                                       //Pressure container
-                                      Dpressurehpa = Dweatherinfo["pressHPA"];
-                                      Dpressuremb = Dweatherinfo["pressMB"];
+                                      D_pressure_hpa = D_weather_info["press_HPA"];
+                                      D_pressure_mb = D_weather_info["press_MB"];
                                     });
                                   } //End of block
 
@@ -230,7 +222,9 @@ class _searchpageState extends State<searchpage> {
                                       builder: (context) => const detailspage(),
                                     ),
                                   );
-                                  print("Printing city given by user: $Dcitybyuser");
+                                  print("---------------------------------------------------------");
+                                  print("Printing city given by user: $D_city_by_user");
+                                  print("---------------------------------------------------------");
                                 },
                               ),
                             ),
@@ -294,7 +288,7 @@ class _searchpageState extends State<searchpage> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      _Scontroller.text = "${citysugs[index]}";
+                                      _text_controller.text = "${city_suggestions[index]}";
                                     });
                                   },
                                   child: Container(
@@ -312,7 +306,7 @@ class _searchpageState extends State<searchpage> {
                                             horizontal: 20
                                         ),
                                         child: Text(
-                                          "${citysugs[index]}, ${countrysugs[index]}",
+                                          "${city_suggestions[index]}, ${country_suggestion[index]}",
                                           style: GoogleFonts.quantico(
                                             textStyle: const TextStyle(
                                               fontSize: 23,
