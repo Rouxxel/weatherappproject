@@ -136,16 +136,16 @@ Future<Map<String, dynamic>> get_current_weather_datas({
   if (lat_lon != null) {
     //Use latitude and longitude to build the URL
     url ='https://api.openweathermap.org/data/2.5/weather?lat=${lat_lon[0]}'
-        '&lon=${lat_lon[1]}&exclude=minutely,alerts&appid=$_OWeather_api_key';
+        '&lon=${lat_lon[1]}&exclude=minutely&appid=$_OWeather_api_key';
   } else if (city_name != null) {
-    //Check cityname is valid (at least is not empty)
+    //Check city_name is valid (at least is not empty)
     if (city_name.isEmpty){
       show_no_city_or_postalcode_provided(context);
       throw Exception("--------User has entered an invalid city name--------");
     } else{
-      //Use city name to build the URL
+      //Use city_name to build the URL
       url ='https://api.openweathermap.org/data/2.5/weather?q=$city_name'
-          '&exclude=minutely,alerts&appid=$_OWeather_api_key';
+          '&exclude=minutely&appid=$_OWeather_api_key';
     }
   }
 
@@ -191,6 +191,10 @@ Future<Map<String, dynamic>> get_current_weather_datas({
       //Format the local time to a readable string
       String format_local_time = DateFormat('EEEE d, MMMM HH:mm').format(local_time);
 
+      //Extract city and country
+      String current_city_name = API_data['name'];
+      String current_country_code = API_data['sys']['country'];
+
       //Extract and store CURRENT weather data
       //Current Temperature
       double Ktemp = (API_data['main']['temp'] as num).toDouble();
@@ -210,6 +214,7 @@ Future<Map<String, dynamic>> get_current_weather_datas({
 
       //Possible alerts, requires a different URL than the 2 before and a new API call
       String event="No alerts today!!!";
+
       if (lat_lon != null) { //If latitud and longitud are provided
         ////////---------------------------------------------------------------
         final alert_URL = Uri.parse(
@@ -280,6 +285,7 @@ Future<Map<String, dynamic>> get_current_weather_datas({
         ////////---------------------------------------------------------------
       }
 
+
       //Wind information
       double MPH_windspeed = (API_data['wind']['speed'] as num).toDouble();
       double wind_gust_MPH = API_data['wind'].containsKey('gust') ?
@@ -320,6 +326,10 @@ Future<Map<String, dynamic>> get_current_weather_datas({
         'format_date_time': format_local_time,
         'icon_str': icon_str,
         'alert':event,
+        //
+        "current_city":current_city_name,
+        "current_country":current_country_code,
+        "rough_location":("$current_city_name, $current_country_code"),
         //
         'K_temp': Ktemp,
         'F_temp': ((Ktemp - 273.15) * 9 / 5 + 32),
@@ -469,75 +479,6 @@ Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
   //Return and print successful result
   print("get_weekly_hourly_temperature_icons return value: $week_hour_icon_data");
   return week_hour_icon_data;
-}
-
-//Obtain city and country, 1 call
-Future<String> get_city_country(
-    BuildContext context, List<double> lat_lon) async {
-  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
-  print("[------get_city_country function executed------]");
-
-  //Build the URL for the reverse geocoding API call
-  String url =
-      'https://api.openweathermap.org/geo/1.0/reverse?'
-        'lat=${lat_lon[0]}&lon=${lat_lon[1]}&limit=1&appid=$_OWeather_api_key';
-
-  try {
-    //Make the API call
-    final response = await http.get(Uri.parse(url));
-
-    //Check if the response is successful
-    if (response.statusCode == 200) {
-      //Parse the response body
-      List<dynamic> API_data = conv.jsonDecode(response.body);
-      //Remove latitude and longitude
-      API_data.remove('lat');
-      API_data.remove('lon');
-
-      //Validate API response
-      if (!validate_get_city_country(API_data)){
-        //Handle if response is kinda weird
-        print("---API response is invalid, Stopping---");
-        show_api_error(context);
-        throw Exception('Invalid city or country data');
-      }
-      print("---API response is valid, proceeding---");
-
-      //Extract city and country from data in Json
-      if (API_data.isNotEmpty) {
-        String city = API_data[0]['name'];
-        String country = API_data[0]['country'];
-
-        String city_country = "$city, $country";
-
-        print("API get_city_country response: ${response.body}");
-        print("Function get_city_country string: $city_country");
-
-        //Return the formatted city and country string
-        return city_country;
-
-      } else {
-        //Display location not found dialog
-        show_location_not_found(context);
-
-        //Handle case where no data is returned
-        return 'Location not found';
-      }
-    } else {
-      //Display API error dialog
-      show_api_error(context);
-
-      //Handle API error
-      throw Exception('Failed to load location data');
-    }
-  } catch (er) {
-    //Display Generic error dialog
-    show_generic_error(context);
-
-    // Handle any other errors
-    print('Error: $er');
-    return 'Error getting location';
-  }
 }
 
 //Obtain date and time, 0 calls

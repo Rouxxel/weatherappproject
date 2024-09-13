@@ -173,16 +173,12 @@ class _searchpageState extends State<searchpage> {
                                         context: context,
                                         city_name: Dcitybyuser);
 
-                                    //Declare and obtain the city and country location
-                                    String Dcitylocation = await get_city_country(
-                                        context, Dweatherinfo["coord"]);
-
                                     //Declare and obtain possible alerts
                                     String Dalertstoday =Dweatherinfo["alert"];
 
                                     setState(() {
                                       //Update city_country string
-                                      Dcitycountry = Dcitylocation;
+                                      Dcitycountry = Dweatherinfo["rough_location"];
 
                                       //Update date and time string
                                       Ddatetime = Dweatherinfo["format_date_time"];
