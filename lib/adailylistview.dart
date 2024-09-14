@@ -14,6 +14,12 @@ class dailyweatherscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    //Media Query
+    double screen_width = MediaQuery.of(context).size.width;
+    double screen_height = MediaQuery.of(context).size.height;
+    double screen_pixel_ratio = MediaQuery.of(context).devicePixelRatio;
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(35, 22, 81, 0),
 

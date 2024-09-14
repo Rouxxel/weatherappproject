@@ -37,6 +37,11 @@ class loadingpage extends StatelessWidget {
     //Timer to automatically navigate to the landing page
     _auto_nav_timer(context);
 
+    //Media Query
+    double screen_width = MediaQuery.of(context).size.width;
+    double screen_height = MediaQuery.of(context).size.height;
+    double screen_pixel_ratio = MediaQuery.of(context).devicePixelRatio;
+
     return MaterialApp(
       home: Scaffold(
         //Background main color
@@ -48,8 +53,8 @@ class loadingpage extends StatelessWidget {
             Image.asset(
               "images/map.png",
               fit: BoxFit.cover,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              width: screen_width,
+              height: screen_height,
             ),
 
             //Content of the page
@@ -76,8 +81,8 @@ class loadingpage extends StatelessWidget {
                       child: Text(
                         "ForKast",
                         style: GoogleFonts.pressStart2p(
-                          textStyle: const TextStyle(
-                            fontSize: 45,
+                          textStyle: TextStyle(
+                            fontSize: (screen_width * 0.1009),
                             fontWeight: FontWeight.normal,
                             fontStyle: FontStyle.normal,
                             color: Colors.white,
@@ -95,8 +100,8 @@ class loadingpage extends StatelessWidget {
                       child: Text(
                         "Loading...",
                         style: GoogleFonts.quantico(
-                          textStyle: const TextStyle(
-                            fontSize: 26,
+                          textStyle: TextStyle(
+                            fontSize: (screen_width * 0.07),
                             fontWeight: FontWeight.normal,
                             fontStyle: FontStyle.normal,
                             color: Color.fromRGBO(77, 204, 189, 1.0),

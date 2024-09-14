@@ -33,6 +33,11 @@ class _searchpageState extends State<searchpage> {
 
   @override
   Widget build(BuildContext context) {
+    //Media Query
+    double screen_width = MediaQuery.of(context).size.width;
+    double screen_height = MediaQuery.of(context).size.height;
+    double screen_pixel_ratio = MediaQuery.of(context).devicePixelRatio;
+
     return MaterialApp(
       home: Scaffold(
         //Background main color
@@ -68,8 +73,8 @@ class _searchpageState extends State<searchpage> {
             Image.asset(
               "images/background.png",
               fit: BoxFit.cover,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              width: screen_width,
+              height: screen_height,
             ),
 
             //Pad listview to maintain consistency
