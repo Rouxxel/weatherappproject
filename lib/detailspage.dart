@@ -38,9 +38,9 @@ int D_wind_dir = 0;
 double D_wind_gust = 0.0;
 double D_wind_speed = 0.0;
 
-String D_sunset = "NaN:NaN";
+String D_sunset = "00:00";
 double D_uvi = 0.0;
-String D_sunrise = "NaN:NaN";
+String D_sunrise = "00:00";
 
 double D_pressure_hpa = 0.0;
 double D_pressure_mb = 0.0;
@@ -81,7 +81,7 @@ class _detailspageState extends State<detailspage> {
             child: Text(
               "ForKast",
               style: GoogleFonts.pressStart2p(
-                textStyle: const TextStyle(
+                textStyle: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.normal,
                   fontStyle: FontStyle.normal,
@@ -184,21 +184,16 @@ class _detailspageState extends State<detailspage> {
 
                         // Big temperature text (Do not remove expanded or container)
                         Expanded(
-                          child: SizedBox(
-                            //color: Colors.greenAccent,
-                            width: 260,
-                            height: 140,
-                            child: Center(
-                              child: Text(
-                                "${D_central_temp_num.round()}\u00B0C",
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.sansita(
-                                  textStyle: const TextStyle(
-                                    fontSize: 120,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
-                                  ),
+                          child: Center(
+                            child: Text(
+                              "${D_central_temp_num.round()}\u00B0C",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.sansita(
+                                textStyle: const TextStyle(
+                                  fontSize: 120,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.normal,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),

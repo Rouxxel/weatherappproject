@@ -225,9 +225,7 @@ class _landingpageState extends State<landingpage> {
 
                               //Children
                               children: [
-                                const Icon(
-                                  MaterialIcons
-                                      .location_on, //maybe location_city
+                                const Icon(MaterialIcons.location_on, //maybe location_city
                                   size: 30,
                                   color: Colors.white,
                                 ),
@@ -268,23 +266,18 @@ class _landingpageState extends State<landingpage> {
                               ),
                             ),
 
-                            //Big temperature text (Do not remove expanded or container)
+                            //Big temperature text (Do not remove expanded)
                             Expanded(
-                              child: Container(
-                                //color: Colors.greenAccent,
-                                width: 260,
-                                height: 140,
-                                child: Center(
-                                  child: Text(
-                                    "${center_temp_numb.round()}\u00B0C",
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.sansita(
-                                      textStyle: const TextStyle(
-                                        fontSize: 120,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.normal,
-                                        color: Colors.white,
-                                      ),
+                              child: Center(
+                                child: Text(
+                                  "${center_temp_numb.round()}\u00B0C",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.sansita(
+                                    textStyle: const TextStyle(
+                                      fontSize: 120,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
@@ -502,7 +495,7 @@ class _landingpageState extends State<landingpage> {
                                   ElevatedButton(
                                     //Manipulate button size
                                     style: ElevatedButton.styleFrom(
-                                      minimumSize: const Size(150, 45),
+                                      minimumSize: Size((screen_width * 0.339), 45),
                                       //Dynamically change button background color
                                       backgroundColor: _selected_index == 0
                                           ? const Color.fromRGBO(
@@ -538,7 +531,7 @@ class _landingpageState extends State<landingpage> {
                                   ElevatedButton(
                                     //Manipulate button size
                                     style: ElevatedButton.styleFrom(
-                                      minimumSize: const Size(150, 45),
+                                      minimumSize: Size((screen_width * 0.339), 45),
                                       //Dynamically change button background color
                                       backgroundColor: _selected_index == 1
                                           ? const Color.fromRGBO(

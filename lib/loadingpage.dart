@@ -81,8 +81,8 @@ class loadingpage extends StatelessWidget {
                       child: Text(
                         "ForKast",
                         style: GoogleFonts.pressStart2p(
-                          textStyle: TextStyle(
-                            fontSize: (screen_width * 0.1009),
+                          textStyle: const TextStyle(
+                            fontSize: 45,
                             fontWeight: FontWeight.normal,
                             fontStyle: FontStyle.normal,
                             color: Colors.white,
@@ -100,8 +100,8 @@ class loadingpage extends StatelessWidget {
                       child: Text(
                         "Loading...",
                         style: GoogleFonts.quantico(
-                          textStyle: TextStyle(
-                            fontSize: (screen_width * 0.07),
+                          textStyle: const TextStyle(
+                            fontSize: 26,
                             fontWeight: FontWeight.normal,
                             fontStyle: FontStyle.normal,
                             color: Color.fromRGBO(77, 204, 189, 1.0),
