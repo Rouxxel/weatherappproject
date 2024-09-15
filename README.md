@@ -1,11 +1,9 @@
 # weatherappproject
 
 !!!IMPORTANT!!!
-As of right now the code won't work because the API key was disabled before making this repository public
+For it to work, it requires an OpenWeather One Call API 3.0, might perform order 
 
-This is a weather app project with a team of 6 people in UE university
-
-This is the final project for our Front-end and IT Agile courses
+This is a weather app project with a team of 6 people in University of Europe for Applied Sciences as a final project for our Front-end and IT Agile courses
 
 The app will provide weather information and forecast services to its users, it will use
 of external packages like http for APIs, geolocator for GPS location and real time connection
