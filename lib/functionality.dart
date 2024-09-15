@@ -51,21 +51,21 @@ void get_gps_permissions(BuildContext context) async {
     //Handle several possible scenarios after permission asked
     switch(permission){
       case LocationPermission.unableToDetermine:
-        //Handle when permission status couldn't be determined
+      //Handle when permission status couldn't be determined
         print("Unable to determine GPS permission status");
         show_gps_unable_to_determine(context);
         _gps_access=false;
         return Future.error("Unable to determine GPS permission status");
 
       case LocationPermission.denied:
-        //Handle denied permission
+      //Handle denied permission
         print("GPS Permission denied");
         show_gps_access_denied(context);
         _gps_access=false;
         return Future.error("GPS permissions denied");
 
       case LocationPermission.deniedForever:
-        //Handle permanently denied permission
+      //Handle permanently denied permission
         print("GPS Permission denied permanently");
         show_gps_access_denied(context);
         _gps_access=false;
@@ -164,8 +164,8 @@ Future<Map<String, dynamic>> get_current_weather_datas({
   try {
     //Make API call
     final response = url.isEmpty ?
-      throw Exception("URL cannot be Empty")
-      : await http.get(Uri.parse(url));
+    throw Exception("URL cannot be Empty")
+        : await http.get(Uri.parse(url));
 
     //Check response success
     if (response.statusCode == 200) {
@@ -218,7 +218,7 @@ Future<Map<String, dynamic>> get_current_weather_datas({
       String W_condition = API_data['weather'][0]['description'];
       double HPA_pressure = (API_data['main']['pressure'] as num).toDouble();
       int cloud_coverage =
-        API_data.containsKey('clouds') ? API_data['clouds']['all'] : 0;
+      API_data.containsKey('clouds') ? API_data['clouds']['all'] : 0;
 
       //Possible alerts, requires a different URL than the 2 before and a new API call
       String event="No alerts today!!!";
@@ -297,7 +297,7 @@ Future<Map<String, dynamic>> get_current_weather_datas({
       //Wind information
       double MPH_windspeed = (API_data['wind']['speed'] as num).toDouble();
       double wind_gust_MPH = API_data['wind'].containsKey('gust') ?
-        (API_data['wind']['gust'] as num).toDouble() : 0.0;
+      (API_data['wind']['gust'] as num).toDouble() : 0.0;
       int wind_direction = API_data['wind']['deg'];
 
       //Water related things
@@ -316,7 +316,7 @@ Future<Map<String, dynamic>> get_current_weather_datas({
 
       //UV index
       double UV_index = API_data.containsKey('uvi') ?
-        (API_data['uvi'] as num).toDouble() : 0.0;
+      (API_data['uvi'] as num).toDouble() : 0.0;
 
       //Extract sunrise and sunset timestamps and convert to hour and minute
       //Convert API_data['sys']['sunrise'] and API_data['sys']['sunset'] to DateTime format
@@ -880,7 +880,7 @@ void show_gps_unable_to_determine(BuildContext context){
     ),
     content: Text(
       "There was an error with your device's GPS, it was unable to"
-        "determine your current position, please try again later",
+          "determine your current position, please try again later",
       style: GoogleFonts.quantico(
         textStyle: const TextStyle(
           fontSize: 18,
@@ -966,6 +966,65 @@ void show_gps_access_denied(BuildContext context) {
 
 // Function to display API error dialog (if API or parsing fails)
 void show_api_error(BuildContext context) {
+  //Declare the buttons of alert
+  Widget okbutton = TextButton(
+    child: Text(
+      "Ok",
+      style: GoogleFonts.quantico(
+        textStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Color.fromRGBO(77, 204, 189, 1.0),
+        ),
+      ),
+    ),
+    onPressed: () {
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+  );
+
+  //Set variables as the alert itself
+  var alert = AlertDialog(
+    backgroundColor: const Color.fromRGBO(35, 22, 81, 1),
+    title: Text(
+      "API or parsing Error",
+      style: GoogleFonts.quantico(
+        textStyle: const TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Color.fromRGBO(77, 204, 189, 1.0),
+        ),
+      ),
+    ),
+    content: Text(
+      "There has been a problem with API call or data parsing",
+      style: GoogleFonts.quantico(
+        textStyle: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.normal,
+          fontStyle: FontStyle.normal,
+          color: Colors.white,
+        ),
+      ),
+    ),
+    actions: [
+      okbutton,
+    ],
+  );
+
+  //Show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+//Function to display error on fetching weather data
+void show_weather_data_fetching_error(BuildContext context) {
   //Declare the buttons of alert
   Widget okbutton = TextButton(
     child: Text(

@@ -31,13 +31,67 @@ class _searchpageState extends State<searchpage> {
   //Create a TextEditingController to control the TextField
   final TextEditingController _text_controller = TextEditingController();
 
+  //Public function to fetch all detailed weather data
+  Future<void> fetch_detailed_weather_data(String text_controller) async{
+    //Use block to create new scope and limit lifespan of variables
+    {
+      //Update city according to user input
+      D_city_by_user = validate_user_input(context, text_controller);
+
+      //Declare and obtain list with all weather information
+      Map<String, dynamic> D_weather_info =
+      await get_current_weather_datas(
+          context: context,
+          city_name: D_city_by_user);
+
+      //Declare and obtain possible alerts
+      String D_alerts_today =D_weather_info["alert"];
+
+      setState(() {
+        //Update city_country string
+        D_city_country = D_weather_info["rough_location"];
+
+        //Update date and time string
+        D_date_time = D_weather_info["format_date_time"];
+
+        //Update alert
+        D_weather_alert = D_alerts_today;
+
+        //Weather information
+        //Top container
+        D_central_temp_num = D_weather_info["C_temp"];
+        D_subtxt_weather_condition = D_weather_info["weather_cond"];
+
+        //Temp container
+        D_max_temp = D_weather_info["C_temp_max"];
+        D_min_temp = D_weather_info["C_temp_min"];
+        D_feels_temp = D_weather_info["C_temp_feel"];
+
+
+        //Precipitation, Humidity, clouds container
+        D_precipitation = D_weather_info["precipi_MM"];
+        D_humidity = D_weather_info["humid"];
+        D_clouds_percent = D_weather_info["clouds"];
+
+        //Wind container
+        D_wind_dir = D_weather_info["wind_direction"];
+        D_wind_gust = D_weather_info["KPH_wind_g"];
+        D_wind_speed = D_weather_info["KPH_wind"];
+
+        //Sun container
+        D_sunset = D_weather_info["sunset_time"];
+        D_uvi = D_weather_info["uvi"];
+        D_sunrise = D_weather_info["sunrise_time"];
+
+        //Pressure container
+        D_pressure_hpa = D_weather_info["press_HPA"];
+        D_pressure_mb = D_weather_info["press_MB"];
+      });
+    } //End of block
+  }
+
   @override
   Widget build(BuildContext context) {
-    //Media Query
-    double screen_width = MediaQuery.of(context).size.width;
-    double screen_height = MediaQuery.of(context).size.height;
-    double screen_pixel_ratio = MediaQuery.of(context).devicePixelRatio;
-
     return MaterialApp(
       home: Scaffold(
         //Background main color
@@ -73,8 +127,8 @@ class _searchpageState extends State<searchpage> {
             Image.asset(
               "images/background.png",
               fit: BoxFit.cover,
-              width: screen_width,
-              height: screen_height,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
             ),
 
             //Pad listview to maintain consistency
@@ -165,61 +219,8 @@ class _searchpageState extends State<searchpage> {
                                 color: Colors.white,
 
                                 onPressed: () async {
-                                  //Use block to create new scope and limit lifespan of variables
-                                  {
-                                    //Update city according to user input
-                                    D_city_by_user = validate_user_input(context, _text_controller.text);
 
-                                    //Declare and obtain list with all weather information
-                                    Map<String, dynamic> D_weather_info =
-                                    await get_current_weather_datas(
-                                        context: context,
-                                        city_name: D_city_by_user);
-
-                                    //Declare and obtain possible alerts
-                                    String D_alerts_today =D_weather_info["alert"];
-
-                                    setState(() {
-                                      //Update city_country string
-                                      D_city_country = D_weather_info["rough_location"];
-
-                                      //Update date and time string
-                                      D_date_time = D_weather_info["format_date_time"];
-
-                                      //Update alert
-                                      D_weather_alert = D_alerts_today;
-
-                                      //Weather information
-                                      //Top container
-                                      D_central_temp_num = D_weather_info["C_temp"];
-                                      D_subtxt_weather_condition = D_weather_info["weather_cond"];
-
-                                      //Temp container
-                                      D_max_temp = D_weather_info["C_temp_max"];
-                                      D_min_temp = D_weather_info["C_temp_min"];
-                                      D_feels_temp = D_weather_info["C_temp_feel"];
-
-
-                                      //Precipitation, Humidity, clouds container
-                                      D_precipitation = D_weather_info["precipi_MM"];
-                                      D_humidity = D_weather_info["humid"];
-                                      D_clouds_percent = D_weather_info["clouds"];
-
-                                      //Wind container
-                                      D_wind_dir = D_weather_info["wind_direction"];
-                                      D_wind_gust = D_weather_info["KPH_wind_g"];
-                                      D_wind_speed = D_weather_info["KPH_wind"];
-
-                                      //Sun container
-                                      D_sunset = D_weather_info["sunset_time"];
-                                      D_uvi = D_weather_info["uvi"];
-                                      D_sunrise = D_weather_info["sunrise_time"];
-
-                                      //Pressure container
-                                      D_pressure_hpa = D_weather_info["press_HPA"];
-                                      D_pressure_mb = D_weather_info["press_MB"];
-                                    });
-                                  } //End of block
+                                  await fetch_detailed_weather_data(_text_controller.text);
 
                                   //Use navigator to go to the landing page
                                   Navigator.of(context).push(
@@ -228,7 +229,7 @@ class _searchpageState extends State<searchpage> {
                                     ),
                                   );
                                   print("---------------------------------------------------------");
-                                  print("Printing city given by user: $D_city_by_user");
+                                  print("City given by user: $D_city_by_user");
                                   print("---------------------------------------------------------");
                                 },
                               ),
@@ -424,4 +425,3 @@ class _searchpageState extends State<searchpage> {
     );
   }
 }
-
