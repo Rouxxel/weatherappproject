@@ -6,6 +6,7 @@ import 'package:icons_flutter/icons_flutter.dart'; //For more icons
 import 'package:weatherappproject/home_page.dart';
 import 'package:weatherappproject/details_page.dart';
 import 'package:weatherappproject/methods.dart'; //Import necessary functionality
+import 'package:weatherappproject/validation_methods.dart'; //Import necessary functionality
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
