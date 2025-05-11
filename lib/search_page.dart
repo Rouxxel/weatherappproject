@@ -21,14 +21,14 @@ List<String> country_suggestion= ["Germany","France","China","Japan","United Kin
 /////////////////////////////////////////////////////////////////////////////
 //screen itself
 
-class searchpage extends StatefulWidget {
-  const searchpage({super.key});
+class search_page extends StatefulWidget {
+  const search_page({super.key});
 
   @override
-  State<searchpage> createState() => _searchpageState();
+  State<search_page> createState() => _search_pageState();
 }
 
-class _searchpageState extends State<searchpage> {
+class _search_pageState extends State<search_page> {
   //Create a TextEditingController to control the TextField
   final TextEditingController _text_controller = TextEditingController();
 
@@ -226,7 +226,7 @@ class _searchpageState extends State<searchpage> {
                                   //Use navigator to go to the landing page
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => const detailspage(),
+                                      builder: (context) => const details_page(),
                                     ),
                                   );
                                   print("---------------------------------------------------------");
@@ -374,7 +374,7 @@ class _searchpageState extends State<searchpage> {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const detailspage(),
+                        builder: (context) => const details_page(),
                       ),
                     );
                   },
@@ -396,7 +396,7 @@ class _searchpageState extends State<searchpage> {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const landingpage(),
+                        builder: (context) => const home_page(),
                       ),
                     );
                   },

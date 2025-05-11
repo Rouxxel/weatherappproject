@@ -14,10 +14,10 @@ import 'package:weatherappproject/methods.dart'; //Import necessary functionalit
 void _auto_nav_timer(BuildContext context) {
   //Use Future<t> method with .delayed(Duration(time unit:int))
   //to execute code after 8 seconds
-  Future.delayed(const Duration(seconds: 8), () {
+  Future.delayed(const Duration(seconds: 4), () {
     //Use navigator to go to the landing page
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const landingpage()),
+      MaterialPageRoute(builder: (context) => const home_page()),
     );
   });
 }
@@ -26,8 +26,8 @@ void _auto_nav_timer(BuildContext context) {
 /////////////////////////////////////////////////////////////////////////////
 //screen itself
 
-class loadingpage extends StatelessWidget {
-  const loadingpage({super.key});
+class loading_page extends StatelessWidget {
+  const loading_page({super.key});
 
   @override
   Widget build(BuildContext context) {

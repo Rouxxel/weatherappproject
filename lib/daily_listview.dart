@@ -9,8 +9,8 @@ import 'package:weatherappproject/methods.dart'; //Import necessary functionalit
 /////////////////////////////////////////////////////////////////////////////
 //Actual List view
 
-class dailyweatherscreen extends StatelessWidget {
-  const dailyweatherscreen({super.key});
+class daily_listview extends StatelessWidget {
+  const daily_listview({super.key});
 
   @override
   Widget build(BuildContext context) {

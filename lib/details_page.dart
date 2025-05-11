@@ -50,14 +50,14 @@ double D_pressure_mb = 0.0;
 /////////////////////////////////////////////////////////////////////////////
 //screen itself
 
-class detailspage extends StatefulWidget {
-  const detailspage({super.key});
+class details_page extends StatefulWidget {
+  const details_page({super.key});
 
   @override
-  State<detailspage> createState() => _detailspageState();
+  State<details_page> createState() => _details_pageState();
 }
 
-class _detailspageState extends State<detailspage> {
+class _details_pageState extends State<details_page> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -1050,7 +1050,7 @@ class _detailspageState extends State<detailspage> {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const landingpage(),
+                        builder: (context) => const home_page(),
                       ),
                     );
                   },
@@ -1072,7 +1072,7 @@ class _detailspageState extends State<detailspage> {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const searchpage(),
+                        builder: (context) => const search_page(),
                       ),
                     );
                   },

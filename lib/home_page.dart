@@ -42,19 +42,19 @@ List<String> hourly_icon_strs = List.generate(24, (_) => "NaN");
 //global variables
 /////////////////////////////////////////////////////////////////////////////
 //screen itself
-class landingpage extends StatefulWidget {
-  const landingpage({super.key});
+class home_page extends StatefulWidget {
+  const home_page({super.key});
 
   @override
-  State<landingpage> createState() => _landingpageState();
+  State<home_page> createState() => _home_pageState();
 }
 
-class _landingpageState extends State<landingpage> {
+class _home_pageState extends State<home_page> {
   //Prepare index controller for Hourly and Daily
   int _selected_index = 0;
   final List<Widget> _pages = [
-    const hourlyweatherscreen(),
-    const dailyweatherscreen(),
+    const hourly_listview(),
+    const daily_listview(),
   ];
 
   //Private function to fetch all the data
@@ -610,7 +610,7 @@ class _landingpageState extends State<landingpage> {
                     //Use navigator to go to the landing page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const detailspage(),
+                        builder: (context) => const details_page(),
                       ),
                     );
                   },
@@ -649,7 +649,7 @@ class _landingpageState extends State<landingpage> {
                     //Use navigator to go to the search page
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const searchpage(),
+                        builder: (context) => const search_page(),
                       ),
                     );
                   },
