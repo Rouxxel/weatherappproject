@@ -10,6 +10,7 @@ import 'package:weatherappproject/methods.dart'; //Import necessary functionalit
 //List views imports
 import 'package:weatherappproject/daily_listview.dart';
 import 'package:weatherappproject/hourly_listview.dart';
+import 'package:weatherappproject/alert_dialogs.dart';
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
