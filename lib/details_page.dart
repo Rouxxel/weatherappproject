@@ -3,9 +3,9 @@ import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:icons_flutter/icons_flutter.dart'; //For more icons
 
 //Other pages import
-import 'package:weatherappproject/landingpage.dart';
-import 'package:weatherappproject/searchpage.dart';
-import 'package:weatherappproject/functionality.dart'; //Import necessary functionality
+import 'package:weatherappproject/home_page.dart';
+import 'package:weatherappproject/search_page.dart';
+import 'package:weatherappproject/methods.dart'; //Import necessary functionality
 
 //imports
 /////////////////////////////////////////////////////////////////////////////

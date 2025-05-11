@@ -3,13 +3,13 @@ import 'package:google_fonts/google_fonts.dart'; //For font import
 import 'package:icons_flutter/icons_flutter.dart'; //For more icons
 
 //Other pages import
-import 'package:weatherappproject/searchpage.dart';
-import 'package:weatherappproject/detailspage.dart';
-import 'package:weatherappproject/functionality.dart'; //Import necessary functionality
+import 'package:weatherappproject/search_page.dart';
+import 'package:weatherappproject/details_page.dart';
+import 'package:weatherappproject/methods.dart'; //Import necessary functionality
 
 //List views imports
-import 'package:weatherappproject/adailylistview.dart';
-import 'package:weatherappproject/ahourlylistview.dart';
+import 'package:weatherappproject/daily_listview.dart';
+import 'package:weatherappproject/hourly_listview.dart';
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
