@@ -14,8 +14,8 @@ import 'package:logger/logger.dart';
 
 //
 //Other pages import
-import 'package:weatherappproject/alert_dialogs.dart';
-import 'package:weatherappproject/validation_methods.dart';
+import 'package:weatherappproject/utils/alert_dialogs.dart';
+import 'package:weatherappproject/methods/validation_methods.dart';
 
 //GPS information (controller variable)
 bool _gps_access = false;

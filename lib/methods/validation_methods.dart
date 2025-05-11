@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 
 //
 //Other pages import
-import 'package:weatherappproject/alert_dialogs.dart';
-import 'package:weatherappproject/methods.dart';
+import 'package:weatherappproject/utils/alert_dialogs.dart';
+import 'package:weatherappproject/methods/methods.dart';
 
 //To check valid city
 String validate_user_input(BuildContext context,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weatherappproject/loading_page.dart';
+import 'package:weatherappproject/screens_pages/loading_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 //imports
