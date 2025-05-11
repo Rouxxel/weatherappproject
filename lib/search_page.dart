@@ -41,7 +41,7 @@ class _search_pageState extends State<search_page> {
 
       //Declare and obtain list with all weather information
       Map<String, dynamic> D_weather_info =
-      await get_current_weather_datas(
+      await get_current_weather_data(
           context: context,
           city_name: D_city_by_user);
 
@@ -229,9 +229,7 @@ class _search_pageState extends State<search_page> {
                                       builder: (context) => const details_page(),
                                     ),
                                   );
-                                  print("---------------------------------------------------------");
-                                  print("City given by user: $D_city_by_user");
-                                  print("---------------------------------------------------------");
+                                  log_handler.d("City given by user: $D_city_by_user");
                                 },
                               ),
                             ),

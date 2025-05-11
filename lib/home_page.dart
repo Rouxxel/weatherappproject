@@ -69,7 +69,7 @@ class _home_pageState extends State<home_page> {
         Map<String, dynamic> date_info = get_date_time_data(context);
 
         // Declare and obtain list with all weather information
-        Map<String, dynamic> weather_info = await get_current_weather_datas(
+        Map<String, dynamic> weather_info = await get_current_weather_data(
           context: context,
           lat_lon: lat_lon,
         );
@@ -132,7 +132,7 @@ class _home_pageState extends State<home_page> {
         });
       } catch (error) {
         show_weather_data_fetching_error(context);
-        print('Error fetching weather data: $error');
+        log_handler.e('Error fetching weather data: $error');
       }
     }
   }
@@ -523,7 +523,7 @@ class _home_pageState extends State<home_page> {
                                     onPressed: () {
                                       setState(() {
                                         _selected_index = 0;
-                                        print("Current index: $_selected_index");
+                                        log_handler.d("Current index: $_selected_index");
                                       });
                                     },
                                   ),
@@ -557,7 +557,7 @@ class _home_pageState extends State<home_page> {
                                     onPressed: () {
                                       setState(() {
                                         _selected_index = 1;
-                                        print("Current index: $_selected_index");
+                                        log_handler.d("Current index: $_selected_index");
                                       });
                                     },
                                   )

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,6 +10,7 @@ import 'package:icons_flutter/icons_flutter.dart'; //For icon import
 import 'dart:convert' as conv; //For JSON parsing
 import 'package:intl/intl.dart'; //For data formatting import
 import 'package:flutter_dotenv/flutter_dotenv.dart'; //To access API key .env
+import 'package:logger/logger.dart';
 
 //
 //Other pages import
@@ -18,7 +21,10 @@ import 'package:weatherappproject/validation_methods.dart';
 bool _gps_access = false;
 
 //API key and other variables
-String _OWeather_api_key = use_api_key();
+String _o_weather_api_key = retrieve_api_key();
+
+//Initialize logger
+var log_handler= Logger();
 
 //To get API data with city name Uri.parse('https://api.openweathermap.org/data/2.5/weather?q=$selectedcity&exclude=minutely,alerts&appid=$apikey)'
 //To get API data with latitude and longitude Uri.parse('https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&exclude=minutely,alerts&appid=$apikey)'
@@ -29,8 +35,7 @@ String _OWeather_api_key = use_api_key();
 //GPS related
 //Request GPS permission and get it if given (MUST BE EXECUTED FIRST)
 void get_gps_permissions(BuildContext context) async {
-  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
-  print("[------get_gps_permission function executed------]");
+  log_handler.d("[------get_gps_permission function executing------]");
 
   //Check if device has location active and prevent execution if disabled
   bool location_service_active = await Geolocator.isLocationServiceEnabled();
@@ -39,7 +44,7 @@ void get_gps_permissions(BuildContext context) async {
     show_location_disable(context);
     _gps_access=false;
 
-    print("Error: Location-GPS function is disabled in the device");
+    log_handler.e("Error: Location-GPS function is disabled in the device");
     return Future.error("Location service is disabled");
   }
 
@@ -49,34 +54,35 @@ void get_gps_permissions(BuildContext context) async {
   //Ask the user for permission if currently denied
   if(permission == LocationPermission.denied || permission==LocationPermission.deniedForever){
     show_gps_access_necessary(context);
+    log_handler.d("Requesting GPS permission");
     permission = await Geolocator.requestPermission();
 
     //Handle several possible scenarios after permission asked
     switch(permission){
       case LocationPermission.unableToDetermine:
       //Handle when permission status couldn't be determined
-        print("Unable to determine GPS permission status");
+        log_handler.w("Unable to determine GPS permission status");
         show_gps_unable_to_determine(context);
         _gps_access=false;
         return Future.error("Unable to determine GPS permission status");
 
       case LocationPermission.denied:
       //Handle denied permission
-        print("GPS Permission denied");
+        log_handler.w("GPS Permission denied");
         show_gps_access_denied(context);
         _gps_access=false;
         return Future.error("GPS permissions denied");
 
       case LocationPermission.deniedForever:
       //Handle permanently denied permission
-        print("GPS Permission denied permanently");
+        log_handler.w("GPS Permission denied permanently");
         show_gps_access_denied(context);
         _gps_access=false;
         return Future.error("GPS permissions permanently denied");
 
       case LocationPermission.always:
       case LocationPermission.whileInUse:
-        print("GPS Permission granted");
+        log_handler.i("GPS Permission granted");
         _gps_access = true;
         break;
     }
@@ -86,8 +92,7 @@ void get_gps_permissions(BuildContext context) async {
 //Function to get GPS location and return as a list
 //MUST BE CALLED AFTER get_gps_permission
 Future<List<double>> get_gps_location(BuildContext context) async {
-  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
-  print("[------get_gps_location function executed------]");
+  log_handler.d("[------get_gps_location function executing------]");
   //Create empty list for latitude and longitude
   List<double> c_coordinates = [];
 
@@ -99,34 +104,35 @@ Future<List<double>> get_gps_location(BuildContext context) async {
     //Assign the latitude and longitude to the list
     c_coordinates = [position.latitude, position.longitude];
 
-    print("Latitude and Longitude from get_gps_location: $c_coordinates");
+    log_handler.d("Latitude and Longitude from get_gps_location: $c_coordinates");
     //Return the list of coordinates
     return c_coordinates;
 
   } catch (er) {
     //Handle error situation
     show_generic_error(context);
-    print("Error getting location: $er");
+    log_handler.e("Error getting location: $er");
     return c_coordinates;
   }
 }
 
 //Function to launch URLs
 Future<void> launch_URL(String given_URL) async {
+  log_handler.d("[------launch_URL function executing------]");
   if (!await launchUrl(Uri.parse(given_URL),
       mode: LaunchMode.externalApplication)) {
     throw Exception('Could not launch $given_URL');
   }
+  log_handler.i("URL resource launching");
 }
 
 /////////////////////////////////////////////////////////////////////////////
 //API and data extraction
 //Get current weather data by either latitude and longitude or city name, 2 calls
-Future<Map<String, dynamic>> get_current_weather_datas({
+Future<Map<String, dynamic>> get_current_weather_data({
   required BuildContext context,
   String? city_name, List<double>? lat_lon,}) async {
-  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
-  print("[------get_current_weather_data function executed------]");
+  log_handler.d("[------get_current_weather_data function executing------]");
 
   //Determine the type of request
   String url="";
@@ -135,27 +141,32 @@ Future<Map<String, dynamic>> get_current_weather_datas({
   if (city_name != null && lat_lon != null) {
     //Both city_name and lat_lon are provided, throw an error
     show_location_not_found(context); //Show the error to the user
+    log_handler.w("Latitude-longitude and city name provided together, do not");
     throw ArgumentError('Do not provide both latitude-longitude and city name');
   } else if (city_name == null && lat_lon == null){
     //Neither city_name or lat_lon are provided, throw an error
+    log_handler.w("No Latitude-longitude nor city name provided, provide either");
     show_location_not_found(context); //Show the error to the user
     throw ArgumentError('Do not provide both latitude-longitude and city name');
   }
 
   //Latitude and longitude URL or with city name
   if (lat_lon != null) {
+    log_handler.d("Getting data from latitude and longitude");
     //Use latitude and longitude to build the URL
     url ='https://api.openweathermap.org/data/2.5/weather?lat=${lat_lon[0]}'
-        '&lon=${lat_lon[1]}&exclude=minutely&appid=$_OWeather_api_key';
+        '&lon=${lat_lon[1]}&exclude=minutely&appid=$_o_weather_api_key';
   } else if (city_name != null) {
     //Check city_name is valid (at least is not empty)
+    log_handler.d("Getting data from city name");
     if (city_name.isEmpty){
       show_no_city_or_postalcode_provided(context);
+      log_handler.w("Invalid city name entered");
       throw Exception("--------User has entered an invalid city name--------");
     } else{
       //Use city_name to build the URL
       url ='https://api.openweathermap.org/data/2.5/weather?q=$city_name'
-          '&exclude=minutely&appid=$_OWeather_api_key';
+          '&exclude=minutely&appid=$_o_weather_api_key';
     }
   }
 
@@ -164,6 +175,7 @@ Future<Map<String, dynamic>> get_current_weather_datas({
 
   //Try to obtain API call from URL
   try {
+    log_handler.d("Getting API call");
     //Make API call
     final response = url.isEmpty ?
     throw Exception("URL cannot be Empty")
@@ -179,10 +191,10 @@ Future<Map<String, dynamic>> get_current_weather_datas({
 
         //Handle if API response is weird
         show_api_error(context);
-        print("---API response is invalid, Stopping---");
+        log_handler.w("---API response is invalid, Stopping---");
         throw Exception('Invalid API response structure');
       }
-      print("---API response is valid, proceeding---");
+      log_handler.d("---API response is valid, proceeding to extract data---");
 
       //
 
@@ -226,10 +238,9 @@ Future<Map<String, dynamic>> get_current_weather_datas({
       String event="No alerts today!!!";
 
       if (lat_lon != null) { //If latitud and longitud are provided
-        ////////---------------------------------------------------------------
         final alert_URL = Uri.parse(
             'https://api.openweathermap.org/data/3.0/onecall?lat=${lat_lon[0]}&lon=${lat_lon[1]}'
-                '&exclude=current,minutely,hourly,daily&lang=en&appid=$_OWeather_api_key');
+                '&exclude=current,minutely,hourly,daily&lang=en&appid=$_o_weather_api_key');
         try { //Same treatment as first call
           final alert_response = await http.get(alert_URL);
           if (alert_response.statusCode == 200) {
@@ -241,29 +252,29 @@ Future<Map<String, dynamic>> get_current_weather_datas({
             //Validate second API response
             if (!validate_current_weather_alerts(alert_data)){
               //Handle if API second response is weird
-              print("---Second API response is invalid, Stopping---");
               show_api_error(context);
+              log_handler.w("---Second API response is invalid, Stopping---");
               throw Exception('Invalid weather alerts data');
             }
-            print("---Second API response is valid, proceeding---");
-
+            log_handler.d("---Second API response is valid, proceeding---");
             if (alert_data['alerts'] != null && (alert_data['alerts'] as List).isNotEmpty) {
               event = alert_data['alerts'][0]['event'];
             }
           } else {
             show_api_error(context);
+            log_handler.e("Failed to load weather alerts");
             throw Exception('Failed to load weather alerts');
           }
         } catch (er) {
           show_generic_error(context);
-          print('Error fetching alerts: $er');
+          log_handler.e('Error fetching alerts: $er');
         }
         ////////---------------------------------------------------------------
       } else if (city_name != null && city_name.isNotEmpty) { //If city name is provided
         ////////---------------------------------------------------------------
         final alert_URL = Uri.parse(
             'https://api.openweathermap.org/data/3.0/onecall?lat=${coord[0]}&lon=${coord[1]}'
-                '&exclude=current,minutely,hourly,daily&lang=en&appid=$_OWeather_api_key');
+                '&exclude=current,minutely,hourly,daily&lang=en&appid=$_o_weather_api_key');
         try {
           final alert_response = await http.get(alert_URL);
           if (alert_response.statusCode == 200) {
@@ -275,29 +286,29 @@ Future<Map<String, dynamic>> get_current_weather_datas({
             //Validate second API response
             if (!validate_current_weather_alerts(alert_data)){
               //Handle if API second response is weird
-              print("---Second API response is invalid, Stopping---");
+              log_handler.w("---Second API response is invalid, Stopping---");
               show_api_error(context);
               throw Exception('Invalid weather alerts data');
             }
-            print("---Second API response is valid, proceeding---");
-
+            log_handler.d("---Second API response is valid, proceeding---");
             if (alert_data['alerts'] != null && (alert_data['alerts'] as List).isNotEmpty) {
               event = alert_data['alerts'][0]['event'];
             }
           } else {
             show_api_error(context);
+            log_handler.e("Failed to load weather alerts");
             throw Exception('Failed to load weather alerts');
           }
         } catch (er) {
           show_generic_error(context);
-          print('Error fetching alerts: $er');
+          log_handler.e('Error fetching alerts: $er');
         }
         ////////---------------------------------------------------------------
       }
 
 
       //Wind information
-      double MPH_windspeed = (API_data['wind']['speed'] as num).toDouble();
+      double MPH_wind_speed = (API_data['wind']['speed'] as num).toDouble();
       double wind_gust_MPH = API_data['wind'].containsKey('gust') ?
       (API_data['wind']['gust'] as num).toDouble() : 0.0;
       int wind_direction = API_data['wind']['deg'];
@@ -358,8 +369,8 @@ Future<Map<String, dynamic>> get_current_weather_datas({
         //
         'weather_cond': W_condition,
         //
-        'MPH_wind': MPH_windspeed,
-        'KPH_wind': (MPH_windspeed * 1.60934),
+        'MPH_wind': MPH_wind_speed,
+        'KPH_wind': (MPH_wind_speed * 1.60934),
         'wind_direction': wind_direction,
         'MPH_wind_g': wind_gust_MPH,
         'KPH_wind_g': (wind_gust_MPH != 0.0 ? wind_gust_MPH * 1.60934 : 0.0),
@@ -378,16 +389,17 @@ Future<Map<String, dynamic>> get_current_weather_datas({
         'sunset_time':sunset_Hr_Min,
       };
 
-      print('API get_current_weather_datas Response: ${response.body}');
-      print('Function get_current_weather_datas map return: $current_weather_data');
+      log_handler.d('API get_current_weather_data Response: ${response.body}');
+      log_handler.d('Function get_current_weather_data map return: $current_weather_data');
 
     } else {
       //Display API error dialog
+      log_handler.w("API or parsing error");
       show_api_error(context);
     }
   } catch (er) {
     //Handle any other exceptions
-    print('Error: $er');
+    log_handler.e('Error: $er');
 
     //Display generic error dialog
     show_generic_error(context);
@@ -400,13 +412,12 @@ Future<Map<String, dynamic>> get_current_weather_datas({
 //Function to get daily max/min temp, hourly temp and icons, 1 call
 Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
     BuildContext context, List<double> lat_lon, int current_weekday) async {
-  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
-  print("[------get_weekly_hourly_temperature_icons function executed------]");
+  log_handler.d("[------get_weekly_hourly_temperature_icons function executing------]");
 
   // Build URL using latitude and longitude
   final url = Uri.parse(
       'https://api.openweathermap.org/data/3.0/onecall?lat=${lat_lon[0]}'
-          '&lon=${lat_lon[1]}&exclude=current,minutely&appid=$_OWeather_api_key');
+          '&lon=${lat_lon[1]}&exclude=current,minutely&appid=$_o_weather_api_key');
 
   // Declare returning variable (2 sections)
   Map<String, dynamic> week_hour_icon_data = {
@@ -417,6 +428,7 @@ Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
   try {
     // Make API call
     final response = await http.get(url);
+    log_handler.d("Calling API for icon rendering");
 
     //Check if API response is successful
     if (response.statusCode == 200) {
@@ -429,13 +441,13 @@ Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
       //Validate API response
       if (!validate_weekly_hourly_weather(API_data)){
         //Handle if API is kind of weird
-        print("---API response is invalid, Stopping---");
+        log_handler.w("---API response is invalid, Stopping---");
         show_api_error(context);
         throw Exception('Invalid weekly or hourly data');
       }
-      print("---API response is valid, proceeding---");
+      log_handler.d("---API response is valid, proceeding---");
 
-      print("API get_weekly_hourly_temperature_icons response: ${response.body}");
+      log_handler.d("API get_weekly_hourly_temperature_icons response: ${response.body}");
       final daily_data = API_data['daily'];
       final hourly_data = API_data['hourly'];
 
@@ -482,19 +494,18 @@ Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
     show_generic_error(context);
 
     //Handle any other errors
-    print('Error: $er');
+    log_handler.e('Error: $er');
     throw Exception('Generic error occurred');
   }
 
-  //Return and print successful result
-  print("get_weekly_hourly_temperature_icons return value: $week_hour_icon_data");
+  //Return and log successful result
+  log_handler.d("get_weekly_hourly_temperature_icons return value: $week_hour_icon_data");
   return week_hour_icon_data;
 }
 
 //Obtain date and time, 0 calls
 Map<String, dynamic> get_date_time_data(BuildContext context) {
-  print("[------------------------------------------------------------------------------------------------------------------------------------------------------------------]");
-  print("[------get_date_time_data function executed------]");
+  log_handler.d("[------get_date_time_data function executing------]");
 
   //Declare list of date and time data
   Map<String, dynamic> date_time = {};
@@ -509,6 +520,7 @@ Map<String, dynamic> get_date_time_data(BuildContext context) {
     'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   //Extract data components
+  log_handler.d("Extracting date time components");
   int month_day_num = date_now_extracted_data.day;
   int weekday_num = date_now_extracted_data.weekday;
   String weekday_str = weekdays[weekday_num]; //From 1 to 7
@@ -546,7 +558,7 @@ Map<String, dynamic> get_date_time_data(BuildContext context) {
     //Format= 'hour2': future_hour, and so on
   }
 
-  print("Function get_date_time_data map return: $date_time");
+  log_handler.d("Function get_date_time_data map return: $date_time");
   return date_time;
 }
 
@@ -554,7 +566,7 @@ Map<String, dynamic> get_date_time_data(BuildContext context) {
 //Data manipulation
 //To capitalize the first letter of the strings
 String capitalize_strings(String input) {
-  print("------String capitalization executed------");
+  log_handler.d("------capitalize_strings executing------");
   if (input.isEmpty) {
     return input;
   }
@@ -562,14 +574,16 @@ String capitalize_strings(String input) {
     if (word.isEmpty) {
       return word;
     }
+    log_handler.d("String capitalized successfuly");
     return word[0].toUpperCase() + word.substring(1).toLowerCase();
   }).join(' ');
 }
 
 //To convert icon codes into actual icons
-IconData return_correct_icon(String striconcode) {
+IconData return_correct_icon(String str_icon_code) {
+  log_handler.d("------return_correct_icon executing------");
   //Use switch statement to select the correct case
-  switch (striconcode) {
+  switch (str_icon_code) {
   //For when it is day
     case '01d':
       return WeatherIcons.wi_day_sunny;
@@ -609,13 +623,14 @@ IconData return_correct_icon(String striconcode) {
 }
 
 //To retrieve the apikey from .env file
-String use_api_key() {
-  String? oWeatherApiKey = dotenv.env['OWeatherapikey'];
-  if (oWeatherApiKey == null) {
+String retrieve_api_key() {
+  log_handler.d("------retrieve_api_key executing------");
+  String? o_weather_API_key = dotenv.env['OWeatherapikey'];
+  if (o_weather_API_key == null) {
     throw Exception('API key not found');
   }
 
-  print("---API key succesfully retrieved---");
+  log_handler.d("---API key successfully retrieved---");
   //Return the API key
-  return oWeatherApiKey;
+  return o_weather_API_key;
 }
