@@ -131,7 +131,7 @@ class _home_pageState extends State<home_page> {
           }
         });
       } catch (error) {
-        show_weather_data_fetching_error(context);
+        alert_data_fetching_error(context);
         log_handler.e('Error fetching weather data: $error');
       }
     }

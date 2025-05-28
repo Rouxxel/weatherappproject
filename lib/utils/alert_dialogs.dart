@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart'; //For font import
 
 //Alert dialog for error handling
 // Function to display the location is disabled in the device
-void show_location_disable(BuildContext context) {
+void alert_location_disable(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -51,7 +51,7 @@ void show_location_disable(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -65,9 +65,9 @@ void show_location_disable(BuildContext context) {
 }
 
 //Function to display why access to GPS is necessary
-void show_gps_access_necessary(BuildContext context) {
+void alert_gps_access_necessary(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -112,7 +112,7 @@ void show_gps_access_necessary(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -126,9 +126,9 @@ void show_gps_access_necessary(BuildContext context) {
 }
 
 //Function to display device's GPS is unable to determine location
-void show_gps_unable_to_determine(BuildContext context){
+void alert_gps_unable_to_determine(BuildContext context){
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -172,7 +172,7 @@ void show_gps_unable_to_determine(BuildContext context){
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -186,9 +186,9 @@ void show_gps_unable_to_determine(BuildContext context){
 }
 
 //Function to display inability gpslocation because access was denied
-void show_gps_access_denied(BuildContext context) {
+void alert_gps_access_denied(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -232,7 +232,7 @@ void show_gps_access_denied(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -246,9 +246,9 @@ void show_gps_access_denied(BuildContext context) {
 }
 
 // Function to display API error dialog (if API or parsing fails)
-void show_api_error(BuildContext context) {
+void alert_api_error(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -291,7 +291,7 @@ void show_api_error(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -305,9 +305,9 @@ void show_api_error(BuildContext context) {
 }
 
 //Function to display error on fetching weather data
-void show_weather_data_fetching_error(BuildContext context) {
+void alert_data_fetching_error(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -350,7 +350,7 @@ void show_weather_data_fetching_error(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -364,9 +364,9 @@ void show_weather_data_fetching_error(BuildContext context) {
 }
 
 //Function to display invalid url
-void show_invalid_url(BuildContext context){
+void alert_invalid_url(BuildContext context){
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -410,7 +410,7 @@ void show_invalid_url(BuildContext context){
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -424,9 +424,9 @@ void show_invalid_url(BuildContext context){
 }
 
 // Function to display generic error
-void show_generic_error(BuildContext context) {
+void alert_generic_error(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -469,7 +469,7 @@ void show_generic_error(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -483,9 +483,9 @@ void show_generic_error(BuildContext context) {
 }
 
 // Function to display location not found error
-void show_location_not_found(BuildContext context) {
+void alert_location_not_found(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -528,7 +528,7 @@ void show_location_not_found(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -542,9 +542,9 @@ void show_location_not_found(BuildContext context) {
 }
 
 // Function to display invalid cityname not found error
-void show_invalid_city_name(BuildContext context) {
+void alert_invalid_city_name(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -588,7 +588,7 @@ void show_invalid_city_name(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -602,9 +602,9 @@ void show_invalid_city_name(BuildContext context) {
 }
 
 //Function to display no cityname provided
-void show_no_city_or_postalcode_provided(BuildContext context) {
+void alert_no_city_or_postalcode_provided(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -648,7 +648,7 @@ void show_no_city_or_postalcode_provided(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 
@@ -662,9 +662,9 @@ void show_no_city_or_postalcode_provided(BuildContext context) {
 }
 
 //Function to display dont try to hack me pal provided
-void show_nice_try_fed(BuildContext context) {
+void alert_nice_try_fed(BuildContext context) {
   //Declare the buttons of alert
-  Widget okbutton = TextButton(
+  Widget ok_button = TextButton(
     child: Text(
       "Ok",
       style: GoogleFonts.quantico(
@@ -709,7 +709,7 @@ void show_nice_try_fed(BuildContext context) {
       ),
     ),
     actions: [
-      okbutton,
+      ok_button,
     ],
   );
 

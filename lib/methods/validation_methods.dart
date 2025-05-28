@@ -9,12 +9,12 @@ import 'package:weatherappproject/methods/methods.dart';
 
 //To check valid city
 String validate_user_input(BuildContext context,
-    String givencityname) {
+    String given_city_name) {
   log_handler.d("[------validate_user_input function executed------]");
-  if (givencityname == null || givencityname.isEmpty) {
+  if (given_city_name == null || given_city_name.isEmpty) {
 
     //Handle empty Text field
-    show_no_city_or_postalcode_provided(context);
+    alert_no_city_or_postalcode_provided(context);
     log_handler.w("Invalid user input");
     throw ArgumentError("Input is empty");
   }
@@ -22,21 +22,21 @@ String validate_user_input(BuildContext context,
   //Limit the valid characters by user
   final validCharacters = RegExp(r'^[a-zA-Z0-9\s\-]+$');
 
-  if (givencityname.length >= 2 &&
-      givencityname.length <= 40 &&
-      validCharacters.hasMatch(givencityname)) {
+  if (given_city_name.length >= 2 &&
+      given_city_name.length <= 40 &&
+      validCharacters.hasMatch(given_city_name)) {
     log_handler.d("Valid user input");
-    return givencityname;
+    return given_city_name;
   } else {
     //Handle invalid name or even possible attack
-    show_nice_try_fed(context);
+    alert_nice_try_fed(context);
     log_handler.w("Invalid user input");
     throw ArgumentError("Invalid input: Input does not meet criteria");
   }
 }
 
 //To validate API response for get_current_weather_datas
-bool validate_current_weather_data(Map<String, dynamic> data) {
+bool validate_latest_weather_data(Map<String, dynamic> data) {
   log_handler.d("[------validate_current_weather_data function executed------]");
   // Check for the presence and types of essential fields
   try {
@@ -71,7 +71,7 @@ bool validate_current_weather_data(Map<String, dynamic> data) {
 }
 
 //To validate API response for get_current_weather_datas
-bool validate_current_weather_alerts(Map<String, dynamic> data) {
+bool validate_latest_weather_alerts(Map<String, dynamic> data) {
   log_handler.d("[------validate_current_weather_alerts function executed------]");
   try {
     // Check if 'alerts' key is present and is a list
@@ -90,7 +90,7 @@ bool validate_current_weather_alerts(Map<String, dynamic> data) {
 }
 
 //To validate API response for getWEEKLYHOURLYtempsicons
-bool validate_weekly_hourly_weather(Map<String, dynamic> data) {
+bool validate_weekly_hourly_data(Map<String, dynamic> data) {
   log_handler.d("[------validate_weekly_hourly_weather function executed------]");
   try {
     if (!data.containsKey('daily') || !data.containsKey('hourly')) return false;

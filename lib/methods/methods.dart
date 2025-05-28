@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -13,7 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart'; //To access API key .env
 import 'package:logger/logger.dart';
 
 //
-//Other pages import
+//Other files import
 import 'package:weatherappproject/utils/alert_dialogs.dart';
 import 'package:weatherappproject/methods/validation_methods.dart';
 
@@ -41,7 +39,7 @@ void get_gps_permissions(BuildContext context) async {
   bool location_service_active = await Geolocator.isLocationServiceEnabled();
   if (!location_service_active) {
     //Show user their location is disabled
-    show_location_disable(context);
+    alert_location_disable(context);
     _gps_access=false;
 
     log_handler.e("Error: Location-GPS function is disabled in the device");
@@ -53,7 +51,7 @@ void get_gps_permissions(BuildContext context) async {
 
   //Ask the user for permission if currently denied
   if(permission == LocationPermission.denied || permission==LocationPermission.deniedForever){
-    show_gps_access_necessary(context);
+    alert_gps_access_necessary(context);
     log_handler.d("Requesting GPS permission");
     permission = await Geolocator.requestPermission();
 
@@ -62,21 +60,21 @@ void get_gps_permissions(BuildContext context) async {
       case LocationPermission.unableToDetermine:
       //Handle when permission status couldn't be determined
         log_handler.w("Unable to determine GPS permission status");
-        show_gps_unable_to_determine(context);
+        alert_gps_unable_to_determine(context);
         _gps_access=false;
         return Future.error("Unable to determine GPS permission status");
 
       case LocationPermission.denied:
       //Handle denied permission
         log_handler.w("GPS Permission denied");
-        show_gps_access_denied(context);
+        alert_gps_access_denied(context);
         _gps_access=false;
         return Future.error("GPS permissions denied");
 
       case LocationPermission.deniedForever:
       //Handle permanently denied permission
         log_handler.w("GPS Permission denied permanently");
-        show_gps_access_denied(context);
+        alert_gps_access_denied(context);
         _gps_access=false;
         return Future.error("GPS permissions permanently denied");
 
@@ -110,7 +108,7 @@ Future<List<double>> get_gps_location(BuildContext context) async {
 
   } catch (er) {
     //Handle error situation
-    show_generic_error(context);
+    alert_generic_error(context);
     log_handler.e("Error getting location: $er");
     return c_coordinates;
   }
@@ -140,13 +138,13 @@ Future<Map<String, dynamic>> get_current_weather_data({
   //Both or neither
   if (city_name != null && lat_lon != null) {
     //Both city_name and lat_lon are provided, throw an error
-    show_location_not_found(context); //Show the error to the user
+    alert_location_not_found(context); //Show the error to the user
     log_handler.w("Latitude-longitude and city name provided together, do not");
     throw ArgumentError('Do not provide both latitude-longitude and city name');
   } else if (city_name == null && lat_lon == null){
     //Neither city_name or lat_lon are provided, throw an error
     log_handler.w("No Latitude-longitude nor city name provided, provide either");
-    show_location_not_found(context); //Show the error to the user
+    alert_location_not_found(context); //Show the error to the user
     throw ArgumentError('Do not provide both latitude-longitude and city name');
   }
 
@@ -160,7 +158,7 @@ Future<Map<String, dynamic>> get_current_weather_data({
     //Check city_name is valid (at least is not empty)
     log_handler.d("Getting data from city name");
     if (city_name.isEmpty){
-      show_no_city_or_postalcode_provided(context);
+      alert_no_city_or_postalcode_provided(context);
       log_handler.w("Invalid city name entered");
       throw Exception("--------User has entered an invalid city name--------");
     } else{
@@ -187,10 +185,10 @@ Future<Map<String, dynamic>> get_current_weather_data({
       Map<String, dynamic> API_data = conv.jsonDecode(response.body);
 
       //Validate API response (sanitize)
-      if (!validate_current_weather_data(API_data)) {
+      if (!validate_latest_weather_data(API_data)) {
 
         //Handle if API response is weird
-        show_api_error(context);
+        alert_api_error(context);
         log_handler.w("---API response is invalid, Stopping---");
         throw Exception('Invalid API response structure');
       }
@@ -250,9 +248,9 @@ Future<Map<String, dynamic>> get_current_weather_data({
             alert_data.remove('lon');
 
             //Validate second API response
-            if (!validate_current_weather_alerts(alert_data)){
+            if (!validate_latest_weather_alerts(alert_data)){
               //Handle if API second response is weird
-              show_api_error(context);
+              alert_api_error(context);
               log_handler.w("---Second API response is invalid, Stopping---");
               throw Exception('Invalid weather alerts data');
             }
@@ -261,12 +259,12 @@ Future<Map<String, dynamic>> get_current_weather_data({
               event = alert_data['alerts'][0]['event'];
             }
           } else {
-            show_api_error(context);
+            alert_api_error(context);
             log_handler.e("Failed to load weather alerts");
             throw Exception('Failed to load weather alerts');
           }
         } catch (er) {
-          show_generic_error(context);
+          alert_generic_error(context);
           log_handler.e('Error fetching alerts: $er');
         }
         ////////---------------------------------------------------------------
@@ -284,10 +282,10 @@ Future<Map<String, dynamic>> get_current_weather_data({
             alert_data.remove('lon');
 
             //Validate second API response
-            if (!validate_current_weather_alerts(alert_data)){
+            if (!validate_latest_weather_alerts(alert_data)){
               //Handle if API second response is weird
               log_handler.w("---Second API response is invalid, Stopping---");
-              show_api_error(context);
+              alert_api_error(context);
               throw Exception('Invalid weather alerts data');
             }
             log_handler.d("---Second API response is valid, proceeding---");
@@ -295,12 +293,12 @@ Future<Map<String, dynamic>> get_current_weather_data({
               event = alert_data['alerts'][0]['event'];
             }
           } else {
-            show_api_error(context);
+            alert_api_error(context);
             log_handler.e("Failed to load weather alerts");
             throw Exception('Failed to load weather alerts');
           }
         } catch (er) {
-          show_generic_error(context);
+          alert_generic_error(context);
           log_handler.e('Error fetching alerts: $er');
         }
         ////////---------------------------------------------------------------
@@ -395,14 +393,14 @@ Future<Map<String, dynamic>> get_current_weather_data({
     } else {
       //Display API error dialog
       log_handler.w("API or parsing error");
-      show_api_error(context);
+      alert_api_error(context);
     }
   } catch (er) {
     //Handle any other exceptions
     log_handler.e('Error: $er');
 
     //Display generic error dialog
-    show_generic_error(context);
+    alert_generic_error(context);
   }
 
   //Return the map of weather data
@@ -439,10 +437,10 @@ Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
       API_data.remove('lon');
 
       //Validate API response
-      if (!validate_weekly_hourly_weather(API_data)){
+      if (!validate_weekly_hourly_data(API_data)){
         //Handle if API is kind of weird
         log_handler.w("---API response is invalid, Stopping---");
-        show_api_error(context);
+        alert_api_error(context);
         throw Exception('Invalid weekly or hourly data');
       }
       log_handler.d("---API response is valid, proceeding---");
@@ -484,14 +482,14 @@ Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
       } //Format is week_hour_icon_data['hourly']['hour1']['C_temp'];
     } else {
       //Display API error
-      show_api_error(context);
+      alert_api_error(context);
 
       //Handle API problem
       throw Exception('Failed hourly and weekly temperature and icon strings');
     }
   } catch (er) {
     //Display generic error
-    show_generic_error(context);
+    alert_generic_error(context);
 
     //Handle any other errors
     log_handler.e('Error: $er');

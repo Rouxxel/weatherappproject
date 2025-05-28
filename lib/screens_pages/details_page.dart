@@ -12,7 +12,7 @@ import 'package:weatherappproject/methods/methods.dart'; //Import necessary func
 //global variables
 
 //URL string to external webpage
-final String _web_URL = 'https://www.youtube.com/watch?v=1DD_NCM_RJs';
+final String _web_URL = 'https://github.com/Rouxxel/weatherappproject';
 
 //City name given by user
 String D_city_by_user="";
@@ -337,7 +337,7 @@ class _details_pageState extends State<details_page> {
                                 ),
                               ),
                               Text(
-                                "Max today",
+                                "Max. today",
                                 style: GoogleFonts.quantico(
                                   textStyle: const TextStyle(
                                     fontSize: 17,
@@ -376,7 +376,7 @@ class _details_pageState extends State<details_page> {
                                 ),
                               ),
                               Text(
-                                "Feels..",
+                                "Feels like",
                                 style: GoogleFonts.quantico(
                                   textStyle: const TextStyle(
                                     fontSize: 17,
@@ -415,7 +415,7 @@ class _details_pageState extends State<details_page> {
                                 ),
                               ),
                               Text(
-                                "Min today",
+                                "Min. today",
                                 style: GoogleFonts.quantico(
                                   textStyle: const TextStyle(
                                     fontSize: 17,
