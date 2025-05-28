@@ -336,7 +336,6 @@ Future<Map<String, dynamic>> get_latest_weather_data({
         ////////---------------------------------------------------------------
       }
 
-
       //Wind information
       double MPH_wind_speed = (API_data['wind']['speed'] as num).toDouble();
       double wind_gust_MPH = API_data['wind'].containsKey('gust') ?
@@ -445,13 +444,8 @@ Future<Map<String, dynamic>?> get_weekly_hourly_icons(
   log_handler.d("[------get_weekly_hourly_icons function executing------]");
 
   //Handle null latitude and longitude and stop early
-  if (lat_lon == null){
-    log_handler.w("lat_lon is null — cannot call API");
-    alert_generic_error(context);
-    return null;
-  }
-  if (current_weekday == null){
-    log_handler.w("current_weekday is null — cannot call API");
+  if (lat_lon == null || current_weekday == null){
+    log_handler.w("lat_lon or current_weekday is null — aborting");
     alert_generic_error(context);
     return null;
   }
@@ -462,15 +456,12 @@ Future<Map<String, dynamic>?> get_weekly_hourly_icons(
           '&lon=${lat_lon["longitude"]}&exclude=current,minutely&appid=$_ow_api_key');
 
   // Declare returning variable (2 sections)
-  Map<String, dynamic> week_hour_icon_data = {
-    "daily": {},
-    "hourly": {}
-  };
+  Map<String, dynamic> week_hour_icon_data = {"daily": {}, "hourly": {} };
 
   try {
     // Make API call
     final response = await http.get(url);
-    log_handler.d("Calling API for icon rendering");
+    log_handler.d("Calling API for daily/hourly");
 
     //Check if API response is successful
     if (response.statusCode == 200) {
@@ -488,40 +479,38 @@ Future<Map<String, dynamic>?> get_weekly_hourly_icons(
         throw Exception('Invalid weekly or hourly data');
       }
       log_handler.d("---API response is valid, proceeding---");
-
       log_handler.d("API get_weekly_hourly_temperature_icons response: ${response.body}");
+
       final daily_data = API_data['daily'];
       final hourly_data = API_data['hourly'];
+      const double factor_K_to_C = -273.15;
+      const double factor_K_to_F = 1.8;
+      const double factor_K_to_F_offset = 459.67;
 
       //Process daily min/max temperatures and weather icons starting with current weekday
       for (int i = 0; i < daily_data.length; i++) {
         int day_index = (current_weekday + i) % 7;
-        double K_min_temp = daily_data[i]['temp']['min'].toDouble();
-        double K_max_temp = daily_data[i]['temp']['max'].toDouble();
-        String weather_icon = daily_data[i]['weather'][0]['icon'];
 
         week_hour_icon_data['daily']['day${day_index + 1}'] = {
-          'K_min_temp': K_min_temp,
-          'K_max_temp': K_max_temp,
-          'F_min_temp': ((K_min_temp - 273.15) * 9 / 5 + 32),
-          'F_max_temp': ((K_max_temp - 273.15) * 9 / 5 + 32),
-          'C_min_temp': (K_min_temp - 273.15),
-          'C_max_temp': (K_max_temp - 273.15),
-          'icon': weather_icon
+          'K_min_temp': daily_data[i]['temp']['min'].toDouble(),
+          'K_max_temp': daily_data[i]['temp']['max'].toDouble(),
+          'F_min_temp': ((daily_data[i]['temp']['min'] * factor_K_to_F) - factor_K_to_F_offset),
+          'F_max_temp': ((daily_data[i]['temp']['max'] * factor_K_to_F) - factor_K_to_F_offset),
+          'C_min_temp': (daily_data[i]['temp']['min'] + factor_K_to_C),
+          'C_max_temp': (daily_data[i]['temp']['max'] + factor_K_to_C),
+          'icon': daily_data[i]['weather'][0]['icon'],
         };
       } //Format is week_hour_icon_data['daily']['day1']['C_min_temp'];
 
       //Process hourly temperatures and weather icons for the next 24 hours
       for (int i = 0; i < 24; i++) {
         int hour_Index = (DateTime.now().hour + i) % 24;
-        double K_temp = (hourly_data[i]['temp'] as num).toDouble();
-        String weatherIcon = hourly_data[i]['weather'][0]['icon'];
 
         week_hour_icon_data['hourly']['hour${hour_Index + 1}'] = {
-          'K_temp': K_temp,
-          'F_temp': ((K_temp - 273.15) * 9 / 5 + 32),
-          'C_temp': (K_temp - 273.15),
-          'icon': weatherIcon
+          'K_temp': hourly_data[i]['temp'].toDouble(),
+          'F_temp': ((hourly_data[i]['temp'] * factor_K_to_F) - factor_K_to_F_offset),
+          'C_temp': (hourly_data[i]['temp'] + factor_K_to_C),
+          'icon': hourly_data[i]['weather'][0]['icon'],
         };
       } //Format is week_hour_icon_data['hourly']['hour1']['C_temp'];
     } else {
@@ -541,7 +530,7 @@ Future<Map<String, dynamic>?> get_weekly_hourly_icons(
   }
 
   //Return and log successful result
-  log_handler.d("get_weekly_hourly_temperature_icons return value: $week_hour_icon_data");
+  log_handler.d("get_weekly_hourly_icons return value: $week_hour_icon_data");
   return week_hour_icon_data;
 }
 
