@@ -218,7 +218,7 @@ class _home_pageState extends State<home_page> {
                                 ),
 
                                 Text(
-                                  device_city ?? "Loading...",
+                                  device_location ?? "Loading...",
                                   style: GoogleFonts.quantico(
                                     textStyle: const TextStyle(
                                       fontSize: 20,
