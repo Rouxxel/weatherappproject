@@ -14,7 +14,7 @@ import 'package:weatherappproject/methods/methods.dart'; //Import necessary func
 void _auto_nav_timer(BuildContext context) {
   //Use Future<t> method with .delayed(Duration(time unit:int))
   //to execute code after 8 seconds
-  Future.delayed(const Duration(seconds: 4), () {
+  Future.delayed(const Duration(seconds: 3), () {
     //Use navigator to go to the landing page
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const home_page()),

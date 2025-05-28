@@ -16,13 +16,13 @@ import 'package:weatherappproject/utils/alert_dialogs.dart';
 import 'package:weatherappproject/methods/validation_methods.dart';
 
 //GPS information (controller variable)
-bool _gps_access = false;
+bool _gps_permission = false;
 
 //API key and other variables
-String _o_weather_api_key = retrieve_api_key();
+String _ow_api_key = retrieve_api_key();
 
 //Initialize logger
-var log_handler= Logger();
+Logger log_handler= Logger();
 
 //To get API data with city name Uri.parse('https://api.openweathermap.org/data/2.5/weather?q=$selectedcity&exclude=minutely,alerts&appid=$apikey)'
 //To get API data with latitude and longitude Uri.parse('https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&exclude=minutely,alerts&appid=$apikey)'
@@ -33,109 +33,140 @@ var log_handler= Logger();
 //GPS related
 //Request GPS permission and get it if given (MUST BE EXECUTED FIRST)
 void get_gps_permissions(BuildContext context) async {
-  log_handler.d("[------get_gps_permission function executing------]");
+  log_handler.d("[------get_gps_permissions function executing------]");
 
-  //Check if device has location active and prevent execution if disabled
-  bool location_service_active = await Geolocator.isLocationServiceEnabled();
-  if (!location_service_active) {
-    //Show user their location is disabled
-    alert_location_disable(context);
-    _gps_access=false;
-
-    log_handler.e("Error: Location-GPS function is disabled in the device");
-    return Future.error("Location service is disabled");
-  }
-
-  //Permission variable
-  LocationPermission permission = await Geolocator.checkPermission();
-
-  //Ask the user for permission if currently denied
-  if(permission == LocationPermission.denied || permission==LocationPermission.deniedForever){
-    alert_gps_access_necessary(context);
-    log_handler.d("Requesting GPS permission");
-    permission = await Geolocator.requestPermission();
-
-    //Handle several possible scenarios after permission asked
-    switch(permission){
-      case LocationPermission.unableToDetermine:
-      //Handle when permission status couldn't be determined
-        log_handler.w("Unable to determine GPS permission status");
-        alert_gps_unable_to_determine(context);
-        _gps_access=false;
-        return Future.error("Unable to determine GPS permission status");
-
-      case LocationPermission.denied:
-      //Handle denied permission
-        log_handler.w("GPS Permission denied");
-        alert_gps_access_denied(context);
-        _gps_access=false;
-        return Future.error("GPS permissions denied");
-
-      case LocationPermission.deniedForever:
-      //Handle permanently denied permission
-        log_handler.w("GPS Permission denied permanently");
-        alert_gps_access_denied(context);
-        _gps_access=false;
-        return Future.error("GPS permissions permanently denied");
-
-      case LocationPermission.always:
-      case LocationPermission.whileInUse:
-        log_handler.i("GPS Permission granted");
-        _gps_access = true;
-        break;
+  try {
+    //Check if device has location active and prevent execution if disabled
+    bool location_service_active = await Geolocator.isLocationServiceEnabled();
+    if (!location_service_active) {
+      //Show user their location is disabled
+      alert_location_disable(context);
+      log_handler.e("Error: Location-GPS function is disabled in the device");
+      return Future.error("Location service is disabled");
     }
+
+    //Permission variable
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    //Ask the user for permission if currently denied
+    if(permission == LocationPermission.denied || permission==LocationPermission.deniedForever){
+      alert_gps_access_necessary(context);
+      log_handler.d("Requesting GPS permission");
+      permission = await Geolocator.requestPermission();
+
+      //Handle several possible scenarios after permission asked
+      switch(permission){
+        case LocationPermission.unableToDetermine:
+        //Handle when permission status couldn't be determined
+          log_handler.w("Unable to determine GPS permission status");
+          alert_gps_unable_to_determine(context);
+          return Future.error("Unable to determine GPS permission status");
+
+        case LocationPermission.denied:
+        //Handle denied permission
+          log_handler.w("GPS Permission denied");
+          alert_gps_access_denied(context);
+          return Future.error("GPS permissions denied");
+
+        case LocationPermission.deniedForever:
+        //Handle permanently denied permission
+          log_handler.w("GPS Permission denied permanently");
+          alert_gps_access_denied(context);
+          return Future.error("GPS permissions permanently denied");
+
+        case LocationPermission.always:
+        case LocationPermission.whileInUse:
+        //Handle location permission granted
+          log_handler.i("GPS Permission granted");
+          _gps_permission = true;
+          break;
+
+        default:
+          log_handler.w("Unhandled GPS permission status: $permission");
+          alert_generic_error(context);
+          return Future.error("Unhandled GPS permission status");
+      }
+    } else {
+      //Permission already granted (always or whileInUse)
+      log_handler.i("GPS Permission already granted");
+      _gps_permission = true;
+    }
+  } catch (er, stackTrace) {
+    log_handler.e("Unexpected error during GPS permission handling: $er, $stackTrace");
+    alert_gps_unable_to_determine(context);
+    return Future.error("Unexpected error: $er");
   }
 }
 
 //Function to get GPS location and return as a list
 //MUST BE CALLED AFTER get_gps_permission
-Future<List<double>> get_gps_location(BuildContext context) async {
+Future<Map<String, double>?> get_gps_location(BuildContext context) async {
   log_handler.d("[------get_gps_location function executing------]");
   //Create empty list for latitude and longitude
-  List<double> c_coordinates = [];
+  Map<String, double> user_coordinates = {
+    "latitude":0.0,
+    "longitude":0.0,
+  };
 
   try {
-    //Get the current position with low accuracy
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
+    //Check if GPS permission is in line
+    if (_gps_permission) {
+      //Get the current position with low accuracy
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.low);
 
-    //Assign the latitude and longitude to the list
-    c_coordinates = [position.latitude, position.longitude];
+      //Assign the latitude and longitude to the list
+      user_coordinates["latitude"] = position.latitude;
+      user_coordinates["longitude"] = position.longitude;
 
-    log_handler.d("Latitude and Longitude from get_gps_location: $c_coordinates");
-    //Return the list of coordinates
-    return c_coordinates;
-
+      log_handler.d("Latitude and Longitude from get_gps_location: $user_coordinates");
+      //Return the list of coordinates
+      return user_coordinates;
+    } else {
+      //Handle gps permission denied scenario
+      alert_gps_access_denied(context);
+      log_handler.w("GPS permission denied, unable to get latitude and longitude");
+      return null;
+    }
   } catch (er) {
     //Handle error situation
     alert_generic_error(context);
     log_handler.e("Error getting location: $er");
-    return c_coordinates;
+    return null;
   }
 }
 
 //Function to launch URLs
-Future<void> launch_URL(String given_URL) async {
+Future<void> launch_URL(BuildContext context, String given_URL) async {
   log_handler.d("[------launch_URL function executing------]");
-  if (!await launchUrl(Uri.parse(given_URL),
-      mode: LaunchMode.externalApplication)) {
-    throw Exception('Could not launch $given_URL');
+
+  try {
+    if (!await launchUrl(Uri.parse(given_URL),
+        mode: LaunchMode.externalApplication)) {
+      alert_error_launching_url(context);
+      throw Exception('Could not launch $given_URL');
+    }
+    log_handler.i("URL resource launching");
+
+  } catch (er,stack_trace) {
+    //Handle error situation
+    alert_error_launching_url(context);
+    log_handler.e("Error launching URL: $er, $stack_trace");
   }
-  log_handler.i("URL resource launching");
 }
 
 /////////////////////////////////////////////////////////////////////////////
 //API and data extraction
-//Get current weather data by either latitude and longitude or city name, 2 calls
-Future<Map<String, dynamic>> get_current_weather_data({
+//Get current weather data by either latitude and longitude or city name
+Future<Map<String, dynamic>> get_latest_weather_data({
   required BuildContext context,
-  String? city_name, List<double>? lat_lon,}) async {
+    String? city_name, Map<String,double>? lat_lon,}) async {
   log_handler.d("[------get_current_weather_data function executing------]");
 
   //Determine the type of request
   String url="";
 
-  //Both or neither
+  //Both type of request or neither handling
   if (city_name != null && lat_lon != null) {
     //Both city_name and lat_lon are provided, throw an error
     alert_location_not_found(context); //Show the error to the user
@@ -148,12 +179,12 @@ Future<Map<String, dynamic>> get_current_weather_data({
     throw ArgumentError('Do not provide both latitude-longitude and city name');
   }
 
-  //Latitude and longitude URL or with city name
+  //Latitude and longitude URL or URL with city name
   if (lat_lon != null) {
     log_handler.d("Getting data from latitude and longitude");
     //Use latitude and longitude to build the URL
-    url ='https://api.openweathermap.org/data/2.5/weather?lat=${lat_lon[0]}'
-        '&lon=${lat_lon[1]}&exclude=minutely&appid=$_o_weather_api_key';
+    url ='https://api.openweathermap.org/data/2.5/weather?lat=${lat_lon["latitude"]}'
+        '&lon=${lat_lon["longitude"]}&exclude=minutely&appid=$_ow_api_key';
   } else if (city_name != null) {
     //Check city_name is valid (at least is not empty)
     log_handler.d("Getting data from city name");
@@ -164,7 +195,7 @@ Future<Map<String, dynamic>> get_current_weather_data({
     } else{
       //Use city_name to build the URL
       url ='https://api.openweathermap.org/data/2.5/weather?q=$city_name'
-          '&exclude=minutely&appid=$_o_weather_api_key';
+          '&exclude=minutely&appid=$_ow_api_key';
     }
   }
 
@@ -235,10 +266,11 @@ Future<Map<String, dynamic>> get_current_weather_data({
       //Possible alerts, requires a different URL than the 2 before and a new API call
       String event="No alerts today!!!";
 
-      if (lat_lon != null) { //If latitud and longitud are provided
+      if (lat_lon != null) { //If latitude and longitude are provided
         final alert_URL = Uri.parse(
-            'https://api.openweathermap.org/data/3.0/onecall?lat=${lat_lon[0]}&lon=${lat_lon[1]}'
-                '&exclude=current,minutely,hourly,daily&lang=en&appid=$_o_weather_api_key');
+            'https://api.openweathermap.org/data/3.0/onecall?lat=${lat_lon["latitude"]}'
+                '&lon=${lat_lon["longitude"]}&exclude=current,minutely,hourly,'
+                'daily&lang=en&appid=$_ow_api_key');
         try { //Same treatment as first call
           final alert_response = await http.get(alert_URL);
           if (alert_response.statusCode == 200) {
@@ -272,7 +304,7 @@ Future<Map<String, dynamic>> get_current_weather_data({
         ////////---------------------------------------------------------------
         final alert_URL = Uri.parse(
             'https://api.openweathermap.org/data/3.0/onecall?lat=${coord[0]}&lon=${coord[1]}'
-                '&exclude=current,minutely,hourly,daily&lang=en&appid=$_o_weather_api_key');
+                '&exclude=current,minutely,hourly,daily&lang=en&appid=$_ow_api_key');
         try {
           final alert_response = await http.get(alert_URL);
           if (alert_response.statusCode == 200) {
@@ -407,15 +439,27 @@ Future<Map<String, dynamic>> get_current_weather_data({
   return current_weather_data;
 }
 
-//Function to get daily max/min temp, hourly temp and icons, 1 call
-Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
-    BuildContext context, List<double> lat_lon, int current_weekday) async {
-  log_handler.d("[------get_weekly_hourly_temperature_icons function executing------]");
+//Function to get daily max/min temp, hourly temp and icons
+Future<Map<String, dynamic>?> get_weekly_hourly_icons(
+    BuildContext context, Map<String,double>? lat_lon, int? current_weekday) async {
+  log_handler.d("[------get_weekly_hourly_icons function executing------]");
+
+  //Handle null latitude and longitude and stop early
+  if (lat_lon == null){
+    log_handler.w("lat_lon is null — cannot call API");
+    alert_generic_error(context);
+    return null;
+  }
+  if (current_weekday == null){
+    log_handler.w("current_weekday is null — cannot call API");
+    alert_generic_error(context);
+    return null;
+  }
 
   // Build URL using latitude and longitude
   final url = Uri.parse(
-      'https://api.openweathermap.org/data/3.0/onecall?lat=${lat_lon[0]}'
-          '&lon=${lat_lon[1]}&exclude=current,minutely&appid=$_o_weather_api_key');
+      'https://api.openweathermap.org/data/3.0/onecall?lat=${lat_lon["latitude"]}'
+          '&lon=${lat_lon["longitude"]}&exclude=current,minutely&appid=$_ow_api_key');
 
   // Declare returning variable (2 sections)
   Map<String, dynamic> week_hour_icon_data = {
@@ -501,63 +545,60 @@ Future<Map<String, dynamic>> get_weekly_hourly_temperature_icons(
   return week_hour_icon_data;
 }
 
-//Obtain date and time, 0 calls
-Map<String, dynamic> get_date_time_data(BuildContext context) {
+//Obtain date and time
+Map<String, dynamic>? get_date_time_data(BuildContext context) {
   log_handler.d("[------get_date_time_data function executing------]");
 
-  //Declare list of date and time data
-  Map<String, dynamic> date_time = {};
+  try {
+    //Declare list of date and time data
+    Map<String, dynamic> date_time = {};
+    //Get current date and time
+    DateTime date_now_data = DateTime.now();
 
-  //Get current date and time
-  DateTime date_now_extracted_data = DateTime.now();
+    //Define weekdays and months
+    List<String> weekdays = ['dummy', 'Mon', 'Tue', 'Wed',
+      'Thur', 'Fri', 'Sat', 'Sun'];
+    List<String> months = ['dummy', 'January', 'February', 'March', 'April', 'May',
+      'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-  //Define weekdays and months
-  List<String> weekdays = ['', 'Mon', 'Tue', 'Wed',
-    'Thur', 'Fri', 'Sat', 'Sun'];
-  List<String> months = ['', 'January', 'February', 'March', 'April', 'May',
-    'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    //Insert extracted data
+    date_time = {
+      'month_day_num': date_now_data.day,
+      'weekday_num':date_now_data.weekday,
+      'weekday_str': weekdays[date_now_data.weekday - 1],
+      'month_num': date_now_data.month,
+      'month_str': months[date_now_data.month - 1],
+      'hour': date_now_data.hour,
+      'minutes': date_now_data.minute.toString().padLeft(2, '0'), // Pad minutes;
+      'year': date_now_data.year,
+    };
 
-  //Extract data components
-  log_handler.d("Extracting date time components");
-  int month_day_num = date_now_extracted_data.day;
-  int weekday_num = date_now_extracted_data.weekday;
-  String weekday_str = weekdays[weekday_num]; //From 1 to 7
-  int month_num = date_now_extracted_data.month; //From 1 to 12
-  String month_str = months[month_num];
-  int current_hour = date_now_extracted_data.hour;
-  String current_minutes = date_now_extracted_data.minute.toString().padLeft(2, '0'); // Pad minutes;
-  int current_year = date_now_extracted_data.year;
+    //Add the next six days' weekday names
+    for (int i = 1; i <= 6; i=i+1) {
+      int future_week_day = (date_time["weekday_num"] + i) % 7; //Go from the next day onwards
+      future_week_day = future_week_day == 0 ? 7 : future_week_day; //Adjust for Sunday
 
-  //Insert extracted data
-  date_time = {
-    'month_day_num': month_day_num,
-    'weekday_num':weekday_num,
-    'weekday_str': weekday_str,
-    'month_num': month_num,
-    'month_str': month_str,
-    'hour': current_hour,
-    'minutes': current_minutes,
-    'year': current_year,
-  };
+      date_time['weekday_str${i + 1}'] = weekdays[future_week_day]; //Insert future week day
+      //Format= 'weekday_str2':weekdays[future_week_day], and so on
+    }
 
-  //Add the next six days' weekday names
-  for (int i = 1; i <= 6; i=i+1) {
-    int future_week_day = (weekday_num + i) % 7; //Go from the next day onwards
-    future_week_day = future_week_day == 0 ? 7 : future_week_day; //Adjust for Sunday
+    //Add the next 23 hours
+    for (int i = 1; i <= 23; i=i+1) {
+      int future_hour = (date_time["hour"] + i) % 24; // Calculate the future hour
+      date_time['hour${i + 1}'] = future_hour; // Insert future hour
+      //Format= 'hour2': future_hour, and so on
+    }
 
-    date_time['weekday_str${i + 1}'] = weekdays[future_week_day]; //Insert future week day
-    //Format= 'weekday_str2':weekdays[future_week_day], and so on
+    log_handler.d("Function get_date_time_data map return: $date_time");
+    return date_time;
+  } catch (er) {
+    //Display generic error
+    alert_generic_error(context);
+
+    //Handle any other errors
+    log_handler.e('Error: $er');
+    throw Exception('Generic error occurred');
   }
-
-  //Add the next 23 hours
-  for (int i = 1; i <= 23; i=i+1) {
-    int future_hour = (current_hour + i) % 24; // Calculate the future hour
-    date_time['hour${i + 1}'] = future_hour; // Insert future hour
-    //Format= 'hour2': future_hour, and so on
-  }
-
-  log_handler.d("Function get_date_time_data map return: $date_time");
-  return date_time;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -572,14 +613,14 @@ String capitalize_strings(String input) {
     if (word.isEmpty) {
       return word;
     }
-    log_handler.d("String capitalized successfuly");
+    log_handler.d("String capitalized successfully");
     return word[0].toUpperCase() + word.substring(1).toLowerCase();
   }).join(' ');
 }
 
 //To convert icon codes into actual icons
-IconData return_correct_icon(String str_icon_code) {
-  log_handler.d("------return_correct_icon executing------");
+IconData return_icon_code(String str_icon_code) {
+  log_handler.d("------return_icon_code executing------");
   //Use switch statement to select the correct case
   switch (str_icon_code) {
   //For when it is day

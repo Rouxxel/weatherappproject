@@ -6,7 +6,8 @@ import 'package:icons_flutter/icons_flutter.dart'; //For more icons
 import 'package:weatherappproject/screens_pages/home_page.dart';
 import 'package:weatherappproject/screens_pages/details_page.dart';
 import 'package:weatherappproject/methods/methods.dart'; //Import necessary functionality
-import 'package:weatherappproject/methods/validation_methods.dart'; //Import necessary functionality
+import 'package:weatherappproject/methods/validation_methods.dart';
+import 'package:weatherappproject/utils/alert_dialogs.dart'; //Import necessary functionality
 
 //imports
 /////////////////////////////////////////////////////////////////////////////
@@ -33,61 +34,66 @@ class _search_pageState extends State<search_page> {
   final TextEditingController _text_controller = TextEditingController();
 
   //Public function to fetch all detailed weather data
-  Future<void> fetch_detailed_weather_data(String text_controller) async{
+  Future<void> _fetch_detailed_weather_data(String text_controller) async{
     //Use block to create new scope and limit lifespan of variables
     {
-      //Update city according to user input
-      D_city_by_user = validate_user_input(context, text_controller);
+      try {
+        //Validate user input and update city name
+        city_by_user = validate_user_input(context, text_controller);
 
-      //Declare and obtain list with all weather information
-      Map<String, dynamic> D_weather_info =
-      await get_current_weather_data(
+        //Fetch latest weather data by city name
+        Map<String, dynamic> detailed_weather_info = await get_latest_weather_data(
           context: context,
-          city_name: D_city_by_user);
+          city_name: city_by_user,
+        );
 
-      //Declare and obtain possible alerts
-      String D_alerts_today =D_weather_info["alert"];
+        //Extract alert information
+        String alert = detailed_weather_info["alert"] ?? "";
 
-      setState(() {
-        //Update city_country string
-        D_city_country = D_weather_info["rough_location"];
+        //Update state with fetched data
+        setState(() {
+          //Location info
+          city_and_country = detailed_weather_info["rough_location"] ?? "Unknown location";
 
-        //Update date and time string
-        D_date_time = D_weather_info["format_date_time"];
+          //Date/time
+          date_and_time = detailed_weather_info["format_date_time"] ?? "";
 
-        //Update alert
-        D_weather_alert = D_alerts_today;
+          //Alerts
+          weather_alert = alert;
 
-        //Weather information
-        //Top container
-        D_central_temp_num = D_weather_info["C_temp"];
-        D_subtxt_weather_condition = D_weather_info["weather_cond"];
+          //Weather info (top container)
+          current_temperature = detailed_weather_info["C_temp"] ?? 0.0;
+          subtxt_weather_condition = detailed_weather_info["weather_cond"] ?? "N/A";
 
-        //Temp container
-        D_max_temp = D_weather_info["C_temp_max"];
-        D_min_temp = D_weather_info["C_temp_min"];
-        D_feels_temp = D_weather_info["C_temp_feel"];
+          // Temperature container
+          max_temp = detailed_weather_info["C_temp_max"] ?? 0.0;
+          min_temp = detailed_weather_info["C_temp_min"] ?? 0.0;
+          feels_like = detailed_weather_info["C_temp_feel"] ?? 0.0;
 
+          // Precipitation, Humidity, Clouds
+          detailed_precipitation = detailed_weather_info["precipi_MM"] ?? 0.0;
+          detailed_humidity = detailed_weather_info["humid"] ?? 0;
+          cloud_percentage = detailed_weather_info["clouds"] ?? 0;
 
-        //Precipitation, Humidity, clouds container
-        D_precipitation = D_weather_info["precipi_MM"];
-        D_humidity = D_weather_info["humid"];
-        D_clouds_percent = D_weather_info["clouds"];
+          // Wind details
+          wind_direction = detailed_weather_info["wind_direction"] ?? "N/A";
+          wind_gust = detailed_weather_info["KPH_wind_g"] ?? 0.0;
+          detailed_wind_speed = detailed_weather_info["KPH_wind"] ?? 0.0;
 
-        //Wind container
-        D_wind_dir = D_weather_info["wind_direction"];
-        D_wind_gust = D_weather_info["KPH_wind_g"];
-        D_wind_speed = D_weather_info["KPH_wind"];
+          // Sun timings
+          sunset_time = detailed_weather_info["sunset_time"] ?? "N/A";
+          uvi = detailed_weather_info["uvi"] ?? 0.0;
+          sunrise_time = detailed_weather_info["sunrise_time"] ?? "N/A";
 
-        //Sun container
-        D_sunset = D_weather_info["sunset_time"];
-        D_uvi = D_weather_info["uvi"];
-        D_sunrise = D_weather_info["sunrise_time"];
-
-        //Pressure container
-        D_pressure_hpa = D_weather_info["press_HPA"];
-        D_pressure_mb = D_weather_info["press_MB"];
-      });
+          // Pressure data
+          pressure_hpa = detailed_weather_info["press_HPA"] ?? 0;
+          pressure_mb = detailed_weather_info["press_MB"] ?? 0;
+        });
+      } catch (error) {
+        // Handle errors gracefully
+        alert_data_fetching_error(context);
+        log_handler.e('Error fetching detailed weather data: $error');
+      }
     } //End of block
   }
 
@@ -221,7 +227,7 @@ class _search_pageState extends State<search_page> {
 
                                 onPressed: () async {
 
-                                  await fetch_detailed_weather_data(_text_controller.text);
+                                  await _fetch_detailed_weather_data(_text_controller.text);
 
                                   //Use navigator to go to the landing page
                                   Navigator.of(context).push(
@@ -229,7 +235,7 @@ class _search_pageState extends State<search_page> {
                                       builder: (context) => const details_page(),
                                     ),
                                   );
-                                  log_handler.d("City given by user: $D_city_by_user");
+                                  log_handler.d("City given by user: $city_by_user");
                                 },
                               ),
                             ),

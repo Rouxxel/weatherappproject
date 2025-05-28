@@ -17,27 +17,23 @@ import 'package:weatherappproject/utils/alert_dialogs.dart';
 //global variables
 
 //Top most container in listview
-String device_city="NaN";
-String device_location = "NaN, NaN";
-String date_time = "NaN NaN, NaN NaN:NaN";
-double center_temp_numb = 0;
-String subtext_condition = "Double tap to refresh";
+String? device_city;
+String? device_location;
+String? date_time;
+double? center_temp_numb;
+String? subtext_condition;
 
-//Middle container in listview
-double precipitation = 0.0;
-int humidity = 0;
-double wind_speed = 0.0;
+double? precipitation;
+int? humidity;
+double? wind_speed;
 
-//Bottom container in List view
-//Daily initialization
-List<String> days = List.generate(7, (_) => "NaN");
-List<List<double>> daily_max_min_temps = List.generate(7, (_) => [0.0, 0.0]);
-List<String> daily_icon_strs = List.generate(7, (_) => "NaN");
+List<String?> days = List.filled(7, null);
+List<List<double?>> daily_max_min_temps = List.generate(7, (_) => [null, null]);
+List<String?> daily_icon_strs = List.filled(7, null);
 
-//Hourly initialization
-List<int> hours = List.generate(24, (_) => 0);
-List<double> hourly_temps = List.generate(24, (_) => 0.0);
-List<String> hourly_icon_strs = List.generate(24, (_) => "NaN");
+List<int?> hours = List.filled(24, null);
+List<double?> hourly_temps = List.filled(24, null);
+List<String?> hourly_icon_strs = List.filled(24, null);
 
 //global variables
 /////////////////////////////////////////////////////////////////////////////
@@ -59,80 +55,65 @@ class _home_pageState extends State<home_page> {
 
   //Private function to fetch all the data
   Future<void> _fetch_weather_data() async {
-    // Use block to create a new scope and limit lifespan of variables
+    //Use block to create a new scope and limit lifespan of variables
     {
       try {
-        // Declare and obtain list with latitude and longitude
-        List<double> lat_lon = await get_gps_location(context);
-
-        // Declare and obtain string of date and time
-        Map<String, dynamic> date_info = get_date_time_data(context);
-
-        // Declare and obtain list with all weather information
-        Map<String, dynamic> weather_info = await get_current_weather_data(
-          context: context,
-          lat_lon: lat_lon,
-        );
-
-        // Declare and obtain list with temp hourly, weekly and weather icons
-        Map<String, dynamic> weekhour_icon_data =
-        await get_weekly_hourly_temperature_icons(
+        //Get latitude and longitude
+        final lat_lon = await get_gps_location(context);
+        //Get date info
+        final date_info = get_date_time_data(context);
+        final date_now = DateTime.now();
+        //Get weather info and icons
+        final weather_info = await get_latest_weather_data(context: context, lat_lon: lat_lon);
+        final icon_data = await get_weekly_hourly_icons(
           context,
           lat_lon,
-          date_info['month_day_num'],
+          date_info?['month_day_num'],
         );
 
-        // Set state for all relevant variables
         setState(() {
-          // Update relevant variables
+          //Basic device info
           device_location = weather_info["rough_location"];
           device_city = weather_info["current_city"];
 
-          // Date and time
+          //Format date-time string
           date_time =
-          "${date_info["weekday_str"]} ${date_info["month_day_num"]}, "
-              "${date_info["month_str"]} ${date_info['hour']}:"
-              "${date_info["minutes"]}";
+          "${date_info?["weekday_str"]} ${date_info?["month_day_num"]}, "
+              "${date_info?["month_str"]} ${date_info?['hour']}:${date_info?["minutes"]}";
 
-          // Weather information
+          //Weather info
           center_temp_numb = weather_info["C_temp"];
           subtext_condition = weather_info["weather_cond"];
           precipitation = weather_info["precipi_MM"];
           humidity = weather_info["humid"];
           wind_speed = weather_info["KPH_wind"];
 
-          // Daily information
+          //Update daily info
           for (int i = 0; i < days.length; i++) {
-            int dayindex = (date_info['month_day_num'] + i) % 7;
+            final dayIndex = (date_info?['month_day_num'] + i) % 7;
+            final dayKey = 'weekday_str${i == 0 ? '' : (i + 1)}';
+            days[i] = date_info?[dayKey];
 
-            String key = 'weekday_str${i == 0 ? '' : (i + 1).toString()}';
-            days[i] = date_info[key];
-
-            daily_max_min_temps[i][0] =
-            weekhour_icon_data['daily']['day${dayindex + 1}']['C_min_temp'];
-            daily_max_min_temps[i][1] =
-            weekhour_icon_data['daily']['day${dayindex + 1}']['C_max_temp'];
-
-            daily_icon_strs[i] =
-            weekhour_icon_data['daily']['day${dayindex + 1}']['icon'];
+            final dailyData = icon_data?['daily']?['day${dayIndex + 1}'];
+            daily_max_min_temps[i][0] = dailyData?['C_min_temp'];
+            daily_max_min_temps[i][1] = dailyData?['C_max_temp'];
+            daily_icon_strs[i] = dailyData?['icon'];
           }
 
-          // Hourly information
+          // Update hourly info
           for (int i = 0; i < hours.length; i++) {
-            int hourindex = (DateTime.now().hour + i) % 24;
+            final hourIndex = (date_now.hour + i) % 24;
+            final hourKey = 'hour${i == 0 ? '' : (i + 1)}';
+            hours[i] = date_info?[hourKey];
 
-            String key = 'hour${i == 0 ? '' : (i + 1).toString()}';
-            hours[i] = date_info[key];
-
-            hourly_temps[i] =
-            weekhour_icon_data['hourly']['hour${hourindex + 1}']['C_temp'];
-            hourly_icon_strs[i] =
-            weekhour_icon_data['hourly']['hour${hourindex + 1}']['icon'];
+            final hourlyData = icon_data?['hourly']?['hour${hourIndex + 1}'];
+            hourly_temps[i] = hourlyData?['C_temp'];
+            hourly_icon_strs[i] = hourlyData?['icon'];
           }
         });
-      } catch (error) {
+      } catch (error, stack_trace) {
         alert_data_fetching_error(context);
-        log_handler.e('Error fetching weather data: $error');
+        log_handler.e('Error fetching weather data: $error, $stack_trace');
       }
     }
   }
@@ -237,7 +218,7 @@ class _home_pageState extends State<home_page> {
                                 ),
 
                                 Text(
-                                  device_location,
+                                  device_city ?? "Loading...",
                                   style: GoogleFonts.quantico(
                                     textStyle: const TextStyle(
                                       fontSize: 20,
@@ -255,7 +236,7 @@ class _home_pageState extends State<home_page> {
                             //Subtext of top text (maybe punt in a container with
                             //width: 260, height: 18,)
                             Text(
-                              date_time,
+                              date_time ?? "Loading...",
                               style: GoogleFonts.quantico(
                                 textStyle: const TextStyle(
                                   fontSize: 15,
@@ -274,7 +255,7 @@ class _home_pageState extends State<home_page> {
                                 height: 140,
                                 child: Center(
                                   child: Text(
-                                    "${center_temp_numb.round()}\u00B0C",
+                                    "${center_temp_numb?.round() ?? '--'}\u00B0C",
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.sansita(
                                       textStyle: const TextStyle(
@@ -292,7 +273,7 @@ class _home_pageState extends State<home_page> {
                             //Subtext of Big temperature text (maybe out in a
                             //container with width: 260,height: 26,)
                             Text(
-                              capitalize_strings(subtext_condition),
+                              capitalize_strings(subtext_condition ?? "Loading...",),
                               style: GoogleFonts.quantico(
                                 textStyle: const TextStyle(
                                   fontSize: 25,
@@ -344,7 +325,7 @@ class _home_pageState extends State<home_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${precipitation}mm",
+                                "${precipitation ?? "--"}mm",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -384,7 +365,7 @@ class _home_pageState extends State<home_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "$humidity%",
+                                "${humidity ?? "--"}%",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -423,7 +404,7 @@ class _home_pageState extends State<home_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${wind_speed.round()} KMH",
+                                "${wind_speed?.round() ?? '--'} KMH",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,

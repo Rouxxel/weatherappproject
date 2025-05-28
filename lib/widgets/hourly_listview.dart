@@ -63,14 +63,14 @@ class hourly_listview extends StatelessWidget {
                   children: [
                     //Icon weather container
                     Icon(
-                      return_correct_icon(hourly_icon_strs[index]),
+                      return_icon_code(hourly_icon_strs[index] ?? "N/A"),
                       size: 35,
                       color: Colors.white,
                     ),
 
                     //Temperature
                     Text(
-                      "${hourly_temps[index].round()}\u00B0C",
+                      "${hourly_temps[index]?.round() ?? "--"}\u00B0C",
                       style: GoogleFonts.sansita(
                         textStyle: const TextStyle(
                           fontSize: 33,
@@ -83,7 +83,7 @@ class hourly_listview extends StatelessWidget {
 
                     //Hour text
                     Text(
-                      "${hours[index]}:00", //Hours of the day text
+                      (hours[index] != null) ? "${hours[index]}:00" : "--:--", //Hours of the day text
                       style: GoogleFonts.quantico(
                         textStyle: const TextStyle(
                           fontSize: 21,

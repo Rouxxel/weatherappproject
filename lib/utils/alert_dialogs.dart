@@ -364,7 +364,7 @@ void alert_data_fetching_error(BuildContext context) {
 }
 
 //Function to display invalid url
-void alert_invalid_url(BuildContext context){
+void alert_error_launching_url(BuildContext context){
   //Declare the buttons of alert
   Widget ok_button = TextButton(
     child: Text(

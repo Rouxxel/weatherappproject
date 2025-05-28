@@ -15,36 +15,36 @@ import 'package:weatherappproject/methods/methods.dart'; //Import necessary func
 final String _web_URL = 'https://github.com/Rouxxel/weatherappproject';
 
 //City name given by user
-String D_city_by_user="";
+String? city_by_user;
 
 //Top most container in listview
-String D_city_country = "NaN, NaN";
-String D_date_time="NaN NaN, NaN NaN:NaN";
-double D_central_temp_num = 0;
-String D_subtxt_weather_condition = "Please go to search page";
+String? city_and_country;
+String? date_and_time;
+double? current_temperature;
+String? subtxt_weather_condition;
 
 //Alert container in Listview
-String D_weather_alert = "No Location provided...";
+String? weather_alert;
 
 //All other containers in listview
-double D_max_temp = 0;
-double D_feels_temp = 0;
-double D_min_temp = 0;
+double? max_temp;
+double? feels_like;
+double? min_temp;
 
-double D_precipitation = 0.0;
-int D_humidity = 0;
-int D_clouds_percent = 0;
+double? detailed_precipitation;
+int? detailed_humidity;
+int? cloud_percentage;
 
-int D_wind_dir = 0;
-double D_wind_gust = 0.0;
-double D_wind_speed = 0.0;
+int? wind_direction;
+double? wind_gust;
+double? detailed_wind_speed;
 
-String D_sunset = "00:00";
-double D_uvi = 0.0;
-String D_sunrise = "00:00";
+String? sunset_time;
+double? uvi;
+String? sunrise_time;
 
-double D_pressure_hpa = 0.0;
-double D_pressure_mb = 0.0;
+double? pressure_hpa;
+double? pressure_mb;
 
 //global variables
 /////////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ class _details_pageState extends State<details_page> {
                               ),
 
                               Text(
-                                D_city_country,
+                                city_and_country ?? "Loading...",
                                 style: GoogleFonts.quantico(
                                   textStyle: const TextStyle(
                                     fontSize: 20,
@@ -165,7 +165,7 @@ class _details_pageState extends State<details_page> {
                           //width: 260, height: 18,)
                           Center(
                             child: Text(
-                              D_date_time,
+                              date_and_time ?? "Loading...",
                               style: GoogleFonts.quantico(
                                 textStyle: const TextStyle(
                                   fontSize: 15,
@@ -185,7 +185,7 @@ class _details_pageState extends State<details_page> {
                               height: 140,
                               child: Center(
                                 child: Text(
-                                  "${D_central_temp_num.round()}\u00B0C",
+                                  "${current_temperature?.round() ?? "--"}\u00B0C",
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.sansita(
                                     textStyle: const TextStyle(
@@ -204,7 +204,7 @@ class _details_pageState extends State<details_page> {
                           //container with width: 260,height: 26,)
                           Center(
                             child: Text(
-                              capitalize_strings(D_subtxt_weather_condition),
+                              capitalize_strings(subtxt_weather_condition ?? "Loading..."),
                               style: GoogleFonts.quantico(
                                 textStyle: const TextStyle(
                                   fontSize: 25,
@@ -272,7 +272,7 @@ class _details_pageState extends State<details_page> {
                             width: 200,
                             //Put in a sized box to avoid overflow
                             child: Text(
-                              capitalize_strings(D_weather_alert),
+                              capitalize_strings(weather_alert ?? "..."),
                               style: GoogleFonts.quantico(
                                 textStyle: const TextStyle(
                                   fontSize: 23,
@@ -326,7 +326,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${D_max_temp.round()}\u00B0C",
+                                "${max_temp?.round() ?? "--"}\u00B0C",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -365,7 +365,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${D_feels_temp.round()}\u00B0C",
+                                "${feels_like?.round() ?? "--"}\u00B0C",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -404,7 +404,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${D_min_temp.round()}\u00B0C",
+                                "${min_temp?.round() ?? "--"}\u00B0C",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -468,7 +468,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${D_precipitation}mm",
+                                "${detailed_precipitation}mm",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -507,7 +507,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "$D_humidity%",
+                                "$detailed_humidity%",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -546,7 +546,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "$D_clouds_percent%",
+                                "$cloud_percentage%",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -610,7 +610,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "$D_wind_dir\u00B0",
+                                "${wind_direction ?? "---"}\u00B0",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -649,7 +649,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${D_wind_gust.round()} KMH",
+                                "${wind_gust?.round() ?? "--"} KMH",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -688,7 +688,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${D_wind_speed.round()} KMH",
+                                "${detailed_wind_speed?.round() ?? "--"} KMH",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -720,7 +720,7 @@ class _details_pageState extends State<details_page> {
                       height: 20,
                     ),
 
-                    //Container 4 (Sunse, UVi, Sunrise)
+                    //Container 4 (Sunset, UVi, Sunrise)
                     Container(
                       //Round up container's edges
                       decoration: BoxDecoration(
@@ -752,7 +752,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                D_sunset,
+                                sunset_time ?? "--:--",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -791,7 +791,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "$D_uvi",
+                                "${uvi ?? "-.-"}",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -830,7 +830,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                D_sunrise,
+                                sunrise_time ?? "--:--",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -894,7 +894,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${D_pressure_hpa.round()}hPa",
+                                "${pressure_hpa?.round() ?? "----"}hPa",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -933,7 +933,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${D_pressure_mb}mb",
+                                "${pressure_mb ?? "--.--"}mb",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -968,7 +968,7 @@ class _details_pageState extends State<details_page> {
                     //Container 6 (Link to webpage)
                     GestureDetector(
                       onTap: () async {
-                        await launch_URL(_web_URL);
+                        await launch_URL(context,_web_URL);
                       },
 
                       child: Container(
@@ -983,7 +983,7 @@ class _details_pageState extends State<details_page> {
                         child: Center(
                           //Children
                           child: Text(
-                            "Check out our Web site !!!",
+                            "Check out our Repository !!!",
                             style: GoogleFonts.quantico(
                               textStyle: const TextStyle(
                                 fontSize: 23,
