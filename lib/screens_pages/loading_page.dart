@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; //For font import
+import 'package:flutter/services.dart'; //For exiting app
 
 //
 //Other pages import
@@ -14,7 +15,7 @@ import 'package:weatherappproject/methods/methods.dart'; //Import necessary func
 void _auto_nav_timer(BuildContext context) {
   //Use Future<t> method with .delayed(Duration(time unit:int))
   //to execute code after 8 seconds
-  Future.delayed(const Duration(seconds: 3), () {
+  Future.delayed(const Duration(seconds: 4), () {
     //Use navigator to go to the landing page
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const home_page()),
@@ -26,16 +27,51 @@ void _auto_nav_timer(BuildContext context) {
 /////////////////////////////////////////////////////////////////////////////
 //screen itself
 
-class loading_page extends StatelessWidget {
+class loading_page extends StatefulWidget {
   const loading_page({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    //Get permission right away
-    get_gps_permissions(context);
+  State<loading_page> createState() => _loading_pageState();
+}
 
-    //Timer to automatically navigate to the landing page
-    _auto_nav_timer(context);
+class _loading_pageState extends State<loading_page> {
+  @override
+  void initState() {
+    super.initState();
+    _check_permission_to_navigate();
+  }
+
+  // Method to ask for GPS permission, then next action
+  Future<void> _check_permission_to_navigate() async {
+    try {
+      await get_gps_permissions(context);
+
+      if (gps_permission) {
+        _auto_nav_timer();
+      } else {
+        //Exit the app
+        SystemNavigator.pop();
+      }
+    } catch (er) {
+      log_handler.w("Error checking permission to navigate to homepage: $er");
+      SystemNavigator.pop(); //Exit app on error
+    }
+  }
+
+  // Method to auto-navigate to home page
+  void _auto_nav_timer() {
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const home_page()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    //Ask GPS permission, then proceed to home page
+    _check_permission_to_navigate();
 
     //Media Query
     double screen_width = MediaQuery.of(context).size.width;

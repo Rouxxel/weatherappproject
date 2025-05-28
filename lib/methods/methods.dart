@@ -16,7 +16,7 @@ import 'package:weatherappproject/utils/alert_dialogs.dart';
 import 'package:weatherappproject/methods/validation_methods.dart';
 
 //GPS information (controller variable)
-bool _gps_permission = false;
+bool gps_permission = false;
 
 //API key and other variables
 String _ow_api_key = retrieve_api_key();
@@ -32,7 +32,7 @@ Logger log_handler= Logger();
 //functions-method
 //GPS related
 //Request GPS permission and get it if given (MUST BE EXECUTED FIRST)
-void get_gps_permissions(BuildContext context) async {
+Future<void> get_gps_permissions(BuildContext context) async {
   log_handler.d("[------get_gps_permissions function executing------]");
 
   try {
@@ -50,7 +50,7 @@ void get_gps_permissions(BuildContext context) async {
 
     //Ask the user for permission if currently denied
     if(permission == LocationPermission.denied || permission==LocationPermission.deniedForever){
-      alert_gps_access_necessary(context);
+      await alert_gps_access_necessary(context);
       log_handler.d("Requesting GPS permission");
       permission = await Geolocator.requestPermission();
 
@@ -78,7 +78,7 @@ void get_gps_permissions(BuildContext context) async {
         case LocationPermission.whileInUse:
         //Handle location permission granted
           log_handler.i("GPS Permission granted");
-          _gps_permission = true;
+          gps_permission = true;
           break;
 
         default:
@@ -89,7 +89,7 @@ void get_gps_permissions(BuildContext context) async {
     } else {
       //Permission already granted (always or whileInUse)
       log_handler.i("GPS Permission already granted");
-      _gps_permission = true;
+      gps_permission = true;
     }
   } catch (er, stackTrace) {
     log_handler.e("Unexpected error during GPS permission handling: $er, $stackTrace");
@@ -110,7 +110,7 @@ Future<Map<String, double>?> get_gps_location(BuildContext context) async {
 
   try {
     //Check if GPS permission is in line
-    if (_gps_permission) {
+    if (gps_permission) {
       //Get the current position with low accuracy
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.low);
@@ -532,9 +532,9 @@ Map<String, dynamic>? get_date_time_data(BuildContext context) {
     date_time = {
       'month_day_num': date_now_data.day,
       'weekday_num':date_now_data.weekday,
-      'weekday_str': weekdays[date_now_data.weekday - 1],
+      'weekday_str': weekdays[date_now_data.weekday],
       'month_num': date_now_data.month,
-      'month_str': months[date_now_data.month - 1],
+      'month_str': months[date_now_data.month],
       'hour': date_now_data.hour,
       'minutes': date_now_data.minute.toString().padLeft(2, '0'), // Pad minutes;
       'year': date_now_data.year,

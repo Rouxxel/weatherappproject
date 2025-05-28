@@ -65,7 +65,7 @@ void alert_location_disable(BuildContext context) {
 }
 
 //Function to display why access to GPS is necessary
-void alert_gps_access_necessary(BuildContext context) {
+Future<void> alert_gps_access_necessary(BuildContext context) {
   //Declare the buttons of alert
   Widget ok_button = TextButton(
     child: Text(
@@ -80,7 +80,7 @@ void alert_gps_access_necessary(BuildContext context) {
       ),
     ),
     onPressed: () {
-      Navigator.of(context, rootNavigator: true).pop();
+      Navigator.of(context, rootNavigator: true).pop(); // Dismiss dialog
     },
   );
 
@@ -99,9 +99,10 @@ void alert_gps_access_necessary(BuildContext context) {
       ),
     ),
     content: Text(
-      "Please, Weather App Project requires access to your device's"
-          "GPS location in order to obtain the relevant information about"
-          "the current and forecasted weather in your location",
+      "Please, ForKast requires access to your device's "
+          "GPS location in order to provide you with the current "
+          "and forecasted weather in your location. If not, refrain"
+          " from using the app",
       style: GoogleFonts.quantico(
         textStyle: const TextStyle(
           fontSize: 18,
@@ -116,12 +117,10 @@ void alert_gps_access_necessary(BuildContext context) {
     ],
   );
 
-  //Show the dialog
-  showDialog(
+  // Show the dialog and return the Future
+  return showDialog<void>(
     context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
+    builder: (BuildContext context) => alert,
   );
 }
 
