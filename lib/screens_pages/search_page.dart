@@ -33,13 +33,13 @@ class _search_pageState extends State<search_page> {
   //Create a TextEditingController to control the TextField
   final TextEditingController _text_controller = TextEditingController();
 
-  //Public function to fetch all detailed weather data
-  Future<void> _fetch_detailed_weather_data(String text_controller) async{
+  //Private function to fetch all detailed weather data
+  Future<void> _fetch_searched_detailed_weather_data(String input_text) async{
     //Use block to create new scope and limit lifespan of variables
     {
       try {
         //Validate user input and update city name
-        city_by_user = validate_user_input(context, text_controller);
+        city_by_user = validate_user_input(context, input_text);
 
         //Fetch latest weather data by city name
         Map<String, dynamic> detailed_weather_info = await get_latest_weather_data(
@@ -48,46 +48,46 @@ class _search_pageState extends State<search_page> {
         );
 
         //Extract alert information
-        String alert = detailed_weather_info["alert"] ?? "";
+        String alert = detailed_weather_info["alert"] ?? "...";
 
         //Update state with fetched data
         setState(() {
           //Location info
-          city_and_country = detailed_weather_info["rough_location"] ?? "Unknown location";
+          city_and_country = detailed_weather_info["rough_location"] ?? "N/A";
 
           //Date/time
-          date_and_time = detailed_weather_info["format_date_time"] ?? "";
+          date_and_time = detailed_weather_info["format_date_time"] ?? "N/A";
 
           //Alerts
           weather_alert = alert;
 
           //Weather info (top container)
-          current_temperature = detailed_weather_info["C_temp"] ?? 0.0;
-          subtxt_weather_condition = detailed_weather_info["weather_cond"] ?? "N/A";
+          current_temperature = detailed_weather_info["C_temp"] ?? "--";
+          subtxt_weather_condition = detailed_weather_info["weather_cond"] ?? "Problem with location";
 
           // Temperature container
-          max_temp = detailed_weather_info["C_temp_max"] ?? 0.0;
-          min_temp = detailed_weather_info["C_temp_min"] ?? 0.0;
-          feels_like = detailed_weather_info["C_temp_feel"] ?? 0.0;
+          max_temp = detailed_weather_info["C_temp_max"] ?? "--";
+          min_temp = detailed_weather_info["C_temp_min"] ?? "--";
+          feels_like = detailed_weather_info["C_temp_feel"] ?? "--";
 
           // Precipitation, Humidity, Clouds
-          detailed_precipitation = detailed_weather_info["precipi_MM"] ?? 0.0;
-          detailed_humidity = detailed_weather_info["humid"] ?? 0;
-          cloud_percentage = detailed_weather_info["clouds"] ?? 0;
+          detailed_precipitation = detailed_weather_info["precipi_MM"] ?? "--";
+          detailed_humidity = detailed_weather_info["humid"] ?? "--";
+          cloud_percentage = detailed_weather_info["clouds"] ?? "--";
 
           // Wind details
-          wind_direction = detailed_weather_info["wind_direction"] ?? "N/A";
-          wind_gust = detailed_weather_info["KPH_wind_g"] ?? 0.0;
-          detailed_wind_speed = detailed_weather_info["KPH_wind"] ?? 0.0;
+          wind_direction = detailed_weather_info["wind_direction"] ?? "---";
+          wind_gust = detailed_weather_info["KPH_wind_g"] ?? "--";
+          detailed_wind_speed = detailed_weather_info["KPH_wind"] ?? "--";
 
           // Sun timings
-          sunset_time = detailed_weather_info["sunset_time"] ?? "N/A";
-          uvi = detailed_weather_info["uvi"] ?? 0.0;
-          sunrise_time = detailed_weather_info["sunrise_time"] ?? "N/A";
+          sunset_time = detailed_weather_info["sunset_time"] ?? "--:--";
+          uvi = detailed_weather_info["uvi"] ?? "-.-";
+          sunrise_time = detailed_weather_info["sunrise_time"] ?? "--:--";
 
           // Pressure data
-          pressure_hpa = detailed_weather_info["press_HPA"] ?? 0;
-          pressure_mb = detailed_weather_info["press_MB"] ?? 0;
+          pressure_hpa = detailed_weather_info["press_HPA"] ?? "----";
+          pressure_mb = detailed_weather_info["press_MB"] ?? "--.--";
         });
       } catch (error) {
         // Handle errors gracefully
@@ -227,7 +227,7 @@ class _search_pageState extends State<search_page> {
 
                                 onPressed: () async {
 
-                                  await _fetch_detailed_weather_data(_text_controller.text);
+                                  await _fetch_searched_detailed_weather_data(_text_controller.text);
 
                                   //Use navigator to go to the landing page
                                   Navigator.of(context).push(

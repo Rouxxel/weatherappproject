@@ -5,6 +5,7 @@ import 'package:icons_flutter/icons_flutter.dart'; //For more icons
 //Other pages import
 import 'package:weatherappproject/screens_pages/home_page.dart';
 import 'package:weatherappproject/screens_pages/search_page.dart';
+import 'package:weatherappproject/utils/alert_dialogs.dart';
 import 'package:weatherappproject/methods/methods.dart'; //Import necessary functionality
 
 //imports
@@ -58,6 +59,68 @@ class details_page extends StatefulWidget {
 }
 
 class _details_pageState extends State<details_page> {
+
+  //Private function to fetch all detailed weather data
+  Future<void> _fetch_local_detailed_weather_data(String input_text) async{
+    //Use block to create new scope and limit lifespan of variables
+    {
+      try {
+        //Fetch latest weather data by city name
+        Map<String, dynamic> detailed_weather_info = await get_latest_weather_data(
+          context: context,
+          city_name: input_text,
+        );
+
+        //Extract alert information
+        String alert = detailed_weather_info["alert"] ?? "";
+
+        //Update state with fetched data
+        setState(() {
+          //Location info
+          city_and_country = detailed_weather_info["rough_location"] ?? "Unknown location";
+
+          //Date/time
+          date_and_time = detailed_weather_info["format_date_time"] ?? "";
+
+          //Alerts
+          weather_alert = alert;
+
+          //Weather info (top container)
+          current_temperature = detailed_weather_info["C_temp"] ?? 0.0;
+          subtxt_weather_condition = detailed_weather_info["weather_cond"] ?? "N/A";
+
+          // Temperature container
+          max_temp = detailed_weather_info["C_temp_max"] ?? 0.0;
+          min_temp = detailed_weather_info["C_temp_min"] ?? 0.0;
+          feels_like = detailed_weather_info["C_temp_feel"] ?? 0.0;
+
+          // Precipitation, Humidity, Clouds
+          detailed_precipitation = detailed_weather_info["precipi_MM"] ?? 0.0;
+          detailed_humidity = detailed_weather_info["humid"] ?? 0;
+          cloud_percentage = detailed_weather_info["clouds"] ?? 0;
+
+          // Wind details
+          wind_direction = detailed_weather_info["wind_direction"] ?? "N/A";
+          wind_gust = detailed_weather_info["KPH_wind_g"] ?? 0.0;
+          detailed_wind_speed = detailed_weather_info["KPH_wind"] ?? 0.0;
+
+          // Sun timings
+          sunset_time = detailed_weather_info["sunset_time"] ?? "N/A";
+          uvi = detailed_weather_info["uvi"] ?? 0.0;
+          sunrise_time = detailed_weather_info["sunrise_time"] ?? "N/A";
+
+          // Pressure data
+          pressure_hpa = detailed_weather_info["press_HPA"] ?? 0;
+          pressure_mb = detailed_weather_info["press_MB"] ?? 0;
+        });
+      } catch (error) {
+        // Handle errors gracefully
+        alert_data_fetching_error(context);
+        log_handler.e('Error fetching detailed weather data: $error');
+      }
+    } //End of block
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -114,110 +177,116 @@ class _details_pageState extends State<details_page> {
 
                   //Children of the listview
                   children: [
-                    //Top container
-                    SizedBox(
-                      //color: Colors.brown,
-                      height: 240,
-                      child: Column(
-                        //Alignment of the inner column
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    //Top container (Gesture to trigger functions)
+                    GestureDetector(
+                      onDoubleTap: () async {
+                        await _fetch_local_detailed_weather_data(device_city!); //Refresh data manually
+                      },
 
-                        //Children
-                        children: [
-                          //Top text with location icon
-                          Row(
-                            //Alignment of inner row (maybe put inside a container
-                            //with width: 260, height: 30,)
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                      child: SizedBox(
+                        //color: Colors.brown,
+                        height: 240,
+                        child: Column(
+                          //Alignment of the inner column
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
 
-                            //Children
-                            children: [
-                              const Icon(
-                                MaterialIcons.location_on, //maybe location_city
-                                size: 30,
-                                color: Colors.white,
-                              ),
+                          //Children
+                          children: [
+                            //Top text with location icon
+                            Row(
+                              //Alignment of inner row (maybe put inside a container
+                              //with width: 260, height: 30,)
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
 
-                              //Sized box for minimal spacing
-                              const SizedBox(
-                                width: 5,
-                              ),
-
-                              Text(
-                                city_and_country ?? "Loading...",
-                                style: GoogleFonts.quantico(
-                                  textStyle: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.normal,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                maxLines: 2, //Allowing up to 2 lines
-                                softWrap: true, //Enable text wrapping to avoid overflow
-                              ),
-                            ],
-                          ),
-
-                          //Subtext of top text (maybe punt in a container with
-                          //width: 260, height: 18,)
-                          Center(
-                            child: Text(
-                              date_and_time ?? "Loading...",
-                              style: GoogleFonts.quantico(
-                                textStyle: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.normal,
-                                  fontStyle: FontStyle.normal,
+                              //Children
+                              children: [
+                                const Icon(
+                                  MaterialIcons.location_on, //maybe location_city
+                                  size: 30,
                                   color: Colors.white,
                                 ),
-                              ),
-                            ),
-                          ),
 
-                          // Big temperature text (Do not remove expanded or container)
-                          Expanded(
-                            child: SizedBox(
-                              //color: Colors.greenAccent,
-                              width: 260,
-                              height: 140,
-                              child: Center(
-                                child: Text(
-                                  "${current_temperature?.round() ?? "--"}\u00B0C",
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.sansita(
+                                //Sized box for minimal spacing
+                                const SizedBox(
+                                  width: 5,
+                                ),
+
+                                Text(
+                                  city_and_country ?? "N/A",
+                                  style: GoogleFonts.quantico(
                                     textStyle: const TextStyle(
-                                      fontSize: 120,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       fontStyle: FontStyle.normal,
                                       color: Colors.white,
                                     ),
                                   ),
+                                  maxLines: 2, //Allowing up to 2 lines
+                                  softWrap: true, //Enable text wrapping to avoid overflow
                                 ),
-                              ),
+                              ],
                             ),
-                          ),
 
-                          //Subtext of Big temperature text (maybe out in a
-                          //container with width: 260,height: 26,)
-                          Center(
-                            child: Text(
-                              capitalize_strings(subtxt_weather_condition ?? "Loading..."),
-                              style: GoogleFonts.quantico(
-                                textStyle: const TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.normal,
-                                  fontStyle: FontStyle.normal,
-                                  color: Colors.white,
+                            //Subtext of top text (maybe punt in a container with
+                            //width: 260, height: 18,)
+                            Center(
+                              child: Text(
+                                date_and_time ?? "N/A",
+                                style: GoogleFonts.quantico(
+                                  textStyle: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.normal,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                              maxLines: 2, //Allowing up to 4 lines
-                              softWrap: true, //Enable text wrapping to avoid overflow
                             ),
-                          ),
-                        ],
+
+                            // Big temperature text (Do not remove expanded or container)
+                            Expanded(
+                              child: SizedBox(
+                                //color: Colors.greenAccent,
+                                width: 260,
+                                height: 140,
+                                child: Center(
+                                  child: Text(
+                                    "${current_temperature?.round() ?? "--"}\u00B0C",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.sansita(
+                                      textStyle: const TextStyle(
+                                        fontSize: 120,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            //Subtext of Big temperature text (maybe out in a
+                            //container with width: 260,height: 26,)
+                            Center(
+                              child: Text(
+                                capitalize_strings(subtxt_weather_condition ?? "Double tap"),
+                                style: GoogleFonts.quantico(
+                                  textStyle: const TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.normal,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                maxLines: 2, //Allowing up to 4 lines
+                                softWrap: true, //Enable text wrapping to avoid overflow
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 
@@ -468,7 +537,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "${detailed_precipitation}mm",
+                                "${detailed_precipitation ?? "--"}mm",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -507,7 +576,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "$detailed_humidity%",
+                                "${detailed_humidity ?? "--"}%",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,
@@ -546,7 +615,7 @@ class _details_pageState extends State<details_page> {
                                 color: Colors.white,
                               ),
                               Text(
-                                "$cloud_percentage%",
+                                "${cloud_percentage ?? "--"}%",
                                 style: GoogleFonts.sansita(
                                   textStyle: const TextStyle(
                                     fontSize: 23,

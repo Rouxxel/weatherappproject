@@ -23,10 +23,12 @@ String? date_time;
 double? center_temp_numb;
 String? subtext_condition;
 
+//Middle container in listview
 double? precipitation;
 int? humidity;
 double? wind_speed;
 
+//Bottom container in listview
 List<String?> days = List.filled(7, null);
 List<List<double?>> daily_max_min_temps = List.generate(7, (_) => [null, null]);
 List<String?> daily_icon_strs = List.filled(7, null);
