@@ -200,7 +200,7 @@ Future<Map<String, dynamic>> get_latest_weather_data({
   }
 
   //Map to store the extracted weather data
-  Map<String, dynamic> current_weather_data = {};
+  Map<String, dynamic> latest_weather_data = {};
 
   //Try to obtain API call from URL
   try {
@@ -225,47 +225,36 @@ Future<Map<String, dynamic>> get_latest_weather_data({
       }
       log_handler.d("---API response is valid, proceeding to extract data---");
 
-      //
-
       //Extract coordinates in case the input used is city name
       //Extract longitude and latitude
       List<double> coord = [API_data['coord']['lat'], API_data['coord']['lon']];
-
-      //Extract icon code
-      String icon_str = API_data['weather'][0]['icon'];
 
       //Extract timezone
       //Convert the time stamp API_data['dt'] to a DateTime object
       DateTime utc_time = DateTime.fromMillisecondsSinceEpoch(API_data['dt'] * 1000, isUtc: true);
       //Apply the timezone offset API_data['timezone'] to get the local time
       DateTime local_time = utc_time.add(Duration(seconds: API_data['timezone']));
-      //Format the local time to a readable string
-      String format_local_time = DateFormat('EEEE d, MMMM HH:mm').format(local_time);
 
       //Extract city and country
-      String current_city_name = API_data['name'];
-      String current_country_code = API_data['sys']['country'];
+      String city_name = API_data['name'];
+      String country_code = API_data['sys']['country'];
 
       //Extract and store CURRENT weather data
       //Current Temperature
-      double Ktemp = (API_data['main']['temp'] as num).toDouble();
+      double k_temp = (API_data['main']['temp'] as num).toDouble();
 
       //Feels like temperature
-      double Kfeels = (API_data['main']['feels_like'] as num).toDouble();
+      double k_feels = (API_data['main']['feels_like'] as num).toDouble();
 
       //Extract and convert temp_min and temp_max
-      double Ktemp_min = (API_data['main']['temp_min'] as num).toDouble();
-      double Ktemp_max = (API_data['main']['temp_max'] as num).toDouble();
+      double k_temp_min = (API_data['main']['temp_min'] as num).toDouble();
+      double k_temp_max = (API_data['main']['temp_max'] as num).toDouble();
 
       //Weather condition
-      String W_condition = API_data['weather'][0]['description'];
-      double HPA_pressure = (API_data['main']['pressure'] as num).toDouble();
-      int cloud_coverage =
-      API_data.containsKey('clouds') ? API_data['clouds']['all'] : 0;
+      double hpa_pressure = (API_data['main']['pressure'] as num).toDouble();
 
       //Possible alerts, requires a different URL than the 2 before and a new API call
       String event="No alerts today!!!";
-
       if (lat_lon != null) { //If latitude and longitude are provided
         final alert_URL = Uri.parse(
             'https://api.openweathermap.org/data/3.0/onecall?lat=${lat_lon["latitude"]}'
@@ -299,9 +288,7 @@ Future<Map<String, dynamic>> get_latest_weather_data({
           alert_generic_error(context);
           log_handler.e('Error fetching alerts: $er');
         }
-        ////////---------------------------------------------------------------
       } else if (city_name != null && city_name.isNotEmpty) { //If city name is provided
-        ////////---------------------------------------------------------------
         final alert_URL = Uri.parse(
             'https://api.openweathermap.org/data/3.0/onecall?lat=${coord[0]}&lon=${coord[1]}'
                 '&exclude=current,minutely,hourly,daily&lang=en&appid=$_ow_api_key');
@@ -333,32 +320,23 @@ Future<Map<String, dynamic>> get_latest_weather_data({
           alert_generic_error(context);
           log_handler.e('Error fetching alerts: $er');
         }
-        ////////---------------------------------------------------------------
       }
 
       //Wind information
-      double MPH_wind_speed = (API_data['wind']['speed'] as num).toDouble();
-      double wind_gust_MPH = API_data['wind'].containsKey('gust') ?
+      double mph_wind_speed = (API_data['wind']['speed'] as num).toDouble();
+      double mph_wind_gust = API_data['wind'].containsKey('gust') ?
       (API_data['wind']['gust'] as num).toDouble() : 0.0;
-      int wind_direction = API_data['wind']['deg'];
-
-      //Water related things
-      int humidity = API_data['main']['humidity'];
 
       //Precipitation
-      double MM_precipitation = 0.0;
+      double mm_precipitation = 0.0;
       //Check if there's precipitation data
       if (API_data.containsKey('rain') && API_data['rain'].containsKey('1h')) {
-        MM_precipitation = MM_precipitation + (API_data['rain']['1h'] as num).toDouble();
+        mm_precipitation = mm_precipitation + (API_data['rain']['1h'] as num).toDouble();
       }
       //Check if there's snow data and add it to precipitation
       if (API_data.containsKey('snow') && API_data['snow'].containsKey('1h')) {
-        MM_precipitation = MM_precipitation + (API_data['snow']['1h'] as num).toDouble();
+        mm_precipitation = mm_precipitation + (API_data['snow']['1h'] as num).toDouble();
       }
-
-      //UV index
-      double UV_index = API_data.containsKey('uvi') ?
-      (API_data['uvi'] as num).toDouble() : 0.0;
 
       //Extract sunrise and sunset timestamps and convert to hour and minute
       //Convert API_data['sys']['sunrise'] and API_data['sys']['sunset'] to DateTime format
@@ -369,57 +347,57 @@ Future<Map<String, dynamic>> get_latest_weather_data({
       String sunset_Hr_Min = '${sunset_time.hour}:${sunset_time.minute.toString().padLeft(2, '0')}';
 
       // Add extracted data to the CURRENT section of the map
-      current_weather_data = {
+      latest_weather_data = {
         'coord': coord,
         'utc_time': utc_time,
         'local_time': local_time,
-        'format_date_time': format_local_time,
-        'icon_str': icon_str,
+        'format_date_time': DateFormat('EEEE d, MMMM HH:mm').format(local_time),
+        'icon_str': API_data['weather'][0]['icon'],
         'alert':event,
         //
-        "current_city":current_city_name,
-        "current_country":current_country_code,
-        "rough_location":("$current_city_name, $current_country_code"),
+        "current_city":city_name,
+        "current_country":country_code,
+        "rough_location":("$city_name, $country_code"),
         //
-        'K_temp': Ktemp,
-        'F_temp': ((Ktemp - 273.15) * 9 / 5 + 32),
-        'C_temp': (Ktemp - 273.15),
+        'K_temp': k_temp,
+        'F_temp': ((k_temp - 273.15) * 9 / 5 + 32),
+        'C_temp': (k_temp - 273.15),
         //
-        'K_temp_feel': Kfeels,
-        'F_temp_feel': ((Kfeels - 273.15) * 9 / 5 + 32),
-        'C_temp_feel': (Kfeels - 273.15),
+        'K_temp_feel': k_feels,
+        'F_temp_feel': ((k_feels - 273.15) * 9 / 5 + 32),
+        'C_temp_feel': (k_feels - 273.15),
         //
-        'K_temp_min': Ktemp_min,
-        'K_temp_max': Ktemp_max,
-        'F_temp_min': ((Ktemp_min - 273.15) * 9 / 5 + 32),
-        'F_temp_max': ((Ktemp_max - 273.15) * 9 / 5 + 32),
-        'C_temp_min': (Ktemp_min - 273.15),
-        'C_temp_max': (Ktemp_max - 273.15),
+        'K_temp_min': k_temp_min,
+        'K_temp_max': k_temp_max,
+        'F_temp_min': ((k_temp_min - 273.15) * 9 / 5 + 32),
+        'F_temp_max': ((k_temp_max - 273.15) * 9 / 5 + 32),
+        'C_temp_min': (k_temp_min - 273.15),
+        'C_temp_max': (k_temp_max - 273.15),
         //
-        'weather_cond': W_condition,
+        'weather_cond': API_data['weather'][0]['description'],
         //
-        'MPH_wind': MPH_wind_speed,
-        'KPH_wind': (MPH_wind_speed * 1.60934),
-        'wind_direction': wind_direction,
-        'MPH_wind_g': wind_gust_MPH,
-        'KPH_wind_g': (wind_gust_MPH != 0.0 ? wind_gust_MPH * 1.60934 : 0.0),
+        'MPH_wind': mph_wind_speed,
+        'KPH_wind': (mph_wind_speed * 1.60934),
+        'wind_direction': API_data['wind']['deg'],
+        'MPH_wind_g': mph_wind_gust,
+        'KPH_wind_g': (mph_wind_gust != 0.0 ? mph_wind_gust * 1.60934 : 0.0),
         //
-        'humid': humidity,
-        'precipi_MM': MM_precipitation,
-        'precipi_IN': (MM_precipitation * 0.0393701),
+        'humid': API_data['main']['humidity'],
+        'precipi_MM': mm_precipitation,
+        'precipi_IN': (mm_precipitation * 0.0393701),
         //
-        'press_HPA': HPA_pressure,
-        'press_MB': (HPA_pressure / 100),
+        'press_HPA': hpa_pressure,
+        'press_MB': (hpa_pressure / 100),
         //
-        'clouds': cloud_coverage,
-        'uvi': UV_index,
+        'clouds': API_data.containsKey('clouds') ? API_data['clouds']['all'] : 0,
+        'uvi': API_data.containsKey('uvi') ? (API_data['uvi'] as num).toDouble() : 0.0,
         //
         'sunrise_time':sunrise_Hr_Min,
         'sunset_time':sunset_Hr_Min,
       };
 
       log_handler.d('API get_current_weather_data Response: ${response.body}');
-      log_handler.d('Function get_current_weather_data map return: $current_weather_data');
+      log_handler.d('Function get_current_weather_data map return: $latest_weather_data');
 
     } else {
       //Display API error dialog
@@ -435,7 +413,7 @@ Future<Map<String, dynamic>> get_latest_weather_data({
   }
 
   //Return the map of weather data
-  return current_weather_data;
+  return latest_weather_data;
 }
 
 //Function to get daily max/min temp, hourly temp and icons
