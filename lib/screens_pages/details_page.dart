@@ -1116,10 +1116,16 @@ class _details_pageState extends State<details_page> {
                   color: const Color.fromRGBO(140, 127, 186, 0.5),
                   icon: const Icon(Icons.home_outlined),
                   onPressed: () {
-                    //Use navigator to go to the landing page
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const home_page(),
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) => const home_page(),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        transitionDuration: const Duration(milliseconds: 300), // optional
                       ),
                     );
                   },
@@ -1138,10 +1144,16 @@ class _details_pageState extends State<details_page> {
                   color: const Color.fromRGBO(140, 127, 186, 0.5),
                   icon: const Icon(Icons.search_outlined),
                   onPressed: () {
-                    //Use navigator to go to the landing page
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const search_page(),
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) => const search_page(),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        transitionDuration: const Duration(milliseconds: 300), // optional
                       ),
                     );
                   },

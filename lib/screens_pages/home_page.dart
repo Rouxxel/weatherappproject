@@ -548,9 +548,17 @@ class _home_pageState extends State<home_page> {
                               ),
                             ),
 
-                            //Results of selected option
+                            //Results of selected option with fade transition
                             Expanded(
-                              child: _pages[_selected_index],
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                switchInCurve: Curves.easeIn,
+                                switchOutCurve: Curves.easeOut,
+                                transitionBuilder: (Widget child, Animation<double> animation) {
+                                  return FadeTransition(opacity: animation, child: child);
+                                },
+                                child: _pages[_selected_index],
+                              ),
                             ),
                           ],
                         ),
@@ -590,10 +598,16 @@ class _home_pageState extends State<home_page> {
                   color: const Color.fromRGBO(140, 127, 186, 0.5),
                   icon: const Icon(Icons.info_outline),
                   onPressed: () {
-                    //Use navigator to go to the landing page
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const details_page(),
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) => const details_page(),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        transitionDuration: const Duration(milliseconds: 300), // optional
                       ),
                     );
                   },
@@ -629,10 +643,16 @@ class _home_pageState extends State<home_page> {
                   color: const Color.fromRGBO(140, 127, 186, 0.5),
                   icon: const Icon(Icons.search_outlined),
                   onPressed: () {
-                    //Use navigator to go to the search page
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const search_page(),
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) => const search_page(),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        transitionDuration: const Duration(milliseconds: 300), // optional
                       ),
                     );
                   },
